@@ -583,8 +583,8 @@ $icon_size: 16px;
 
 .workspace-close-button,
 .window-close {
-  height: 36px;
-  width: 36px;
+  height: 0;
+  width: 0;
   -cinnamon-close-overlap: 24px;
   background-image: url("assets/misc/close.svg");
   background-size: 36px;
