@@ -17,17 +17,6 @@
 
 
 //
-// Scaling function
-//
-
-$ref_size: 13.33px; // = 10pt = 1em
-
-@function rem($px, $fs: $ref_size) {
-  @return ($px / $fs ) * 1rem;
-}
-
-
-//
 // Default shadows
 //
 
@@ -38,16 +27,6 @@ $z-depth-4: 0 6px 8px -4px rgba(0, 0, 0, 0.16),
             0 10px 6px rgba(0, 0, 0, 0.20);
 $z-depth-5: 0 8px 10px -4px rgba(0, 0, 0, 0.20),
             0 12px 8px rgba(0, 0, 0, 0.24);
-
-// z-depth-1 actual shadows + dummy z-depth-2 area
-$z-depth-1-backdrop: 0 2px 2px transparent,
-                     0 3px 4px transparent,
-                     0 3px 3px -1px rgba(0, 0, 0, 0.08);
-// z-depth-2 actual shadows + dummy z-depth-4 area
-$z-depth-2-backdrop: 0 10px 6px transparent,
-                     0 6px 8px -4px transparent,
-                     0 2px 2px rgba(0, 0, 0, 0.12),
-                     0 3px 4px rgba(0, 0, 0, 0.20);
 
 
 //
@@ -127,13 +106,6 @@ $inline-shadow-dark: inset 0 1px 2px -1px rgba(0, 0, 0, 0.03),
 
 
 //
-// Info-bar shadows
-//
-// $infobar-shadow-light: inset 0 1px 2px rgba(0, 0, 0, 0.08);
-// $infobar-shadow-dark: inset 0 1px 2px rgba(0, 0, 0, 0.04);
-
-
-//
 // Reorderable-tab shadows
 //
 
@@ -163,7 +135,7 @@ $menubar-shadow: inset 0 2px 2px -3px rgba(0, 0, 0, 0.26),
 $toolbar-shadow-light: inset 0 1px 1px rgba(0, 0, 0, 0.18),
                        inset 0 4px 2px -4px rgba(0, 0, 0, 0.20),
                        inset 0 8px 3px -5px rgba(0, 0, 0, 0.24);
-$toolbar-shadow-dark: inset 0 1px 1px rgba(0, 0, 0, 0.22),
+$toolbar-shadow-dark: inset 0 1px 1px rgba(0, 0, 0, 0.20),
                       inset 0 4px 3px -4px rgba(0, 0, 0, 0.22),
                       inset 0 8px 3px -5px rgba(0, 0, 0, 0.24);
 
@@ -255,7 +227,7 @@ $toolbar-shadow-dark: inset 0 1px 1px rgba(0, 0, 0, 0.22),
 
   @if $t==normal {
     border-radius: 0;
-    -gtk-outline-radius: 0;
+    outline-radius: 0;
     border-color: $solid_light_borders_color;
     border-image: -gtk-gradient(radial,
                                 center bottom, 0,
@@ -289,7 +261,7 @@ $toolbar-shadow-dark: inset 0 1px 1px rgba(0, 0, 0, 0.22),
   }
   @if $t==flat-normal {
     border-radius: 0;
-    -gtk-outline-radius: 0;
+    outline-radius: 0;
     border-color: $solid_light_borders_color;
     border-image: -gtk-gradient(radial,
                                 center bottom, 0,
@@ -348,8 +320,6 @@ $toolbar-shadow-dark: inset 0 1px 1px rgba(0, 0, 0, 0.22),
   //
   // normal button
   //
-    box-shadow: $z-depth-1,
-                inset 0 1px $highlight_color;
     background-color: $c;
     background-image: -gtk-gradient(radial,
                                     center center, 0,
@@ -358,14 +328,14 @@ $toolbar-shadow-dark: inset 0 1px 1px rgba(0, 0, 0, 0.22),
                                     to(transparent)),
                       linear-gradient(to bottom, gtkalpha(currentColor, 0));
     color: $secondary_fg_color;
+    box-shadow: $z-depth-1,
+                inset 0 1px $highlight_color;
   }
 
   @else if $t==hover {
   //
   // hovered button
   //
-    box-shadow: $z-depth-2,
-                inset 0 1px $highlight_color;
     background-image: -gtk-gradient(radial,
                                     center center, 0,
                                     center center, 0.5,
@@ -373,15 +343,17 @@ $toolbar-shadow-dark: inset 0 1px 1px rgba(0, 0, 0, 0.22),
                                     to(transparent)),
                       linear-gradient(to bottom, gtkalpha(currentColor, 0));
     color: $fg_color;
+    box-shadow: $z-depth-2,
+                inset 0 1px $highlight_color;
   }
 
   @else if $t==active {
   //
   // pushed button
   //
+    color: $fg_color;
     box-shadow: $z-depth-2,
                 inset 0 1px $highlight_color;
-    color: $fg_color;
     transition-duration: 0;
     animation: ripple_effect 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   }
@@ -389,36 +361,37 @@ $toolbar-shadow-dark: inset 0 1px 1px rgba(0, 0, 0, 0.22),
   //
   // insensitive button
   //
-    box-shadow: none;
     background-color: $track_color;
     color: if($tc!=$fg_color, $insensitive_fg_color,
                               $insensitive_secondary_fg_color);
-    > label { color: inherit; }
+    box-shadow: none;
+
+    > .label { color: inherit; }
   }
   @else if $t==checked {
   //
   // checked button
   //
-    box-shadow: $z-depth-1,
-                inset 0 1px $highlight_color;
     background-color: $selected_bg_color;
     color: $selected_fg_color;
+    box-shadow: $z-depth-1,
+                inset 0 1px $highlight_color;
   }
   @else if $t==checked-insensitive {
   //
   // checked insensitive button
   //
-    box-shadow: none;
     background-color: $track_color;
     color: gtkopacity($selected_bg_color, 0.4);
-    > label { color: inherit; }
+    box-shadow: none;
+
+    > .label { color: inherit; }
   }
 
   @else if $t==flat-normal {
   //
   // normal flat button
   //
-    box-shadow: none;
     background-color: transparent;
     background-image: -gtk-gradient(radial,
                                     center center, 0,
@@ -426,18 +399,19 @@ $toolbar-shadow-dark: inset 0 1px 1px rgba(0, 0, 0, 0.22),
                                     to(gtkalpha(currentColor, 0)),
                                     to(transparent)),
                       linear-gradient(to bottom, gtkalpha(currentColor, 0));
+    box-shadow: none;
   }
   @else if $t==flat-hover {
   //
   // hovered flat button
   //
-    box-shadow: none;
     background-image: -gtk-gradient(radial,
                                     center center, 0,
                                     center center, 0.5,
                                     to(gtkalpha(currentColor, 0)),
                                     to(transparent)),
                       linear-gradient(to bottom, gtkalpha(currentColor, 0.1));
+    box-shadow: none;
   }
   @else if $t==flat-active {
   //
@@ -450,8 +424,8 @@ $toolbar-shadow-dark: inset 0 1px 1px rgba(0, 0, 0, 0.22),
   //
   // insensitive flat button
   //
-    box-shadow: none;
     background-color: transparent;
+    box-shadow: none;
   }
   @else if $t==flat-checked {
   //
@@ -464,7 +438,7 @@ $toolbar-shadow-dark: inset 0 1px 1px rgba(0, 0, 0, 0.22),
   //
   // checked flat insensitive button
   //
-    > label { color: inherit; }
+    > .label { color: inherit; }
   }
 
   @else if $t==undecorated {
@@ -476,7 +450,7 @@ $toolbar-shadow-dark: inset 0 1px 1px rgba(0, 0, 0, 0.22),
     background-image: none;
     box-shadow: none;
     text-shadow: none;
-    -gtk-icon-shadow: none;
+    icon-shadow: none;
   }
 }
 
@@ -511,10 +485,8 @@ $toolbar-shadow-dark: inset 0 1px 1px rgba(0, 0, 0, 0.22),
                                   $_position, 0.75,
                                   to(gtkopacity($c, 0.2)),
                                   to(transparent));
-
   background-repeat: no-repeat;
   background-position: $_position;
-
   // reset some properties to be sure to not inherit them somehow
   background-color: transparent;
   border: none;
@@ -531,20 +503,18 @@ $toolbar-shadow-dark: inset 0 1px 1px rgba(0, 0, 0, 0.22),
 // Undershoot drawing function
 //
 // $p: position
-// $fading_color: actual colour for fader
 //
 // possible $p values:
 // top, bottom, right, left
 //
 
   // shouldn't be needed, but better to be sure
-  background-color: transparent;
+  background: transparent;
 
   $_gradient_dir: $p;
   $_fader_size: 16px 32px;
   $_gradient_repeat: repeat-x;
   $_bg_pos: center $p;
-
 
   @if ($p == left) or ($p == right) {
     $_fader_size: 32px 16px;
@@ -552,15 +522,14 @@ $toolbar-shadow-dark: inset 0 1px 1px rgba(0, 0, 0, 0.22),
     $_bg_pos: $p center;
   }
 
-  // this is the dashed line
+  // this is the 'fader' effect
+  padding-#{$p}: 0;
   background-image: linear-gradient(to $_gradient_dir,
                                     gtkopacity($fading_color, 0.01),
                                     gtkopacity($fading_color, 0.04),
                                     gtkopacity($fading_color, 0.20),
                                     gtkopacity($fading_color, 0.44),
                                     gtkopacity($fading_color, 0.94));
-
-  padding-#{$p}: 0;
   background-size: $_fader_size;
   background-repeat: $_gradient_repeat;
   background-origin: content-box;

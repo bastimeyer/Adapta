@@ -10,20 +10,20 @@
 # (at your option) any later version.
 #
 
-SRC_DIR="assets-metacity"
-ASSETS_DIR="../metacity-1"
-INDEX="assets-metacity.txt"
-RECOLOR_FILE1="./assets-metacity/button_close_pressed.svg"
-RECOLOR_FILE2="./assets-metacity/button_close_prelight.svg"
-KEY_FILE="../../gtk/sass/common/_key_colors.scss"
+SRC_DIR="../assets-xfwm"
+RECOLOR_FILE1="./../assets-xfwm/close-pressed.svg"
+RECOLOR_FILE2="./../assets-xfwm/menu-pressed.svg"
+RECOLOR_FILE3="./../assets-xfwm/close-prelight.svg"
+COL_FILE="../../../gtk/sass/common/_colors.scss"
+KEY_FILE="../../../gtk/sass/common/_key_colors.scss"
 
 # Default colours
-selection1="`grep 'Cyan500' ../../gtk/sass/common/_colors.scss | \
+selection1="`grep 'Cyan500' $COL_FILE | \
                    cut -d' ' -f3`"
-destruction1="`grep 'RedA200' ../../gtk/sass/common/_colors.scss | \
+destruction1="`grep 'RedA200' $COL_FILE | \
                      cut -d' ' -f3`"
 
-# Check and re-color 'button_close_pressed' button
+# Check and re-color 'close-pressed' and 'menu-pressed' button
 if [ -e $KEY_FILE ]; then
     selection2="`grep 'key_selection' $KEY_FILE | \
                  cut -d' ' -f2 | cut -d';' -f1`"
@@ -32,35 +32,19 @@ if [ -e $KEY_FILE ]; then
 
     cp -f $RECOLOR_FILE1.in $RECOLOR_FILE1
     cp -f $RECOLOR_FILE2.in $RECOLOR_FILE2
+    cp -f $RECOLOR_FILE3.in $RECOLOR_FILE3
 
     if [ $selection1 != $selection2 ]; then
-        sed -i "s/$selection1/$selection2/g" $RECOLOR_FILE1
+        sed -i "s/$selection1/$selection2/gi" $RECOLOR_FILE1
+        sed -i "s/$selection1/$selection2/gi" $RECOLOR_FILE2
         echo $selection1 is re-colored with $selection2.
     fi
 
     if [ $destruction1 != $destruction2 ]; then
-        sed -i "s/$destruction1/$destruction2/g" $RECOLOR_FILE2
+        sed -i "s/$destruction1/$destruction2/gi" $RECOLOR_FILE3
         echo $destruction1 is re-colored with $destruction2.
     fi
 else
     echo _key_colors.scss was not found. Stopped...
     exit 1
 fi
-
-# Clone stock SVG files
-for i in $(<$INDEX)
-do
-    if [ -f $ASSETS_DIR/$i.svg ] && \
-        [ $SRC_DIR/$i.svg -ot $ASSETS_DIR/$i.svg ]; then
-        echo $ASSETS_DIR/$i.svg exists.
-    elif [ -f $ASSETS_DIR/$i.svg ] && \
-        [ $SRC_DIR/$i.svg -nt $ASSETS_DIR/$i.svg ]; then
-        echo Re-cloning $ASSETS_DIR/$i.svg
-        cp $SRC_DIR/$i.svg $ASSETS_DIR
-    else
-        echo Cloning $ASSETS_DIR/$i.svg
-        cp $SRC_DIR/$i.svg $ASSETS_DIR
-    fi
-done
-
-exit 0

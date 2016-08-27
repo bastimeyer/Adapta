@@ -188,20 +188,20 @@ GtkAssistant {
     // apply suggested-action button for "Next" and "Back"
     // last -> "cancel", nth -> "Next" and "Back", that's weird.
     .button.flat:not(:last-child) {
-      @include button(normal);
+      @extend %button_normal;
       background-color: $suggested_color;
       color: $secondary_selected_fg_color;
       &:hover {
-        @include button(hover);
+        @extend %button_hover;
         color: $selected_fg_color;
       }
       &:active {
-        @include button(active);
-        color: $selected_fg_color;
+        @extend %button_active;
         background-color: $selected_bg_color;
+        color: $selected_fg_color;
       }
       &:checked {
-        @include button(checked);
+        @extend %button_checked;
         background-color: mix($selected_fg_color, $suggested_color, 20%);
         color: $selected_fg_color;
       }
@@ -394,6 +394,84 @@ GtkTextView { // This will get overridden by .view,
   }
 }
 
+// template for standard buttons
+%button_normal {
+  background-image: -gtk-gradient(radial,
+                                  center center, 0,
+                                  center center, 0.5,
+                                  to(gtkalpha(currentColor, 0)),
+                                  to(transparent)),
+                    linear-gradient(to bottom, gtkalpha(currentColor, 0));
+  box-shadow: $z-depth-1,
+              inset 0 1px $highlight_color;
+}
+
+%button_hover {
+  background-image: -gtk-gradient(radial,
+                                  center center, 0,
+                                  center center, 0.5,
+                                  to(gtkalpha(currentColor, 0)),
+                                  to(transparent)),
+                    linear-gradient(to bottom, gtkalpha(currentColor, 0));
+  box-shadow: $z-depth-2,
+              inset 0 1px $highlight_color;
+}
+
+%button_active {
+  box-shadow: $z-depth-2,
+              inset 0 1px $highlight_color;
+  transition-duration: 0;
+  animation: ripple_effect 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+%button_checked {
+  box-shadow: $z-depth-1,
+              inset 0 1px $highlight_color;
+}
+
+%button_insensitive,
+%button_checked_insensitive {
+  box-shadow: none;
+
+  > .label { color: inherit; }
+}
+
+%button_flat_normal {
+  background-image: -gtk-gradient(radial,
+                                  center center, 0,
+                                  center center, 0.5,
+                                  to(gtkalpha(currentColor, 0)),
+                                  to(transparent)),
+                    linear-gradient(to bottom, gtkalpha(currentColor, 0));
+  box-shadow: none;
+}
+
+%button_flat_hover {
+  background-image: -gtk-gradient(radial,
+                                  center center, 0,
+                                  center center, 0.5,
+                                  to(gtkalpha(currentColor, 0)),
+                                  to(transparent)),
+                    linear-gradient(to bottom, gtkalpha(currentColor, 0.1));
+  box-shadow: none;
+}
+
+%button_flat_active {
+  animation: flat_ripple_effect 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  box-shadow: none;
+}
+
+%button_flat_checked {
+  box-shadow: none;
+}
+
+%button_flat_insensitive,
+%button_flat_checked_insensitive {
+  box-shadow: none;
+
+  > .label { color: inherit; }
+}
+
 .button {
   padding: 0.7em 1em 0.8em;
   border-radius: 2px;
@@ -459,12 +537,12 @@ GtkTextView { // This will get overridden by .view,
       background-color: $b_color;
       color: $secondary_selected_fg_color;
       &:hover {
-        @include button(hover);
+        @extend %button_hover;
         background-color: $b_color;
         color: $selected_fg_color;
       }
       &:active {
-        @include button(active);
+        @extend %button_active;
         background-color: $selected_bg_color;
         color: $selected_fg_color;
       }
@@ -480,7 +558,7 @@ GtkTextView { // This will get overridden by .view,
         &:hover { @include button(flat-hover, $track_color, $b_color);
         }
         &:active {
-          @include button(flat-active);
+          @extend %button_flat_active;
           background-color: gtkalpha($selected_bg_color, 0.2);
           color: $selected_bg_color;
         }
@@ -605,18 +683,19 @@ GtkTextView { // This will get overridden by .view,
 }
 
 %button_array {
-  @include button(flat-normal);
+  @extend %button_flat_normal;
   border-radius: 0;
   outline-radius: 0;
-  color: $secondary_fg_color;
   border-image: -gtk-gradient(radial,
                               center bottom, 0,
                               center bottom, 0.5,
                               to($track_color),
                               to(transparent))
                               0 0 1 / 0 0 1px;
+  background-color: transparent;
+  color: $secondary_fg_color;
   &:hover {
-    @include button(flat-hover);
+    @extend %button_flat_hover;
     border-radius: 0;
     border-image: -gtk-gradient(radial,
                                 center bottom, 0,
@@ -624,77 +703,79 @@ GtkTextView { // This will get overridden by .view,
                                 to($track_color),
                                 to(transparent))
                                 0 0 2 / 0 0 2px;
+    background-color: transparent;
+    color: $fg_color;
   }
   &:active,
   &:checked {
-    @include button(flat-checked);
+    @extend %button_flat_checked;
     border-radius: 0;
-    color: $fg_color;
-    background-color: transparent;
     border-image: -gtk-gradient(radial,
                                 center bottom, 0,
                                 center bottom, 0.5,
                                 to($selected_bg_color),
                                 to(transparent))
                                 0 0 2 / 0 0 2px;
+    background-color: transparent;
+    color: $fg_color;
     &:hover { background-color: gtkalpha($secondary_fg_color, 0.1); }
     &:insensitive {
-      @include button(flat-checked-insensitive);
-      color: $insensitive_fg_color;
-      background-color: transparent;
+      @extend %button_flat_checked_insensitive;
       border-image: -gtk-gradient(radial,
                                   center bottom, 0,
                                   center bottom, 0.5,
                                   to(gtkopacity($selected_bg_color, 0.2)),
                                   to(transparent))
                                   0 0 2 / 0 0 2px;
-      > .label { color: inherit; }
+      color: $insensitive_fg_color;
+      background-color: transparent;
     }
   }
   &:insensitive {
-    @include button(flat-insensitive);
+    @extend %button_flat_insensitive;
     border-radius: 0;
-    color: $insensitive_fg_color;
-    background-color: transparent;
     border-image: -gtk-gradient(radial,
                                 center bottom, 0,
                                 center bottom, 0.5,
                                 to($track_color),
                                 to(transparent))
                                 0 0 1 / 0 0 1px;
+    background-color: transparent;
+    color: $insensitive_fg_color;
   }
 }
 
 %button_vertical_array {
-  @include button(flat-normal);
+  @extend %button_flat_normal;
   border-image: none;
   border-width: 0;
   outline-radius: 0;
+  background-color: transparent;
   color: $secondary_fg_color;
   &:hover {
-    @include button(flat-hover);
+    @extend %button_flat_hover;
+    color: $fg_color;
     &:dir(ltr) { box-shadow: inset 2px 0 $track_color; }
     &:dir(rtl) { box-shadow: inset -2px 0 $track_color; }
   }
   &:active,
   &:checked {
-    @include button(flat-checked);
+    @extend %button_flat_checked;
     color: $fg_color;
     background-color: transparent;
     &:dir(ltr) { box-shadow: inset 2px 0 $selected_bg_color; }
     &:dir(rtl) { box-shadow: inset -2px 0 $selected_bg_color; }
     &:hover { background-color: gtkalpha(currentColor, 0.1); }
     &:insensitive {
-      @include button(flat-checked-insensitive);
+      @extend %button_flat_checked_insensitive;
       color: $insensitive_fg_color;
       background-color: transparent;
       &:dir(ltr) { box-shadow: inset 2px 0 gtkopacity($selected_bg_color, 0.2); }
       &:dir(ltr) { box-shadow: inset -2px 0 gtkopacity($selected_bg_color, 0.2); }
-      > .label { color: inherit; }
     }
   }
   &:insensitive {
-    @include button(flat-insensitive);
+    @extend %button_flat_insensitive;
     color: $insensitive_fg_color;
     background-color: transparent;
     &:dir(ltr) { box-shadow: inset 1px 0 $track_color; }
@@ -798,24 +879,29 @@ GtkColorButton.button {
 
 // button box is always shown with flat-buttons
 GtkButtonBox > .button {
-  @include button(flat-normal);
+  @extend %button_flat_normal;
+  background-color: transparent;
   color: $secondary_accent_color;
   font-weight: 700;
   &:hover {
-    @include button(flat-hover);
+    @extend %button_flat_hover;
+    background-color: transparent;
     color: $accent_color;
   }
   &:active {
-    @include button(flat-active);
+    @extend %button_flat_active;
+    background-color: transparent;
     color: $accent_color;
   }
   &:insensitive { @include button(flat-insensitive); }
   &:checked {
-    @include button(flat-checked);
+    @extend %button_flat_checked;
+    background-color: transparent;
     color: $accent_color;
   }
   &:checked:insensitive {
-    @include button(flat-checked-insensitive);
+    @extend %button_flat_checked_insensitive;
+    background-color: transparent;
     color: gtkopacity($accent_color, 0.4);
   }
 }
@@ -854,43 +940,43 @@ GtkButtonBox > .button {
 .spinbutton {
   .button,
   .osd & .button {
+    @extend %button_flat_normal;
     padding: 0.4em;
     border: solid 0.35em transparent;
     border-radius: 100px;
     outline-radius: 100px;
     background: none;
-    box-shadow: none;
     color: $secondary_fg_color;
     &:not(:last-child) { // '-' button
       &:hover {
-        @include button(flat-hover);
+        @extend %button_flat_hover;
         background: none;
         color: $error_color;
       }
       &:active {
-        @include button(flat-active);
+        @extend %button_flat_active;
         background-color: $track_color;
         color: $error_color;
       }
       &:insensitive {
-        @include button(flat-insensitive);
+        @extend %button_flat_insensitive;
         background: none;
         color: $insensitive_fg_color;
       }
     }
     &:last-child { // '+' button
       &:hover {
-        @include button(flat-hover);
+        @extend %button_flat_hover;
         background: none;
         color: $success_color;
       }
       &:active {
-        @include button(flat-active);
+        @extend %button_flat_active;
         background-color: $track_color;
         color: $success_color;
       }
       &:insensitive {
-        @include button(flat-insensitive);
+        @extend %button_flat_insensitive;
         background: none;
         color: $insensitive_fg_color;
       }
@@ -902,43 +988,43 @@ GtkButtonBox > .button {
     padding: 0.5em 0;
 
     .button {
+      @extend %button_flat_normal;
       padding: 0.2em 0;
       border: solid 0.5em transparent;
       border-radius: 200px;
       outline-radius: 200px;
       background: none;
-      box-shadow: none;
       color: $secondary_fg_color;
       &:first-child { // '+' button
         &:hover {
-          @include button(flat-hover);
+          @extend %button_flat_hover;
           background: none;
           color: $success_color;
 	}
         &:active {
-          @include button(flat-active);
+          @extend %button_flat_active;
           background-color: $track_color;
           color: $success_color;
         }
         &:insensitive {
-          @include button(flat-insensitive);
+          @extend %button_flat_insensitive;
           background: none;
           color: $insensitive_fg_color;
         }
       }
       &:last-child { // '-' button
         &:hover {
-          @include button(flat-hover);
+          @extend %button_flat_hover;
           background: none;
           color: $error_color;
 	}
         &:active {
-          @include button(flat-active);
+          @extend %button_flat_active;
           background-color: $track_color;
           color: $error_color;
         }
         &:insensitive {
-          @include button(flat-insensitive);
+          @extend %button_flat_insensitive;
           background: none;
           color: $insensitive_fg_color;
         }
@@ -1077,20 +1163,20 @@ GtkComboBox {
   GtkPaned &,
   GtkEventBox &,
   GtkGrid &.primary-toolbar { // stop drawing fake-shadows
-    box-shadow: none;
+    &:not(.vertical):not(.inline-toolbar) { box-shadow: none; }
   }
 
   .osd &, &.osd {
     padding: 3px;
     border-style: solid;
     border-width: 9px;
+    border-radius: 2px;
     border-image: -gtk-scaled(url("assets/osd-shadow#{$asset_suffix}.png"),
                               url("assets/osd-shadow#{$asset_suffix}@2.png"))
                   10 / 10px stretch;
-    border-radius: 2px;
-    box-shadow: none;
     color: $inverted_fg_color;
     background-color: $inverted_dark_color;
+    box-shadow: none;
     &:backdrop {
       border-image: -gtk-scaled(url("assets/osd-shadow-backdrop#{$asset_suffix}.png"),
                                 url("assets/osd-shadow-backdrop#{$asset_suffix}@2.png"))
@@ -1109,7 +1195,7 @@ GtkComboBox {
         border-image: none;
         box-shadow: none;
       }
-      &:insensitive { color: gtkopacity($accent_color, 0.4); }
+      &:insensitive { color: gtkalpha($inverted_fg_color, 0.4); }
     }
 
     .label { padding: 0 1em; }
@@ -1399,9 +1485,17 @@ GtkComboBox {
       }
       &:active {
         background-color: $selected_bg_color;
-        &:insensitive { background-color: #3F4E56; }
+        &:insensitive {
+          background-color: mix($top_edge_border_color,
+                                $inverted_fg_color,
+                                95.5%);
+        }
       }
-      &:insensitive { background-color: #3F4E56; }
+      &:insensitive {
+        background-color: mix($top_edge_border_color,
+                              $inverted_fg_color,
+                              95.5%);
+      }
     }
   }
 
@@ -1498,7 +1592,7 @@ GtkComboBox {
   }
 
   &.default-decoration { // FIXME: do not use scalable units
-    padding: 5.3px;
+    padding: 3px 2px 2px;
     border-width: 0;
 
     .title { // fade_effect doesn't work
@@ -1969,16 +2063,17 @@ column-header.button.dnd { // for treeview-like derive widgets
 
   .linked > .button {
     // @extend .button.flat;
-    @include button(flat-normal);
+    @extend %button_flat_normal;
     @extend %button_array;
+    background-color: transparent;
     color: $secondary_fg_color;
     &:hover { @include button(flat-hover); }
     &:active { @include button(flat-active); }
     &:insensitive { @include button(flat-nsensitive); }
     &:checked {
-      @include button(flat-checked);
-      color: $fg_color;
+      @extend %button_flat_checked;
       background-color: transparent;
+      color: $fg_color;
     }
     &:checked:insensitive { @include button(flat-checked-insensitive); }
   }
@@ -2139,7 +2234,8 @@ column-header.button.dnd { // for treeview-like derive widgets
       @extend %image_button;
       padding: 0;
       background-size: 3em * 1 / 0.8 3em * 1 / 0.8, auto;
-      @include button(flat-normal);
+      @extend %button_flat_normal;
+      background-color: transparent;
       color: $tertiary_fg_color;
       &:hover { @include button(flat-hover); }
       &:active { @include button(flat-active); }
@@ -2154,7 +2250,7 @@ column-header.button.dnd { // for treeview-like derive widgets
       color: $fg_color;
     }
     .active-page .button,
-    &:hover .button { // active tab close button
+    &:active .button { // active tab close button
       color: $fg_color;
     }
   }
@@ -2295,17 +2391,15 @@ column-header.button.dnd { // for treeview-like derive widgets
  **********/
 
 GtkSwitch {
-  -GtkSwitch-slider-width: 20px; // 55px is the right value to make it as tall
-                                 // as buttons, not doing that for now
+  -GtkSwitch-slider-width: 20px;
   -GtkSwitch-slider-height: 20px;
-
+  font-size: 0;
   outline-offset: -4px;
   outline-radius: 100px;
-  font-size: 0;
 
   &.trough {
     // similar to the .scale
-    border: 8px solid transparent;
+    border: 10px solid transparent;
     border-radius: 100px;
     background-color: $track_color;
     &:active {
@@ -2319,7 +2413,7 @@ GtkSwitch {
   }
 
   &.slider {
-    padding: 4px;
+    padding: 5px;
     border-radius: 100px;
     outline-radius: 100px;
     @include button(normal);
@@ -2332,15 +2426,18 @@ GtkSwitch {
       @include button(checked);
       &:hover { box-shadow: $z-depth-2; }
       &:insensitive {
-        @include button(checked-insensitive);
         // do not use any transparentized materials
-        background-color: if($variant == 'light', #F0F2F3, #3F4E56);
+        background-color: if($variant == 'light',
+                          mix($bg_color, $fg_color, 95.3%),
+                          mix($solid_light_borders_color, $fg_color, 95.5%));
         background-image: none;
         box-shadow: none;
       }
     }
     &:insensitive {
-      background-color: if($variant == 'light', #F0F2F3, #3F4E56);
+      background-color: if($variant == 'light',
+                        mix($bg_color, $fg_color, 95.3%),
+                        mix($solid_light_borders_color, $fg_color, 95.5%));
       background-image: none;
       box-shadow: none;
     }
@@ -2371,8 +2468,8 @@ GtkSwitch {
   // special case inside the grid container,
   // need to protect geometry by using pixmaps images...
   GtkGrid & {
-    -GtkSwitch-slider-width: 40;
-    -GtkSwitch-slider-height: 20;
+    -GtkSwitch-slider-width: 50px;
+    -GtkSwitch-slider-height: 30px; // FIXME: prevent truncation of shadows
     font-size: 0;
     outline-color: transparent;
 
@@ -2385,16 +2482,16 @@ GtkSwitch {
       &:active:insensitive,
       &:insensitive {
         padding: 0;
-        border: 4px solid transparent;
+        border: none;
         color: transparent;
         background: none;
         background-image: none;
-        background-size: 40px 20px;
+        background-size: 50px 35px;
         background-repeat: no-repeat;
-        background-position: right center;
+        background-position: right 0;
         box-shadow: none;
 
-        &:dir(rtl) { background-position: left center; }
+        &:dir(rtl) { background-position: left 0; }
       }
     }
 
@@ -2408,19 +2505,23 @@ GtkSwitch {
                           url("assets/toggle-off-hover#{$asset_suffix}@2.png"));
       }
       &:active {
-        background-image: -gtk-scaled(url("assets/toggle-on.png"),
-                                      url("assets/toggle-on@2.png"));
+        background-image: -gtk-scaled(
+                          url("assets/toggle-on#{$asset_suffix}.png"),
+                          url("assets/toggle-on#{$asset_suffix}@2.png"));
         &:hover {
-          background-image: -gtk-scaled(url("assets/toggle-on-hover.png"),
-                                        url("assets/toggle-on-hover@2.png"));
+          background-image: -gtk-scaled(
+                            url("assets/toggle-on-hover#{$asset_suffix}.png"),
+                            url("assets/toggle-on-hover#{$asset_suffix}@2.png"));
         }
-        &:insensitive {
+        &:insensitive,
+        &:insensitive:hover {
           background-image: -gtk-scaled(
                             url("assets/toggle-on-insensitive#{$asset_suffix}.png"),
                             url("assets/toggle-on-insensitive#{$asset_suffix}@2.png"));
         }
       }
-      &:insensitive {
+      &:insensitive,
+      &:insensitive:hover {
         background-image: -gtk-scaled(
                           url("assets/toggle-off-insensitive#{$asset_suffix}.png"),
                           url("assets/toggle-off-insensitive#{$asset_suffix}@2.png"));
@@ -2890,7 +2991,7 @@ GtkScrolledWindow {
   &:active {
     animation: list_ripple_effect 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   }
-  &:insensitive {color: $insensitive_fg_color; }
+  &:insensitive { color: $insensitive_fg_color; }
 }
 
 .list-row:selected {
@@ -2998,7 +3099,7 @@ GtkScrolledWindow {
 
 GtkCalendar {
   margin: 0.6em 0;
-  padding: 0.4em 0.1em 0.2em;
+  padding: 0.4em 0.3em 0.2em;
   border: 1px solid $borders_color;
   color: $fg_color;
   &:selected {
@@ -3043,15 +3144,12 @@ GtkCalendar {
 .message-dialog { // Message Dialog styling
   color: $inverted_fg_color;
 
-  &.background {
-    background-color: $inverted_dark_color;
-    opacity: 0.9;
-  }
+  &.background { background-color: gtkopacity($inverted_dark_color, 0.9); }
 
   .titlebar {
     border-style: none;
     color: $inverted_fg_color;
-    background-color: $inverted_dark_color;
+    background-color: gtkopacity($inverted_dark_color, 0.9);
   }
 
   .entry {
@@ -3121,25 +3219,32 @@ GtkCalendar {
     .dialog-action-area {
       .button,
       .linked > .button {
-        @extend .button.flat;
+        @extend %button_flat_normal;
         padding: 0.7em 1em 0.8em;
         border: 2px solid transparent;
         border-radius: 0;
-        color: $secondary_accent_color;
         background-size: 192px * 1 / 0.8 192px * 1 / 0.8, auto;
+        background-color: transparent;
+        color: $secondary_accent_color;
         &:hover {
-          @include button(flat-hover);
+          @extend %button_flat_hover;
+          background-color: transparent;
           color: $accent_color;
         }
         &:active {
-          @include button(flat-active);
+          @extend %button_flat_active;
+          background-color: transparent;
           color: $accent_color;
         }
         &:checked {
-          @include button(flat-checked);
+          @extend %button_flat_checked;
+          background-color: transparent;
           color: $secondary_accent_color;
         }
-        &:insensitive { @include button(flat-insensitive); }
+        &:insensitive {
+          @extend %button_flat_insensitive;
+          color: gtkalpha($inverted_fg_color, 0.4);
+        }
 
         &:first-child {
           border-bottom-left-radius: 2px;
@@ -3505,8 +3610,8 @@ GtkColorSwatch {
   }
 
   // indicator and keynav outline colors
-  &.color-dark { color: #FFFFFF; }
-  &.color-light { color: gtkopacity(#000000, 0.8); }
+  &.color-dark { color: $selected_fg_color; }
+  &.color-light { color: gtkopacity($panel_bg_color, 0.8); }
 
   // border color
   &.overlay,
@@ -3522,7 +3627,7 @@ GtkColorSwatch {
                                     $info_bg_color 50%,
                                     $info_bg_color 75%,
                                     $question_bg_color 75%);
-  color: #FFFFFF;
+  color: $selected_fg_color;
   }
 }
 
@@ -3553,24 +3658,24 @@ GtkColorSwatch {
     color: $secondary_fg_color;
     &:first-child { // '+' button
       &:hover {
-        @include button(flat-hover);
+        @extend %button_flat_hover;
         background: none;
         color: $success_color;
       }
       &:insensitive {
-        @include button(flat-insensitive);
+        @extend %button_flat_insensitive;
         background: none;
         color: gtkalpha($success_color, 0.4);
       }
     }
     &:last-child { // '-' button
       &:hover {
-        @include button(flat-hover);
+        @extend %button_flat_hover;
         background: none;
         color: $error_color;
       }
       &:insensitive {
-        @include button(flat-insensitive);
+        @extend %button_flat_insensitive;
         background: none;
         color: gtkalpha($error_color, 0.4);
       }
@@ -3585,24 +3690,24 @@ GtkColorSwatch {
     color: $secondary_fg_color;
     &:first-child { // '-' button
       &:hover {
-        @include button(flat-hover);
+        @extend %button_flat_hover;
         background: none;
         color: $error_color;
       }
       &:insensitive {
-        @include button(flat-insensitive);
+        @extend %button_flat_insensitive;
         background: none;
         color: gtkalpha($error_color, 0.4);
       }
     }
     &:last-child { // '+' button
       &:hover {
-        @include button(flat-hover);
+        @extend %button_flat_hover;
         background: none;
         color: $success_color;
       }
       &:insensitive {
-        @include button(flat-insensitive);
+        @extend %button_flat_insensitive;
         background: none;
         color: gtkalpha($success_color, 0.4);
       }
@@ -3760,7 +3865,7 @@ GtkVolumeButton.button {
       }
 
       &:hover {
-        @include button(hover);
+        @extend %button_hover;
         color: $selected_fg_color;
         background-color: $destructive_color;
 
@@ -3770,7 +3875,7 @@ GtkVolumeButton.button {
         }
       }
       &:active {
-        @include button(active);
+        @extend %button_active;
         color: $selected_fg_color;
         background-color: $selected_bg_color;
 
@@ -3853,14 +3958,16 @@ GtkVolumeButton.button {
       &:active:backdrop { color: transparent; }
     }
 
+    // tiny 2px padding causes truncation of shadows,
+    // so elevate down to depth-1 at hover/active.
     @each $_class,
           $_state,
           $_shadow in ('', '', none),
-                      (':hover', '-hover', $z-depth-2),
-                      (':active', '-active', $z-depth-2),
+                      (':hover', '-hover', $z-depth-1),
+                      (':active', '-active', $z-depth-1),
                       (':backdrop', '-backdrop', none),
-                      (':backdrop:hover', '-backdrop-hover', $z-depth-2),
-                      (':backdrop:active', '-backdrop-active', $z-depth-2) {
+                      (':backdrop:hover', '-backdrop-hover', $z-depth-1),
+                      (':backdrop:active', '-backdrop-active', $z-depth-1) {
       &.close#{$_class} {
         background-image: -gtk-scaled(
                           url("assets/window-close-ssd#{$_state}.png"),
@@ -3914,7 +4021,10 @@ GtkVolumeButton.button {
   }
 }
 
-// catch all extend :)
+
+/***********************
+ * catch all extend :) *
+ ***********************/
 
 %selected_items {
   background-color: $selected_bg_color;

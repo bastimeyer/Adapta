@@ -280,16 +280,25 @@ xfce_file = \
 # ****************************
 
 all:
-	cd $(srcdir)/sass && bundle exec sass --update --sourcemap=none --watch \
-		gnome-shell/gnome-shell.scss:../gnome-shell/gnome-shell.css && \
-	bundle exec sass --update --sourcemap=none --watch \
-		gnome-shell/gnome-shell-dark.scss:../gnome-shell-nokto/gnome-shell.css && \
-	bundle exec sass --update --sourcemap=none --watch \
-		gnome-shell/stylesheet.scss:../gnome-shell/extensions/window-list/stylesheet.css && \
-	bundle exec sass --update --sourcemap=none --watch \
-		gnome-shell/classic.scss:../gnome-shell/extensions/window-list/classic.css && \
-	bundle exec sass --update --sourcemap=none --watch \
+# check concurrency-build mode
+if ENABLE_PARALLEL
+	cd $(srcdir)/sass && \
+	$(PARALLEL) --no-notice --line-buffer -j0 \
+	$(BUNDLE) exec $(SASS) --update --force --sourcemap=none ::: \
+		gnome-shell/gnome-shell.scss:../gnome-shell/gnome-shell.css \
+		gnome-shell/gnome-shell-dark.scss:../gnome-shell-nokto/gnome-shell.css \
+		gnome-shell/stylesheet.scss:../gnome-shell/extensions/window-list/stylesheet.css \
+		gnome-shell/classic.scss:../gnome-shell/extensions/window-list/classic.css \
 		gnome-shell/workspaces-to-dock.scss:../gnome-shell/extensions/workspaces-to-dock/workspaces-to-dock.css
+else
+	cd $(srcdir)/sass && \
+	$(BUNDLE) exec $(SASS) --update --force --sourcemap=none \
+		gnome-shell/gnome-shell.scss:../gnome-shell/gnome-shell.css \
+		gnome-shell/gnome-shell-dark.scss:../gnome-shell-nokto/gnome-shell.css \
+		gnome-shell/stylesheet.scss:../gnome-shell/extensions/window-list/stylesheet.css \
+		gnome-shell/classic.scss:../gnome-shell/extensions/window-list/classic.css \
+		gnome-shell/workspaces-to-dock.scss:../gnome-shell/extensions/workspaces-to-dock/workspaces-to-dock.css
+endif
 
 	$(MKDIR_P) $(srcdir)/gnome-shell/assets
 	$(MKDIR_P) $(srcdir)/gnome-shell/assets/dot
@@ -298,16 +307,24 @@ all:
 	$(MKDIR_P) $(srcdir)/gnome-shell-nokto/assets/dot
 	cd $(srcdir)/asset && ./clone-assets-gnome-shell.sh
 
-	glib-compile-resources --sourcedir=$(shelldir) \
+	$(GLIB_COMPILE_RESOURCES) --sourcedir=$(shelldir) \
 		$(shelldir)/gnome-shell-theme.gresource.xml
-	glib-compile-resources --sourcedir=$(shellnoktodir) \
+	$(GLIB_COMPILE_RESOURCES) --sourcedir=$(shellnoktodir) \
 		$(shellnoktodir)/gnome-shell-theme.gresource.xml
 
 if ENABLE_CINNAMON
-	cd $(srcdir)/sass && bundle exec sass --update --sourcemap=none --watch \
-		cinnamon/cinnamon.scss:../cinnamon/cinnamon.css && \
-	bundle exec sass --update --sourcemap=none --watch \
+if ENABLE_PARALLEL
+	cd $(srcdir)/sass && \
+	$(PARALLEL) --no-notice --line-buffer -j0 \
+	$(BUNDLE) exec $(SASS) --update --force --sourcemap=none ::: \
+		cinnamon/cinnamon.scss:../cinnamon/cinnamon.css \
 		cinnamon/cinnamon-dark.scss:../cinnamon-nokto/cinnamon.css
+else
+	cd $(srcdir)/sass && \
+	$(BUNDLE) exec $(SASS) --update --force --sourcemap=none \
+		cinnamon/cinnamon.scss:../cinnamon/cinnamon.css \
+		cinnamon/cinnamon-dark.scss:../cinnamon-nokto/cinnamon.css
+endif
 
 	$(MKDIR_P) $(srcdir)/cinnamon/assets
 	$(MKDIR_P) $(srcdir)/cinnamon/assets/checkbox

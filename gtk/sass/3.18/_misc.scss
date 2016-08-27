@@ -68,12 +68,12 @@ PanelApplet {
     &#tasklist-button,
     &#clock-applet-button,
     &#showdesktop-button {
-      @include button(flat-normal);
+      @extend %button_flat_normal;
       padding: 0px 4px;
+      border-radius: 0;
+      border: none;
       color: $inverted_secondary_fg_color;
       background-color: transparent;
-      border: none;
-      border-radius: 0;
       &:hover {
         color: $selected_fg_color;
         background-color: transparent;
@@ -94,12 +94,12 @@ PanelApplet {
 
 // FIXME: w.i.p
 TaskList TaskItem {
-  @include button(flat-normal);
+  @extend %button_flat_normal;
   padding: 0px 4px;
+  border-radius: 0;
+  border: none;
   color: $inverted_secondary_fg_color;
   background-color: transparent;
-  border: none;
-  border-radius: 0;
   &:hover {
     color: $selected_fg_color;
     background-color: transparent;
@@ -164,18 +164,51 @@ NaTrayApplet {
 
 // container and tweaks in a group
 .tweak-group {
-  padding: 6px;
-  background-color: $base_color;
+}
+
+.tweak-group-startup {
+  background-color: $bg_color;
+
+  .list-row {
+    &, &.activatable {
+      padding: 0.7em 0.9em 0.8em;
+      background-image: linear-gradient(to bottom, $bg_color);
+      background-repeat: repeat-x;
+      background-size: auto;
+      &:hover {
+        background-image: linear-gradient(to bottom, $bg_color);
+        box-shadow: inset 0 0 0 10000px gtkalpha(currentColor, 0.05);
+      }
+
+      > GtkGrid > .button { // 'remove' buttons
+        color: $secondary_selected_fg_color;
+        background-color: $suggested_color;
+        &:hover { color: $selected_fg_color; }
+        &:active {
+          color: $selected_fg_color;
+          background-color: $selected_bg_color;
+        }
+        &:checked {
+          color: $secondary_selected_fg_color;
+          background-color: mix($selected_fg_color, $suggested_color, 20%);
+        }
+        &:insensitive {
+          @include button(flat-insensitive, $track_color,
+                                            $insensitive_fg_color);
+        }
+      }
+    }
+  }
 }
 
 .tweak {
-  background-color: $base_color;
-  &:hover { background-color: transparent; }
 }
 
 .tweak-group-white,
 .tweak-white {
-  background-color: $base_color;
+}
+
+.tweak-startup {
 }
 
 
@@ -253,12 +286,12 @@ GfCandidatePopup {
  * Nautilus *
  ************/
 
-EelEditableLabel {
+EelEditableLabel.entry {
   // Workaround for invisible text in rename entry in Nautilus 3.14.x
   // Copied from arc-theme:
   // 966778df08c2ee94dfdf55c9281791b0b2121497
 
-  &.entry { transition: none; }
+  &, &:focus { transition: none; }
 }
 
 .nautilus-desktop-window,
@@ -269,6 +302,8 @@ EelEditableLabel {
 
 .nautilus-desktop.nautilus-canvas-item {
   color: $selected_fg_color;
+  text-shadow: $z-depth-1;
+  &:selected { text-shadow: none; }
 }
 
 .nautilus-canvas-item {
@@ -445,8 +480,62 @@ GtkBox > .header-bar > .label.polari-titlebar-separator {
 }
 
 // stop drawing fake-shadows when enabling header-bar extension
-GtkBox.vertical > GtkBox.vertical > .toolbar {
+GtkApplicationWindow > GtkBox.vertical > GtkBox.vertical > .toolbar {
   box-shadow: none;
+}
+
+// improve without alternate-toolbar plugin
+GtkApplicationWindow > GtkBox.vertical {
+  .toolbar.horizontal.primary-toolbar {
+    GtkToolItem:first-child { // 'prev/play/next'
+      .linked {
+        padding: 2px 0;
+
+        > .button.image-button.raised {
+          margin: 2px;
+
+          &:first-child,
+          &:last-child { padding: 2px 3px; }
+          &:nth-child(2) { padding: 2px 0; }
+        }
+      }
+    }
+
+    .separator { -GtkWidget-wide-separators: true; }
+
+    GtkToolItem:nth-child(2) { // 'repeat/shuffle'
+      .linked {
+        padding: 8px 0;
+
+        > .button.image-button.raised {
+          padding: 3px 4px;
+        }
+      }
+    }
+
+    GtkToolItem > RBHeader {
+      > RBFadingImage {
+      }
+
+      > GtkVolumeButton.flat { // 'volume'
+        padding: 0 4px;
+        border-radius: 2px;
+        outline-radius: 2px;
+
+        > GtkImage { padding: 0; }
+      }
+    }
+
+    GtkToolItem:last-child { // 'gear'
+      padding: 8px 0;
+
+      > GtkMenuButton.button.raised {
+        padding: 3px 4px;
+        border-radius: 100px;
+        outline-radius: 100px;
+      }
+    }
+  }
 }
 
 
@@ -529,8 +618,19 @@ GeditViewFrame {
   }
 }
 
-GeditViewHolder GtkScrolledWindow {
-  .undershoot { // remove undershoot
+GeditStatusbar { // inline-toolbar style
+  padding: 0.2em;
+  border-style: solid;
+  border-width: 1px 0 0;
+  border-color: $borders_color;
+  background-color: $secondary_dark_color;
+  box-shadow: if($variant == 'light', $inline-shadow-light,
+                                      $inline-shadow-dark);
+}
+
+GeditViewHolder,
+GeditDocumentsPanel {
+  GtkScrolledWindow .undershoot { // remove undershoot
     &.top,
     &.bottom,
     &.left,
@@ -731,6 +831,75 @@ TerminalWindow.background { // dark variant as default
 }
 
 TerminalWindow {
+  .notebook {
+    &.header.top {
+      background-color: $inverted_bg_color;
+      box-shadow: inset 0 2px 2px -3px rgba(0, 0, 0, 0.26),
+                  inset 0 5px 3px -5px rgba(0, 0, 0, 0.39),
+                  inset 0 -1px $borders_color;
+    }
+
+    tab {
+      &.reorderable-page.top {
+        &:hover,
+        &.prelight-page {
+          background-color: $inverted_base_color;
+          box-shadow: inset 0 2px 2px -3px rgba(0, 0, 0, 0.26),
+                      inset 0 5px 3px -5px rgba(0, 0, 0, 0.39),
+                      inset 0 -1px $borders_color;
+        }
+        &:active,
+        &.active-page {
+          background-color: $inverted_base_color;
+          box-shadow: -1px 0 2px rgba(0, 0, 0, 0.02),
+                      -1px 0 4px rgba(0, 0, 0, 0.03),
+                      1px 0 2px rgba(0, 0, 0, 0.02),
+                      1px 0 4px rgba(0, 0, 0, 0.03),
+                      inset 0 2px 2px -3px rgba(0, 0, 0, 0.26),
+                      inset 0 5px 3px -5px rgba(0, 0, 0, 0.39),
+                      inset 0 -1px $borders_color;
+        }
+      }
+
+      .label { color: $inverted_tertiary_fg_color; }
+      .prelight-page .label,
+      .active-page .label,
+      .label.active-page { color: $inverted_fg_color; }
+
+      .button {
+        color: $inverted_tertiary_fg_color;
+        &:hover,
+        &:active { color: $inverted_fg_color; }
+        &:insensitive { color: $insensitive_inverted_fg_color; }
+      }
+
+      .prelight-page .button,
+      &:hover .button { // hover tab close button
+        color: $inverted_fg_color;
+      }
+      .active-page .button,
+      &:active .button { // active tab close button
+        color: $inverted_fg_color;
+      }
+
+      &.arrow {
+        color: $inverted_tertiary_fg_color;
+        &:hover,
+        &:active { color: $inverted_fg_color; }
+        &:insensitive { color: $insensitive_inverted_secondary_fg_color; }
+      }
+    }
+
+    &.header.top { // button outside the tabs
+      .button {
+        color: $inverted_tertiary_fg_color;
+        &:hover,
+        &:active { color: $inverted_fg_color; }
+        &:insensitive { color: $insensitive_inverted_fg_color; }
+      }
+    }
+  }
+
   .scrollbar {
     .slider { // always use dark variant
       background-color: gtkopacity($inverted_tertiary_fg_color, 0.55);
@@ -853,6 +1022,62 @@ GtdWindow {
       &:insensitive { @include button(flat-insensitive); }
       &:checked { @include button(flat-checked); }
       &:checked:insensitive { @include button(flat-checked-insensitive); }
+    }
+  }
+}
+
+
+/***************
+ * Gnome-disks *
+ ***************/
+
+GduWindow {
+  GtkPaned > GtkNotebook GtkBox .inline-toolbar.toolbar {
+    box-shadow: if($variant == 'light', $inline-shadow-light,
+                                        $inline-shadow-dark);
+  }
+
+  GtkPaned > GtkScrolledWindow { // side-panel
+    background-color: $secondary_dark_color;
+
+    &:dir(ltr) { box-shadow: if($variant == 'light', $sidebar-light-ltr,
+                                                     $sidebar-dark-ltr);
+    }
+    &:dir(rtl) { box-shadow: if($variant == 'light', $sidebar-light-rtl,
+                                                     $sidebar-dark-rtl);
+    }
+
+    GtkTreeView.view { background-color: transparent; }
+  }
+}
+
+
+/****************
+ * Dconf-editor *
+ ****************/
+
+DConfWindow {
+  GtkBox.vertical > GtkPaned > GtkScrolledWindow { // side-panel
+    background-color: $secondary_dark_color;
+
+    &:dir(ltr) { box-shadow: if($variant == 'light', $sidebar-light-ltr,
+                                                     $sidebar-dark-ltr);
+    }
+    &:dir(rtl) { box-shadow: if($variant == 'light', $sidebar-light-rtl,
+                                                     $sidebar-dark-rtl);
+    }
+
+    GtkTreeView.view {
+      background-color: transparent;
+      &:selected,
+      .list-row:selected { @extend %selected_items; }
+    }
+
+    .undershoot {
+      &.top { @include undershoot(top, $secondary_dark_color); }
+      &.bottom { @include undershoot(bottom, $secondary_dark_color); }
+      &.left { @include undershoot(left, $secondary_dark_color); }
+      &.right { @include undershoot(right, $secondary_dark_color); }
     }
   }
 }

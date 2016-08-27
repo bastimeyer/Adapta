@@ -8,6 +8,8 @@ gtk3_asset_file = \
 	$(gtk3_assetdir)/bar-green.svg \
 	$(gtk3_assetdir)/bar-red.svg \
 	$(gtk3_assetdir)/bar-yellow.svg \
+	$(gtk3_assetdir)/show-apps.svg \
+	$(gtk3_assetdir)/show-apps-active.svg \
 	$(gtk3_assetdir)/calendar-day-selected@2.png \
 	$(gtk3_assetdir)/calendar-day-selected.png \
 	$(gtk3_assetdir)/checkbox-active-selectionmode@2.png \
@@ -192,10 +194,6 @@ gtk3_asset_file = \
 	$(gtk3_assetdir)/radio-unchecked-selected.png \
 	$(gtk3_assetdir)/running-dot-bottom@2.png \
 	$(gtk3_assetdir)/running-dot-bottom.png \
-	$(gtk3_assetdir)/running-dot-left@2.png \
-	$(gtk3_assetdir)/running-dot-left.png \
-	$(gtk3_assetdir)/running-dot-right@2.png \
-	$(gtk3_assetdir)/running-dot-right.png \
 	$(gtk3_assetdir)/running-dot-top@2.png \
 	$(gtk3_assetdir)/running-dot-top.png \
 	$(gtk3_assetdir)/slider@2.png \
@@ -271,7 +269,11 @@ gtk3_asset_file = \
 	$(gtk3_assetdir)/toggle-off-insensitive.png \
 	$(gtk3_assetdir)/toggle-off.png \
 	$(gtk3_assetdir)/toggle-on@2.png \
+	$(gtk3_assetdir)/toggle-on-dark@2.png \
+	$(gtk3_assetdir)/toggle-on-dark.png \
 	$(gtk3_assetdir)/toggle-on-hover@2.png \
+	$(gtk3_assetdir)/toggle-on-hover-dark@2.png \
+	$(gtk3_assetdir)/toggle-on-hover-dark.png \
 	$(gtk3_assetdir)/toggle-on-hover.png \
 	$(gtk3_assetdir)/toggle-on-insensitive@2.png \
 	$(gtk3_assetdir)/toggle-on-insensitive-dark@2.png \
@@ -434,6 +436,7 @@ gtk2_entry_file = \
 	$(gtk2_assetdir)/Entry/base_entry-active.png \
 	$(gtk2_assetdir)/Entry/base_entry-insensitive.png \
 	$(gtk2_assetdir)/Entry/base_entry.png \
+	$(gtk2_assetdir)/Entry/bg.png \
 	$(gtk2_assetdir)/Entry/entry-active.png \
 	$(gtk2_assetdir)/Entry/entry-insensitive.png \
 	$(gtk2_assetdir)/Entry/entry.png \
@@ -598,6 +601,7 @@ gtk2_nokto_entry_file = \
 	$(gtk2_assetdir)/Entry/base_entry-active-dark.png \
 	$(gtk2_assetdir)/Entry/base_entry-dark.png \
 	$(gtk2_assetdir)/Entry/base_entry-insensitive-dark.png \
+	$(gtk2_assetdir)/Entry/bg-dark.png \
 	$(gtk2_assetdir)/Entry/entry-active-dark.png \
 	$(gtk2_assetdir)/Entry/entry-dark.png \
 	$(gtk2_assetdir)/Entry/entry-insensitive-dark.png \
@@ -697,34 +701,95 @@ index_nokto_file = $(srcdir)/index.theme-nokto
 
 all:
 	$(MKDIR_P) $(srcdir)/gtk-3.18 && \
-	$(MKDIR_P) $(srcdir)/gtk-3.20
+	$(MKDIR_P) $(srcdir)/gtk-3.20 && \
+	$(MKDIR_P) $(srcdir)/asset/assets-gtk2 && \
+	$(MKDIR_P) $(srcdir)/asset/assets-gtk2/Arrows && \
+	$(MKDIR_P) $(srcdir)/asset/assets-gtk2/Buttons && \
+	$(MKDIR_P) $(srcdir)/asset/assets-gtk2/Arrows && \
+	$(MKDIR_P) $(srcdir)/asset/assets-gtk2/Check-Radio && \
+	$(MKDIR_P) $(srcdir)/asset/assets-gtk2/Column && \
+	$(MKDIR_P) $(srcdir)/asset/assets-gtk2/Entry && \
+	$(MKDIR_P) $(srcdir)/asset/assets-gtk2/Handles && \
+	$(MKDIR_P) $(srcdir)/asset/assets-gtk2/Lines && \
+	$(MKDIR_P) $(srcdir)/asset/assets-gtk2/Others && \
+	$(MKDIR_P) $(srcdir)/asset/assets-gtk2/ProgressBar && \
+	$(MKDIR_P) $(srcdir)/asset/assets-gtk2/Range && \
+	$(MKDIR_P) $(srcdir)/asset/assets-gtk2/Scrollbars && \
+	$(MKDIR_P) $(srcdir)/asset/assets-gtk2/Shadows && \
+	$(MKDIR_P) $(srcdir)/asset/assets-gtk2/Spin && \
+	$(MKDIR_P) $(srcdir)/asset/assets-gtk2/Toolbar && \
+	$(MKDIR_P) $(srcdir)/asset/assets-gtk3
 
+	cd $(srcdir)/gtk-2.0 && ./recolor-gtk2.sh
+
+# check concurrency-build mode
+if ENABLE_PARALLEL
 	cd $(srcdir)/sass && \
-	bundle exec sass --update --sourcemap=none --watch \
-	3.18/gtk.scss:../gtk-3.18/gtk.css && \
-	bundle exec sass --update --sourcemap=none --watch \
-	3.18/gtk-dark.scss:../gtk-3.18/gtk-dark.css && \
-	bundle exec sass --update --sourcemap=none --watch \
-	3.20/gtk.scss:../gtk-3.20/gtk.css && \
-	bundle exec sass --update --sourcemap=none --watch \
-	3.20/gtk-dark.scss:../gtk-3.20/gtk-dark.css
+	$(PARALLEL) --no-notice --line-buffer -j0 \
+	$(BUNDLE) exec $(SASS) --update --force --sourcemap=none ::: \
+		3.18/gtk.scss:../gtk-3.18/gtk.css \
+		3.18/gtk-dark.scss:../gtk-3.18/gtk-dark.css \
+		3.20/gtk.scss:../gtk-3.20/gtk.css \
+		3.20/gtk-dark.scss:../gtk-3.20/gtk-dark.css
+else
+	cd $(srcdir)/sass && \
+	$(BUNDLE) exec $(SASS) --update --force --sourcemap=none \
+		3.18/gtk.scss:../gtk-3.18/gtk.css \
+		3.18/gtk-dark.scss:../gtk-3.18/gtk-dark.css \
+		3.20/gtk.scss:../gtk-3.20/gtk.css \
+		3.20/gtk-dark.scss:../gtk-3.20/gtk-dark.css
+endif
+
 if ENABLE_GTK_NEXT
 	$(MKDIR_P) $(srcdir)/gtk-3.22
 
+if ENABLE_PARALLEL
 	cd $(srcdir)/sass && \
-	bundle exec sass --update --sourcemap=none --watch \
-	3.22/gtk.scss:../gtk-3.22/gtk.css && \
-	bundle exec sass --update --sourcemap=none --watch \
-	3.22/gtk-dark.scss:../gtk-3.22/gtk-dark.css
+	$(PARALLEL) --no-notice --line-buffer -j0 \
+	$(BUNDLE) exec $(SASS) --update --force --sourcemap=none ::: \
+		3.22/gtk.scss:../gtk-3.22/gtk.css \
+		3.22/gtk-dark.scss:../gtk-3.22/gtk-dark.css
+else
+	cd $(srcdir)/sass && \
+	$(BUNDLE) exec $(SASS) --update --force --sourcemap=none \
+		3.22/gtk.scss:../gtk-3.22/gtk.css \
+		3.22/gtk-dark.scss:../gtk-3.22/gtk-dark.css
 endif
-	cd $(srcdir)/gtk-2.0 && ./recolor-gtk2.sh
+endif
 
-	$(MKDIR_P) $(srcdir)/asset/assets-gtk2 && \
-	$(MKDIR_P) $(srcdir)/asset/assets-gtk3
-
-	cd $(srcdir)/asset && \
-	./render-assets-gtk2.sh && \
-	./render-assets-gtk3.sh
+if ENABLE_PARALLEL
+	cd $(srcdir)/asset/assets-gtk2-scripts && \
+		./recolor-assets-gtk2.sh
+	cd $(srcdir)/asset/assets-gtk3-scripts && \
+		./recolor-assets-gtk3.sh
+	cd $(srcdir)/asset/assets-gtk2-scripts && \
+	$(PARALLEL) --no-notice --line-buffer -j0 bash ::: \
+		render-assets-gtk2-arrow.sh \
+		render-assets-gtk2-button.sh \
+		render-assets-gtk2-checkradio.sh \
+		render-assets-gtk2-column.sh \
+		render-assets-gtk2-entry.sh \
+		render-assets-gtk2-handle.sh \
+		render-assets-gtk2-misc.sh \
+		render-assets-gtk2-range.sh \
+		render-assets-gtk2-scrollbar.sh \
+		render-assets-gtk2-spin.sh \
+		clone-assets-gtk2.sh
+	cd $(srcdir)/asset/assets-gtk3-scripts && \
+	$(PARALLEL) --no-notice --line-buffer -j0 bash ::: \
+		render-assets-gtk3-checkbox.sh \
+		render-assets-gtk3-misc.sh \
+		render-assets-gtk3-radio.sh \
+		render-assets-gtk3-slider.sh \
+		render-assets-gtk3-toggle.sh \
+		render-assets-gtk3-windowbutton.sh \
+		clone-assets-gtk3.sh
+else
+	cd $(srcdir)/asset/assets-gtk2-scripts && \
+		./render-assets-gtk2.sh
+	cd $(srcdir)/asset/assets-gtk3-scripts && \
+		./render-assets-gtk3.sh
+endif
 
 # *****************
 # * Install files *

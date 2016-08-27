@@ -13,25 +13,26 @@
 }
 
 $font-family: Roboto, Noto Sans, Cantarell, Sans-Serif;
-$_bubble_bg_color: opacify($osd_bg_color,0.1);
+$_bubble_bg_color: opacify($osd_bg_color, 0.1);
 $_bubble_fg_color: $osd_fg_color;
 $_bubble_borders_color: $borders_color;
 
 stage {
-  font-family: $font-family;
   @include fontscaling($ref_size);
   color: $fg_color;
+  font-family: $font-family;
+  font-weight: 400;
 }
 
 .label-shadow {
-  color: rgba(0, 0, 0, 0);
+  color: transparent;
 }
 
 %reset_style {
-  background-color: transparent !important;
-  background-gradient-direction: none !important;
   border: none !important;
   border-radius: 0 !important;
+  background-color: transparent !important;
+  background-gradient-direction: none !important;
 }
 
 
@@ -40,29 +41,25 @@ stage {
  ***********/
 
 %button {
+  @include button(flat-normal);
   min-height: 2em;
   padding: 7px 16px 8px;
   border-width: 0;
   font-weight: 500;
-
-  &, &:focus, &:hover, &:hover:focus,
-  &:active, &:active:focus, &:insensitive { border-radius: 2px; }
-
-  @include button(flat-normal);
-
   &:focus { @include button(flat-focus); }
   &:hover { @include button(flat-hover); }
   &:active { @include button(flat-active); }
   &:insensitive { @include button(flat-insensitive); }
+
+  &, &:focus, &:hover, &:hover:focus,
+  &:active, &:active:focus, &:insensitive { border-radius: 2px; }
 }
 
 %osd_button {
+  @include button(osd-normal);
   min-height: 2.5em;
   padding: 9px 16px 10px;
   border-radius: 2px;
-
-  @include button(osd-normal);
-
   &:focus { @include button(osd-focus); }
   &:hover { @include button(osd-hover); }
   &:active { @include button(osd-active); }
@@ -75,40 +72,36 @@ stage {
  ***********/
 
 %entry {
+  @include entry(normal);
   padding: 7px 8px 8px;
   caret-size: 1px;
   border-radius: 0;
   border-width: 0;
   color: $fg_color;
   transition: none;
-
   selection-background-color: $selected_bg_color;
   selected-color: $selected_fg_color;
-
-  @include entry(normal);
   &:focus { @include entry(focus); }
   &:hover { @include entry(hover); }
   &:insensitive { @include entry(insensitive); }
 
   StIcon.capslock-warning {
     icon-size: 16px;
-    warning-color: $warning_color;
     padding: 0 2px;
+    warning-color: $warning_color;
   }
 }
 
 %osd_entry {
+  @include entry(normal);
   padding: 7px 8px 8px;
-  caret-size: 1px;
-  caret-color: $osd_fg_color;
-  color: $osd_fg_color;
   border-radius: 0;
   border-width: 0;
-
+  color: $osd_fg_color;
+  caret-size: 1px;
+  caret-color: $osd_fg_color;
   selection-background-color: $selected_bg_color;
   selected-color: $selected_fg_color;
-
-  @include entry(normal);
   &:hover { @include entry(hover); }
   &:focus { @include entry(focus); }
   &:insensitive { @include entry(insensitive); }
@@ -177,7 +170,10 @@ StScrollBar {
   color: $accent_color;
 
   -slider-height: 2px;
-  -slider-background-color: scale-color($fg_color, $alpha: -90%); // background of the trough
+   // background of the trough
+  -slider-background-color: if($nokto == 'false',
+                               scale-color($fg_color, $alpha: -90%),
+                               $fill_color);
   -slider-border-color: transparent; // trough border color
   -slider-active-background-color: $accent_color; // active trough fill
   -slider-active-border-color: transparent; // active trough border
@@ -191,7 +187,6 @@ StScrollBar {
  ***************/
 
 .check-box {
-
   CinnamonGenericContainer {
     spacing: 0.2em;
     min-height: 30px;
@@ -206,11 +201,17 @@ StScrollBar {
     background-image: url("assets/checkbox/checkbox-unchecked.svg");
   }
 
-  // &:focus StBin { background-image: url("assets/checkbox/checkbox-unchecked-focused.svg"); }
+  // &:focus StBin {
+  //   background-image: url("assets/checkbox/checkbox-unchecked-focused.svg");
+  // }
 
-  &:checked StBin { background-image: url("assets/checkbox/checkbox-checked.svg"); }
+  &:checked StBin {
+    background-image: url("assets/checkbox/checkbox-checked.svg");
+  }
 
-  // &:focus:checked StBin { background-image: url("assets/checkbox/checkbox-checked-focused.svg"); }
+  // &:focus:checked StBin {
+  //   background-image: url("assets/checkbox/checkbox-checked-focused.svg");
+  // }
 }
 
 
@@ -219,10 +220,9 @@ StScrollBar {
  *****************/
 
 .radiobutton {
-
   CinnamonGenericContainer {
-    spacing: 0.2em;
     height: 26px;
+    spacing: 0.2em;
     padding-top: 2px;
   }
 
@@ -238,11 +238,17 @@ StScrollBar {
     background-image: url("assets/checkbox/radiobutton-unchecked.svg");
   }
 
-  // &:focus StBin { background-image: url("assets/checkbox/radiobutton-unchecked-focused.svg"); }
+  // &:focus StBin {
+  //   background-image: url("assets/checkbox/radiobutton-unchecked-focused.svg");
+  // }
 
-  &:checked StBin { background-image: url("assets/checkbox/radiobutton-checked.svg"); }
+  &:checked StBin {
+    background-image: url("assets/checkbox/radiobutton-checked.svg");
+  }
 
-  // &:focus:checked StBin { background-image: url("assets/checkbox/radiobutton-checked-focused.svg"); }
+  // &:focus:checked StBin {
+  //   background-image: url("assets/checkbox/radiobutton-checked-focused.svg");
+  // }
 }
 
 
@@ -271,7 +277,6 @@ StScrollBar {
   border-radius: 2px;
   color: $link_color;
   text-decoration: underline;
-
   &:hover {
     color: $link_color;
     background-color: transparentize($link_color, 0.9);
@@ -289,11 +294,11 @@ StScrollBar {
 
 #Tooltip {
   @include fontscaling($ref_size * 1.0);
-  border-radius: 2px;
   padding: 4px 12px;
+  border-radius: 2px;
   background-color: transparentize($osd_bg_color, 0.1);
   color: $osd_fg_color;
-  font-weight: 500;
+  font-weight: 400;
   text-align: center;
 }
 
@@ -312,15 +317,18 @@ StScrollBar {
   &-arrow { icon-size: 16px; }
 
   .popup-sub-menu {
-    background-gradient-direction: none;
     border-image: url("assets/menu/submenu.svg") 9 9 0 0;
+    background-gradient-direction: none;
     box-shadow: 0 0 transparent;
 
-    .popup-menu-item:ltr { padding-right: 0; }
-    .popup-menu-item:rtl { padding-left: 0; }
+    .popup-menu-item {
+      &:ltr { padding-right: 0; }
+      &:rtl { padding-left: 0; }
+    }
 
     StScrollBar {
       padding: 4px;
+
       StBin#trough,
       StBin#vhandle { border-width: 0; }
     }
@@ -331,12 +339,11 @@ StScrollBar {
     padding: 0.4em 1.75em;
     spacing: 1em;
     border-width: 0 1px;
-    color: secondary_fg_color;
-
+    color: $secondary_fg_color;
     &:active {
+      border-image: url("assets/menu/menu-hover.svg") 9 9 0 0;
       color: $fg_color;
       background-color: transparent;
-      border-image: url("assets/menu/menu-hover.svg") 9 9 0 0;
     }
     &:insensitive {
       color: scale-color($fg_color, $alpha: -50%);
@@ -344,59 +351,62 @@ StScrollBar {
     }
   }
 
-  .popup-inactive-menu-item { //all icons and other graphical elements
+  // all icons and other graphical elements
+  .popup-inactive-menu-item {
     color: $fg_color;
-
     &:insensitive { color: $insensitive_fg_color; }
   }
 
   &-icon { icon-size: 16px; }
 }
 
-.popup-menu-boxpointer {
-  -arrow-border-radius: 0;
-  -arrow-background-color: transparent;
-  -arrow-border-width: 0;
-  -arrow-border-color: transparent;
-  -arrow-base: 0;
-  -arrow-rise: 0;
-  -arrow-box-shadow: none; // dreaming. bug #689995
-  margin: 0.4em 0.5em 0.5em;
-  border-radius: 2px;
-  border-top: 1px solid $base_color;
-  background-color: $bg_color;
-  box-shadow: $z-depth-3;
+.popup {
+  &-menu-boxpointer {
+    -arrow-border-radius: 0;
+    -arrow-background-color: transparent;
+    -arrow-border-width: 0;
+    -arrow-border-color: transparent;
+    -arrow-base: 0;
+    -arrow-rise: 0;
+    -arrow-box-shadow: none; // dreaming. bug #689995
+    margin: 0.4em 0.5em 0.5em;
+    border-radius: 2px;
+    border-top: 1px solid $base_color;
+    background-color: $bg_color;
+    box-shadow: $z-depth-3;
+  }
+
+  &-combo-menu {
+    padding: 1em;
+    border: 1px solid $borders_color;
+    border-radius: 2px;
+    color: $osd_fg_color;
+    background-color: scale-color($osd_bg_color, $alpha: -10%);
+  }
+
+  &-image-menu-item {
+  }
+
+  &-combobox-item { spacing: 1em; }
+
+  &-separator-menu-item {
+    height: 1px; // not really the whole box
+    margin: 0.6em 0.4em;
+    border-color: $borders_color;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    // border-image: url("assets/menu/menu-separator.svg") 1 1 1 1;
+    background-color: transparent;
+  }
+
+  &-alternating-menu-item:alternate {
+    font-weight: 500;
+  }
+
+  &-device-menu-item { spacing: 0.5em; }
+
+  &-subtitle-menu-item { font-weight: 500; }
 }
-
-// Don't know what this does
-.popup-combo-menu {
-  background-color: rgba(0, 0, 0, 0.4);
-  padding: 1em 0em;
-  color: red;
-  border: 1px solid rgba(0, 0, 0, 0.6);
-  border-radius: 3px;
-}
-.popup-image-menu-item {}
-
-.popup-combobox-item { spacing: 1em; }
-
-.popup-separator-menu-item {
-  height: 1px; //not really the whole box
-  margin: 0.6em 0.4em;
-  border-color: $borders_color;
-  border-bottom-width: 1px;
-  border-bottom-style: solid;
-  // border-image: url("assets/menu/menu-separator.svg") 1 1 1 1;
-  background-color: transparent;
-}
-
-.popup-alternating-menu-item:alternate {
-  font-weight: 500;
-}
-
-.popup-device-menu-item { spacing: 0.5em; }
-
-.popup-subtitle-menu-item { font-weight: 500; }
 
 .nm-menu-item-icons { spacing: 0.5em; }
 
@@ -462,18 +472,16 @@ $icon_size: 16px;
     background-color: $panel_bg_color;
   }
 
-  // &-top { border-image: url('assets/panel/panel-top.svg') 1 1 1 1; }
-  // &-bottom { border-image: url('assets/panel/panel-bottom.svg') 1 1 1 1; }
-
   &-status-button {
-    border-widht: 0;
+    height: 22px;
     -natural-hpadding: 3px;
     -minimum-hpadding: 3px;
+    border-widht: 0;
     font-weight: 700;
     color: $osd_secondary_fg_color;
-    height: 22px;
 
-    &:hover {}
+    &:hover {
+    }
   }
 
   &-button {
@@ -486,6 +494,13 @@ $icon_size: 16px;
       color: $selected_fg_color;
       background-color: rgba(0, 0, 0, 0.01);
       box-shadow: inset 0 -2px 0 $osd_indicator_color;
+    }
+  }
+
+  &-top {
+    .panel-button,
+    .panel-status-button { // flip indicators vertically
+      &:hover { box-shadow: inset 0 2px 0 $osd_indicator_color; }
     }
   }
 
@@ -512,7 +527,6 @@ $icon_size: 16px;
   color: $osd_fg_color;
   background-color: transparentize($osd_bg_color, 0.1);
   box-shadow: $z-depth-1;
-
   &#selected {
     spacing: 25px;
     color: $osd_fg_color;
@@ -524,12 +538,11 @@ $icon_size: 16px;
 .expo-workspaces-name-entry,
 .expo-workspaces-name-entry#selected {
   @include fontscaling($ref_size * 0.9);
+  @include entry(osd);
   -cinnamon-caption-spacing: 12px;
   height: 15px;
-  border-radius: 2px;
   padding: 4px 8px;
-  @include entry(osd);
-
+  border-radius: 2px;
   &:focus {
     @include entry(osd-focus);
     color: $selected_fg_color;
@@ -542,7 +555,6 @@ $icon_size: 16px;
   border-radius: 2px;
   border: 4px solid $osd_semi_fill_color;
   background-color: transparent;
-
   &#active {
     border-radius: 2px;
     border: 4px solid $selected_bg_color;
@@ -550,25 +562,23 @@ $icon_size: 16px;
   }
 }
 
-.expo-background {
-  background-color: opacify($osd_bg_color, 1);
-}
+.expo-background { background-color: opacify($osd_bg_color, 1); }
 
 .workspace {
-  //&-controls { visible-height: 32px; }
+  // &-controls { visible-height: 32px; }
 
   &-thumbnails {
     spacing: 26px;
 
-    &-background, &-background:rtl { padding: 8px; }
+    &-background,
+    &-background:rtl { padding: 8px; }
   }
 
   &-add-button {
-    background-image: url("assets/misc/add-workspace.svg");
     height: 200px;
     width: 35px;
+    background-image: url("assets/misc/add-workspace.svg");
     transition-duration: 0.2s;
-
     &:hover {
       background-image: url("assets/misc/add-workspace-hover.svg");
       transition-duration: 0.2s;
@@ -578,6 +588,7 @@ $icon_size: 16px;
       transition-duration: 0.2s;
     }
   }
+
   &-overview-background-shade { background-color: rgba(0, 0, 0, 0); }
 }
 
@@ -588,7 +599,6 @@ $icon_size: 16px;
   -cinnamon-close-overlap: 24px;
   background-image: url("assets/misc/close.svg");
   background-size: 36px;
-
   &:hover {
     height: 36px;
     width: 36px;
@@ -603,24 +613,26 @@ $icon_size: 16px;
   }
 }
 
-//  .workspace-thumbnail-indicator {
-//    outline: 2px solid red;
-//    border: 1px solid green;
-//  }
+// .workspace-thumbnail-indicator {
+//   outline: 2px solid red;
+//   border: 1px solid green;
+// }
 //
-//  .window-close:rtl {
-//    -st-background-image-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
-//  }
+// .window-close:rtl {
+//   -st-background-image-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
+// }
 
 .window-close-area {
-  background-image: url("assets/misc/trash-icon.svg");
-  height: 120px;
   width: 400px;
+  height: 120px;
+  background-image: url("assets/misc/trash-icon.svg");
 }
 
-//
-// About Dialog (applet.js and desklet.js)
-//
+
+/*******************************************
+ * About Dialog (applet.js and desklet.js) *
+ *******************************************/
+
 .about {
   &-content {
     width: 550px;
@@ -628,35 +640,40 @@ $icon_size: 16px;
     spacing: 8px;
     padding-bottom: 10px;
   }
+
   &-title {
     @include fontscaling($ref_size * 2.0);
     font-weight: 700;
   }
+
   &-uuid {
     @include fontscaling($ref_size * 1.0);
     color: $dim_fg_color;
   }
+
   &-icon {
     padding-right: 20px;
     padding-bottom: 14px;
   }
+
   &-scrollBox {
-    border: 1px solid $borders_color;
-    border-radius: 2px;
-    background-color: $base_color;
     padding: 4px;
     padding-right: 0;
+    border: 1px solid $borders_color;
     border-radius: 0;
+    background-color: $base_color;
 
     &-innerBox {
       padding: 1.2em;
       spacing: 1.2em;
     }
   }
+
   &-description {
     padding-top: 4px;
     padding-bottom: 16px;
   }
+
   &-version {
     @include fontscaling($ref_size * 1.0);
     padding-left: 7px;
@@ -665,100 +682,123 @@ $icon_size: 16px;
 }
 
 
-//
-// Calendar 
-//
+/************
+ * Calendar *
+ ************/
+
 .calendar {
   padding: 0.4em 1.75em;
   spacing-rows: 0;
   spacing-columns: 0;
-}
 
-.calendar-month-label {
-  color: $fg_color;
-  font-weight: 700;
-  padding: 8px 0;
-}
-
-.calendar-change-month-back,
-.calendar-change-month-forward {
-  width: 16px;
-  height: 16px;
-}
-
-//arrow back
-.calendar-change-month-back {
-  background-image: url("assets/misc/calendar-arrow-left.svg");
-
-  // &:focus,
-  // &:hover { background-image: url("assets/misc/calendar-arrow-left-hover.svg"); }
-
-  // &:active { background-image: url("assets/misc/calendar-arrow-left.svg"); }
-
-  &:rtl {
-    background-image: url("assets/misc/calendar-arrow-right.svg");
-
-  // &:focus,
-  // &:hover { background-image: url("assets/misc/calendar-arrow-right-hover.svg"); }
-
-  // &:active { background-image: url("assets/misc/calendar-arrow-right.svg"); }
+  &-month-label {
+    margin: 8px 0;
+    padding: 0;
+    color: $fg_color;
+    font-weight: 700;
   }
-}
 
-//arrow forward
-.calendar-change-month-forward {
-  background-image: url("assets/misc/calendar-arrow-right.svg");
+  &-change-month-back,
+  &-change-month-forward {
+    width: 16px;
+    height: 16px;
+    padding: 2px;
+    border-radius: 100px;
+    &:focus,
+    &:hover {
+      background-color: $semi_fill_color;
+    }
+    &:active { background-color: $fill_color; }
+  }
 
-  // &:focus,
-  // &:hover { background-image: url("assets/misc/calendar-arrow-right-hover.svg"); }
-
-  // &:active { background-image: url("assets/misc/calendar-arrow-right.svg"); }
-
-  &:rtl {
+  // arrow back
+  &-change-month-back {
     background-image: url("assets/misc/calendar-arrow-left.svg");
 
     // &:focus,
     // &:hover { background-image: url("assets/misc/calendar-arrow-left-hover.svg"); }
 
     // &:active { background-image: url("assets/misc/calendar-arrow-left.svg"); }
+
+    &:rtl {
+      background-image: url("assets/misc/calendar-arrow-right.svg");
+
+      // &:focus,
+      // &:hover { background-image: url("assets/misc/calendar-arrow-right-hover.svg"); }
+
+      // &:active { background-image: url("assets/misc/calendar-arrow-right.svg"); }
+    }
+  }
+
+  // arrow forward
+  &-change-month-forward {
+    background-image: url("assets/misc/calendar-arrow-right.svg");
+
+    // &:focus,
+    // &:hover { background-image: url("assets/misc/calendar-arrow-right-hover.svg"); }
+
+    // &:active { background-image: url("assets/misc/calendar-arrow-right.svg"); }
+
+    &:rtl {
+      background-image: url("assets/misc/calendar-arrow-left.svg");
+
+      // &:focus,
+      // &:hover { background-image: url("assets/misc/calendar-arrow-left-hover.svg"); }
+
+      // &:active { background-image: url("assets/misc/calendar-arrow-left.svg"); }
+    }
   }
 }
 
 .datemenu-date-label {
   padding: 0.4em 1.75em;
+  border-radius: 2px;
+  color: $fg_color;
   font-weight: 700;
   text-align: center;
-  color: $fg_color;
-  border-radius: 2px;
-}
-
-.calendar-day-base {
-  @include fontscaling($ref_size * 0.8);
-  text-align: center;
-  width: 25px;
-  height: 25px;
-  padding: 0.1em;
-  margin: 2px;
-  border-radius: 12.5px;
-}
-
-.calendar-day-heading {
-  @include fontscaling($ref_size * 0.7);
-  color: $dim_fg_color;
-  margin-top: 1em;
 }
 
 .calendar-day {
   border-width: 0;
   color: $secondary_fg_color;
+
+  &-base {
+    @include fontscaling($ref_size * 0.8);
+    width: 25px;
+    height: 25px;
+    padding: 0;
+    margin: 2px;
+    border-radius: 25px;
+    text-align: center;
+  }
+
+  &-heading {
+    @include fontscaling($ref_size * 0.7);
+    width: 25px;
+    height: 20px;
+    margin-top: 2px;
+    padding: 5px 0 0;
+    background-color: transparent;
+    color: $dim_fg_color;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  &-top { border-top-width: 0; }
+
+  &-left { border-left-width: 0; }
 }
 
-.calendar-day-top {
-  border-top-width: 0;
-}
-
-.calendar-day-left {
-  border-left-width: 0;
+.calendar-week-number {
+  width: 25px;
+  height: 20px;
+  margin: 2px;
+  padding: 5px 0 0;
+  background-color: transparent;
+  color: $dim_fg_color;
+  font-weight: 700;
+  font-size: inherit;
+  text-align: center;
 }
 
 .calendar-nonwork-day {
@@ -766,14 +806,16 @@ $icon_size: 16px;
   background-color: transparent;
 }
 
-.calendar-today,
-.calendar-today:active,
-.calendar-today:focus,
-.calendar-today:hover {
-  font-weight: 700;
-  color: $selected_fg_color;
-  background-color: $selected_bg_color;
-  border-width: 0;
+.calendar-today {
+  &,
+  &:hover,
+  &:active,
+  &:focus {
+    border-width: 0;
+    color: $selected_fg_color;
+    background-color: $selected_bg_color;
+    font-weight: 700;
+  }
 }
 
 .calendar-other-month-day {
@@ -824,6 +866,7 @@ $icon_size: 16px;
   }
 
   &-body { spacing: 5px; }
+
   &-actions { spacing: 10px; }
 }
 
@@ -834,7 +877,8 @@ $icon_size: 16px;
     color: $osd_fg_color;
   }
 
-  &-button, &-icon-button {
+  &-button,
+  &-icon-button {
     @extend %osd_button;
     padding: 5px;
   }
@@ -862,21 +906,17 @@ $icon_size: 16px;
   color: $osd_fg_color;
   background: none;
 
-  > StBoxLayout {
-    padding: 4px;
-  }
+  > StBoxLayout { padding: 4px; }
 
   &-item-container { spacing: 8px; }
 
   .item-box {
     padding: 8px;
     border-radius: 2px;
-
     &:outlined {
       padding: 6px;
       border: 2px solid $fill_color;
     }
-
     &:selected {
       background-color: $accent_fill_color;
       color: $accent_color;
@@ -889,6 +929,7 @@ $icon_size: 16px;
     padding: 2px;
     spacing: 4px;
   }
+
   .separator {
     width: 1px;
     background: $borders_color;;
@@ -898,29 +939,30 @@ $icon_size: 16px;
 .switcher-arrow {
   border-color: transparent;
   color: $osd_fg_color;
-
   &:highlighted {
     border-color: transparent;
     color: $selected_fg_color;
   }
 }
 
-//.switcher-preview-backdrop { background-color: rgba(25,25,25,0.95); }
+// .switcher-preview-backdrop { background-color: rgba(25, 25, 25, 0.95); }
 
-.thumbnail-scroll-gradient-left {
-  width: 60px;
-  border-radius: 24px;
-  border-radius-topright: 0;
-  border-radius-bottomright: 0;
-  background-color: transparent;
-}
+.thumbnail-scroll-gradient {
+  &-left {
+    width: 60px;
+    border-radius: 24px;
+    border-radius-topright: 0;
+    border-radius-bottomright: 0;
+    background-color: transparent;
+  }
 
-.thumbnail-scroll-gradient-right {
-  width: 60px;
-  border-radius: 24px;
-  border-radius-topleft: 0;
-  border-radius-bottomleft: 0;
-  background-color: transparent;
+  &-right {
+    width: 60px;
+    border-radius: 24px;
+    border-radius-topleft: 0;
+    border-radius-bottomleft: 0;
+    background-color: transparent;
+  }
 }
 
 
@@ -959,16 +1001,15 @@ $icon_size: 16px;
     spacing: 0;
     margin: 0;
     padding: 14px 10px;
-    // border-image: url("assets/misc/button-box.svg") 9 9 9 9;
     border: none;
+    // border-image: url("assets/misc/button-box.svg") 9 9 9 9;
     background: none;
 
     .modal-dialog-button {
+      @extend %osd_button;
       height: 30px;
       padding-top: 0;
       padding-bottom: 0;
-
-      @extend %osd_button;
       color: $osd_secondary_fg_color;
       &:hover,
       &:active,
@@ -990,22 +1031,27 @@ $icon_size: 16px;
 
   &-label {
     padding-bottom: 0;
+    color: $osd_fg_color;
     font-size: 0;
     font-weight: 700;
-    color: $osd_fg_color;
   }
 
   &-error-label { color: $error_color; }
 
   &-error-box {
+    @include fontscaling($ref_size * 0.9);
     padding-top: 15px;
     spacing: 5px;
+    color: $error_color;
   }
+
   &-completion-box {
     @include fontscaling($ref_size * 1.0);
     padding-left: 15px;
   }
+
   &-entry {
+    @include entry(osd);
     width: 20em;
     padding: 7px;
     border-radius: 0;
@@ -1013,11 +1059,9 @@ $icon_size: 16px;
     caret-color: $osd_fg_color;
     selected-color: $selected_fg_color;
     selection-background-color: $selected_bg_color;
-
-    @include entry(osd);
-
     &:focus { @include entry(osd-focus); }
   }
+
   .modal-dialog-button-box {
     border: none;
     background: none;
@@ -1026,7 +1070,11 @@ $icon_size: 16px;
   }
 }
 
-/* CinnamonMountOperation Dialogs */
+
+/**********************************
+ * CinnamonMountOperation Dialogs *
+ **********************************/
+
 .cinnamon-mount-operation-icon {
   icon-size: 48px;
 }
@@ -1049,9 +1097,10 @@ $icon_size: 16px;
       padding-right: 17px;
     }
   }
+
   &-description {
-    padding-left: 17px;
     width: 28em;
+    padding-left: 17px;
 
     &:rtl { padding-right: 17px; }
   }
@@ -1070,7 +1119,6 @@ $icon_size: 16px;
 
   &-item {
     color: $osd_secondary_fg_color;
-
     &:hover { color: $selected_fg_color; }
 
     &:ltr { padding-right: 1em; }
@@ -1090,6 +1138,7 @@ $icon_size: 16px;
 
 .magnifier-zoom-region {
   border: 2px solid $selected_bg_color;
+
   &.full-screen { border-width: 0; }
 }
 
@@ -1101,51 +1150,49 @@ $icon_size: 16px;
 #keyboard {
   border-width: 0;
   background-color: transparentize($osd_bg_color, 0.3);
-}
 
-.keyboard-layout {
-  spacing: 10px;
-  padding: 10px;
-}
-
-.keyboard-row {
-  spacing: 15px;
-}
-
-.keyboard-key {
-  @include fontscaling($ref_size * 2.0);
-  min-height: 2em;
-  min-width: 2em;
-  border-radius: 2px;
-  border: 1px 0 0;
-  color: inherit;
-  font-weight: 700;
-
-  @include button(normal);
-  &:focus { @include button(focus); }
-  &:hover,
-  &:checked { @include button(hover); }
-  &:active { @include button(active);}
-  &:grayed { // FIXME
-    border-color: $osd_borders_color;
-    background-color: $osd_bg_color;
-    color: $osd_fg_color;
+  &-layout {
+    spacing: 10px;
+    padding: 10px;
   }
-}                             
 
-.keyboard-subkeys { //long press on a key popup
-  padding: 5px;
-  border-radius: 2px;
-  -arrow-border-radius: 0;
-  -arrow-background-color: transparent;
-  -arrow-border-width: 0;
-  -arrow-border-color: transparent;
-  -arrow-base: 0;
-  -arrow-rise: 0;
-  -boxpointer-gap: 5px;
-  background-color: $bg_color;
-  color: $osd_fg_color;
-  box-shadow: $z-depth-2;
+  &-row { spacing: 15px; }
+
+  &-key {
+    @include fontscaling($ref_size * 2.0);
+    @include button(normal);
+    min-height: 2em;
+    min-width: 2em;
+    border-radius: 2px;
+    border: 1px 0 0;
+    color: inherit;
+    font-weight: 700;
+    &:focus { @include button(focus); }
+    &:hover,
+    &:checked { @include button(hover); }
+    &:active { @include button(active);}
+
+    &:grayed { // FIXME
+      border-color: $osd_borders_color;
+      background-color: $osd_bg_color;
+      color: $osd_fg_color;
+    }
+  }
+
+  &-subkeys { // long press on a key popup
+    padding: 5px;
+    border-radius: 2px;
+    -arrow-border-radius: 0;
+    -arrow-background-color: transparent;
+    -arrow-border-width: 0;
+    -arrow-border-color: transparent;
+    -arrow-base: 0;
+    -arrow-rise: 0;
+    -boxpointer-gap: 5px;
+    background-color: $bg_color;
+    color: $osd_fg_color;
+    box-shadow: $z-depth-2;
+  }
 }
 
 
@@ -1153,9 +1200,11 @@ $icon_size: 16px;
  * Cinnamon Specific Section *
  *****************************/
 
-//
-// Menu (menu.js)
-//
+
+/******************
+ * Menu (menu.js) *
+ ******************/
+
 .menu {
   &-favorites-box {
     margin: auto;
@@ -1169,12 +1218,10 @@ $icon_size: 16px;
   &-favorites-button {
     padding: 10px;
     border: 1px solid transparent;
-
     &:hover { @extend %button:hover; }
   }
 
   &-places {
-
     &-box {
       margin: auto;
       padding: 10px;
@@ -1199,11 +1246,10 @@ $icon_size: 16px;
     &:highlighted { font-weight: 700; }
 
     &-selected {
+      @extend %button:hover;
       padding: 7px;
       border: 1px solid transparent;
-      @extend %button:hover;
       color: $fg_color;
-
       &:highlighted { font-weight: 700; }
     }
 
@@ -1222,6 +1268,7 @@ $icon_size: 16px;
       background-color: transparent;
       color: $selected_bg_color;
     }
+
     &-hover {
       @extend %button:hover;
       padding: 7px;
@@ -1229,14 +1276,17 @@ $icon_size: 16px;
       border-radius: 2px;
       color: $fg_color;
     }
+
     &-greyed {
       padding: 7px;
       border: 1px solid transparent;
       color: $insensitive_fg_color;
     }
 
-    &-label:ltr { padding-left: 5px; }
-    &-label:rtl { padding-right: 5px; }
+    &-label {
+      &:ltr { padding-left: 5px; }
+      &:rtl { padding-right: 5px; }
+    }
   }
 
   // Name and description of the currently hovered item in the menu
@@ -1262,11 +1312,11 @@ $icon_size: 16px;
 }
 
 #menu-search-entry {
+  @extend %entry;
   width: 250px;
   height: 15px;
   caret-color: $fg_color;
   font-weight: 500;
-  @extend %entry;
 }
 
 .menu-search-entry-icon {
@@ -1278,9 +1328,11 @@ $icon_size: 16px;
 .menu-context-menu {
 }
 
-//
-// OSD
-//
+
+/*******
+ * OSD *
+ *******/
+
 .info-osd {
   spacing: 1em;
   padding: 16px;
@@ -1304,7 +1356,7 @@ $icon_size: 16px;
   font-weight: 700;
   text-align: center;
 
-.osd-monitor-label { @include fontscaling($ref_size * 3.0); }
+  .osd-monitor-label { @include fontscaling($ref_size * 3.0); }
 
   .level {
     height: 4px;
@@ -1315,16 +1367,18 @@ $icon_size: 16px;
   }
 }
 
-//
-// Window list (windowList.js)
-//
-.window-list {
 
+/*******************************
+ * Window list (windowList.js) *
+ *******************************/
+
+.window-list {
   &-box {
     spacing: 6px;
     padding-left: 10px;
 
     .panel-bottom & { padding-top: 1px; }
+
     .panel-top & { padding-bottom: 1px; }
   }
 
@@ -1339,12 +1393,16 @@ $icon_size: 16px;
     background-image: none;
     color: $osd_secondary_fg_color;
     font-weight: 700;
-
     &:hover {
       color: $osd_fg_color;
 
-      .panel-bottom & { border-image: url("assets/panel/window-list-hover-bottom.svg") 3 3 1 3; }
-      .panel-top & { border-image: url("assets/panel/window-list-hover-top.svg") 3 3 3 1; }
+      .panel-bottom & {
+        border-image: url("assets/panel/window-list-hover-bottom.svg") 3 3 1 3;
+      }
+
+      .panel-top & {
+        border-image: url("assets/panel/window-list-hover-top.svg") 3 3 3 1;
+      }
     }
     &:active,
     &:checked,
@@ -1352,8 +1410,13 @@ $icon_size: 16px;
       &, &:hover {
         color: $osd_fg_color;
 
-        .panel-bottom & { border-image: url("assets/panel/window-list-active-bottom.svg") 3 3 1 3; }
-        .panel-top & { border-image: url("assets/panel/window-list-active-top.svg") 3 3 3 1; }
+        .panel-bottom & {
+          border-image: url("assets/panel/window-list-active-bottom.svg") 3 3 1 3;
+        }
+
+        .panel-top & {
+          border-image: url("assets/panel/window-list-active-top.svg") 3 3 3 1;
+        }
       }
     }
   }
@@ -1364,25 +1427,28 @@ $icon_size: 16px;
   }
 }
 
-///
-// Sound Applet (status/volume.js)
-//
+
+/***********************************
+ * Sound Applet (status/volume.js) *
+ ***********************************/
+
 .sound-button {
+  @extend %button;
   width: 22px;
   height: 13px;
   padding: 8px;
-
-  @extend %button;
 
   &-container {
     padding-right: 3px;
     padding-left: 3px;
   }
+
   StIcon { icon-size: 1.4em; }
 }
 
 .sound-track {
   &-infos { padding: 5px; }
+
   &-info {
     padding-top: 2px;
     padding-bottom: 2px;
@@ -1394,6 +1460,7 @@ $icon_size: 16px;
       padding-right: 5px;
     }
   }
+
   &-box {
     max-width: 220px;
     padding-left: 15px;
@@ -1405,6 +1472,7 @@ $icon_size: 16px;
   padding-left: 15px;
 
   StLabel { padding-top: 2px; }
+
   StIcon { icon-size: 16px; }
 }
 
@@ -1458,13 +1526,12 @@ $icon_size: 16px;
       height: 13px;
       padding: 5px;
       border-radius: 2px;
-      border: 1px solid transparentize($osd_bg_color,1);
+      border: 1px solid transparentize($osd_bg_color, 1);
       color: $osd_fg_color;
-
-      StIcon { icon-size: 16px; }
-
       &:hover{ @include button(osd-hover); }
       &:active { @include button(active); }
+
+      StIcon { icon-size: 16px; }
     }
 
     StBoxLayout { padding-top: 2px; }
@@ -1475,7 +1542,10 @@ $icon_size: 16px;
     padding: 0;
     border: none;
     -slider-height: 2px;
-    -slider-background-color: scale-color($fg_color, $alpha: -20%); // background of the trough
+     // background of the trough
+    -slider-background-color: if($nokto == 'false',
+                                 scale-color($fg_color, $alpha: -80%),
+				 $fill_color);
     -slider-border-color: transparent; // trough border color
     -slider-active-background-color: $accent_color; // active trough fill
     -slider-active-border-color: transparent; // active trough border
@@ -1484,15 +1554,17 @@ $icon_size: 16px;
   }
 }
 
-//
-// Workspace Switcher applet (workspaceSwitcher.js)
-//
+
+/****************************************************
+ * Workspace Switcher applet (workspaceSwitcher.js) *
+ ****************************************************/
+
 #workspaceSwitcher {
   spacing: 0;
   padding: 3px;
 }
 
-/* Controls the styling when using the "Simple buttons" option */
+// Controls the styling when using the "Simple buttons" option
 .workspace-switcher {
   padding-left: 3px;
   padding-right: 3px;
@@ -1505,46 +1577,47 @@ $icon_size: 16px;
   padding-top: 4px;
   color: $selected_fg_color;
   transition-duration: 0.2s;
-
   &:outlined,
   &:outlined:hover { color: $selected_bg_color; }
   &:hover { color: transparentize($selected_bg_color, 0.5) }
 }
 
-/* Controls the style when using the "Visual representation" option */
+// Controls the style when using the "Visual representation" option
 .workspace-graph {
   padding: 3px;
   spacing: 3px;
+
+  .workspace {
+    border: 1px solid transparentize(black, 0.6);
+    background-gradient-direction: none;
+    background-color: transparentize(black, 0.8);
+  }
+
+  .workspace:active {
+    border: 1px solid $selected_bg_color;
+    background-gradient-direction: none;
+  }
+
+  .workspace .windows {
+    -active-window-background: lighten($osd_bg_color, 15%);
+    -active-window-border: rgba(0, 0, 0, 0.8);
+    -inactive-window-background: lighten($osd_bg_color, 15%);
+    -inactive-window-border: rgba(0, 0, 0, 0.8);
+  }
+
+  .workspace:active .windows {
+    -active-window-background: lighten($osd_bg_color, 20%);
+    -active-window-border: rgba(0, 0, 0, 0.8);
+    -inactive-window-background: lighten($osd_bg_color, 5%);
+    -inactive-window-border: rgba(0, 0, 0, 0.8);
+  }
 }
 
-.workspace-graph .workspace {
-  border: 1px solid transparentize(black, 0.6);
-  background-gradient-direction: none;
-  background-color: transparentize(black, 0.8);
-}
 
-.workspace-graph .workspace:active {
-  border: 1px solid $selected_bg_color;
-  background-gradient-direction: none;
-}
+/**********************************************
+ * Panel Launchers Applet (panelLaunchers.js) *
+ **********************************************/
 
-.workspace-graph .workspace .windows {
-  -active-window-background: lighten($osd_bg_color, 15%);
-  -active-window-border: rgba(0, 0, 0, 0.8);
-  -inactive-window-background: lighten($osd_bg_color, 15%);
-  -inactive-window-border: rgba(0, 0, 0, 0.8);
-}
-
-.workspace-graph .workspace:active .windows {
-  -active-window-background: lighten($osd_bg_color, 20%);
-  -active-window-border: rgba(0, 0, 0, 0.8);
-  -inactive-window-background: lighten($osd_bg_color, 5%);
-  -inactive-window-border: rgba(0, 0, 0, 0.8);
-}
-
-//
-// Panel Launchers Applet (panelLaunchers.js)
-//
 #panel-launchers-box {
   padding: 0 7px;
 }
@@ -1552,7 +1625,6 @@ $icon_size: 16px;
 .panel-launcher {
   margin: 2px;
   padding: 2px 6px;
-
   &:hover {
     border: 0 solid $selected_bg_color;
     background-gradient-direction: none;
@@ -1561,6 +1633,7 @@ $icon_size: 16px;
       padding-bottom: 0;
       border-bottom-width: 2px;
     }
+
     .panel-top & {
       padding-top: 0;
       border-top-width: 2px;
@@ -1568,18 +1641,22 @@ $icon_size: 16px;
   }
 }
 
-//
-// Overview corner
-//
+/*******************
+ * Overview corner *
+ *******************/
+
 #overview-corner {
   background-image: url("assets/misc/overview.svg");
-
-  &:hover { background-image: url("assets/misc/overview-hover.svg"); }
+  &:hover {
+    background-image: url("assets/misc/overview-hover.svg");
+  }
 }
 
-//
-// Applets (applet.js) 
-//
+
+/***********************
+ * Applets (applet.js) *
+ ***********************/
+
 .applet {
   &-separator { padding: 1px 4px; }
 
@@ -1594,11 +1671,14 @@ $icon_size: 16px;
     padding-right: 3px;
     color: $osd_secondary_fg_color;
     text-shadow: none;
-
     &:hover {
       color: $osd_fg_color;
       background-color: rgba(0, 0, 0, 0.01);
       box-shadow: inset 0 -2px 0 $osd_indicator_color;
+    }
+
+    .panel-top & { // flip indicators vertically
+      &:hover { box-shadow: inset 0 2px 0 $osd_indicator_color; }
     }
   }
 
@@ -1606,7 +1686,8 @@ $icon_size: 16px;
     color: $osd_secondary_fg_color;
     font-weight: 700;
 
-    &:hover, .applet-box:hover > & {
+    &:hover,
+    .applet-box:hover > & {
       color: $osd_fg_color;
       text-shadow: none;
     }
@@ -1616,7 +1697,8 @@ $icon_size: 16px;
     icon-size: 22px;
     color: $osd_secondary_fg_color;
 
-    &:hover, .applet-box:hover > & {
+    &:hover,
+    .applet-box:hover > & {
       color: $osd_fg_color;
       text-shadow: none;
     }
@@ -1624,27 +1706,33 @@ $icon_size: 16px;
 
 }
 
-//
-// User Applet
-//
-.user-icon {
+
+/***************
+ * User Applet *
+ ***************/
+
+.user {
+  &-icon {
     width: 32px;
     height: 32px;
     border: none;
     border-radius: 0;
     background-color: transparent;
-}
+  }
 
-.user-label {
+  &-label {
     @include fontscaling($ref_size * 1.0);
     margin: 0;
     color: $fg_color;
     font-weight: 700;
+  }
 }
 
-//
-// Desklets (desklet.js) 
-//
+
+/*************************
+ * Desklets (desklet.js) *
+ *************************/
+
 .desklet {
   color: $osd_secondary_fg_color;
 
@@ -1654,6 +1742,7 @@ $icon_size: 16px;
     border-image: url("assets/misc/osd.svg") 9 9 9 9;
     color: $osd_fg_color;
   }
+
   &-with-borders-and-header {
     padding: 12px;
     padding-bottom: 17px;
@@ -1663,6 +1752,7 @@ $icon_size: 16px;
     border-image: url("assets/misc/desklet.svg") 9 9 9 9;
     color: $osd_fg_color;
   }
+
   &-header {
     @include fontscaling($ref_size * 1.0);
     padding: 12px;
@@ -1670,6 +1760,7 @@ $icon_size: 16px;
     border-image: url("assets/misc/desklet-header.svg") 9 9 9 9;
     color: $osd_fg_color;
   }
+
   &-drag-placeholder { 
     border: 2px solid $accent_color;
     background-color: transparentize($accent_color, 0.2);
@@ -1683,36 +1774,48 @@ $icon_size: 16px;
   color: $osd_fg_color;
 }
 
-//
-// Workspace OSD
-//
-/*FIXME*/
-.workspace-osd {
+
+/*****************
+ * Workspace OSD *
+ *****************/
+
+.workspace-osd { // FIXME
   @include fontscaling($ref_size * 3.6);
-  /*color: red;*/
+  // color: red;
   text-shadow: black 5px 5px 5px;
   font-weight: 700;
 }
 
-//
-// Notification Applet
-//
-.notification-applet-padding { padding: 0.5em 1em; }
 
-.notification-applet-container { max-height: 100px; }
+/***********************
+ * Notification Applet *
+ ***********************/
 
-//
-// Tile Preview
-//
-.tile-preview, .tile-preview.snap,
-.tile-hud, .tile-hud.snap {
-  border: 1px solid $accent_color;
-  background-color: transparentize($accent_color, 0.2);
+.notification-applet {
+  &-padding { padding: 0.5em 1em; }
+
+  &-container { max-height: 100px; }
 }
 
-//
-// Xkcd Desklet
-//
+
+/****************
+ * Tile Preview *
+ ****************/
+
+.tile-preview,
+.tile-hud {
+  &,
+  &.snap {
+    border: 1px solid $accent_color;
+    background-color: transparentize($accent_color, 0.2);
+  }
+}
+
+
+/****************
+ * Xkcd Desklet *
+ ****************/
+
 .xkcd-box {
   padding: 6px;
   border: none;;
