@@ -1,5 +1,5 @@
 /******************
- * Budgie Desktop *
+ * Budgie-Desktop *
  ******************/
 
 // specific ripple-effect for IconTaskList
@@ -44,10 +44,6 @@ $budgie_transition: opacity 0.2s $slope_medium,
 .budgie-container { background-color: transparent; }
 
 .budgie-panel {
-  // disable backdrop transparency
-  &:backdrop,
-  *:backdrop { opacity: 1.0; }
-
   // panel styling
   // always use dark-color of dark variant
   background-color: $panel_bg_color;
@@ -56,19 +52,6 @@ $budgie_transition: opacity 0.2s $slope_medium,
 
   // used to indicate unread notifications
   .alert { color: $accent_color; }
-
-  // do no make un-clickable gaps
-  .start-region {
-    margin: -2px 0 -2px -4px;
-    &:dir(rtl) { margin: -2px -4px -2px 0; }
-  }
-
-  .center-region { margin: -2px 0 -2px 0; }
-
-  .end-region {
-    margin: -2px -4px -2px 0;
-    &:dir(rtl) { margin: -2px 0 -2px -4px; }
-  }
 }
 
 @each $along_side, $opp_side in $full_orientation {
@@ -100,8 +83,8 @@ $budgie_transition: opacity 0.2s $slope_medium,
 .budgie-panel {
   button.flat.launcher {
     &, &:backdrop {
-      min-width: rem(24px);
-      min-height: rem(24px);
+      min-width: $icon_size + 8px;
+      min-height: $icon_size + 8px;
       padding: 0;
       border: 2px solid transparent;
       background-image: radial-gradient(circle farthest-corner at center,
@@ -222,9 +205,8 @@ $budgie_transition: opacity 0.2s $slope_medium,
 .budgie-panel button.flat.budgie-menu-launcher {
   image {
     // override stock icon with specific one
-    min-width: 20px;
-    min-height: 20px;
-    margin: -1px 0;
+    min-width: $icon_size + 4px;
+    min-height: $icon_size + 4px;
     background-image: url("assets/show-apps.svg");
     background-position: center;
     background-repeat: no-repeat;
@@ -266,7 +248,7 @@ $budgie_transition: opacity 0.2s $slope_medium,
       color: $secondary_fg_color;
       transition: none;
 
-      // FIXME: enlarge vertical spacing with icons' paddding
+      // FIXME: enlarge vertical spacing with icon's paddding
       image { padding: rem(5.3px) 0 rem(6.7px); }
     }
     &:hover,
@@ -423,8 +405,8 @@ $budgie_transition: opacity 0.2s $slope_medium,
         min-width: 1px;
         min-height: 1px;
 
-        &:dir(ltr) { border-left: rem(37.3px) solid transparent; }
-        &:dir(rtl) { border-right: rem(37.3px) solid transparent; }
+        &:dir(ltr) { border-left: $icon_size * 2 solid transparent; }
+        &:dir(rtl) { border-right: $icon_size * 2 solid transparent; }
       }
     }
   }
@@ -505,8 +487,8 @@ $budgie_transition: opacity 0.2s $slope_medium,
 
     button.flat.image-button {
       @extend %button_normal;
-      margin: rem(4px) rem(8px);
-      padding: rem(13.3px);
+      margin: rem(2px) rem(8px);
+      padding: rem(5.3px);
       color: $inverted_secondary_fg_color;
       background-color: $suggested_color;
       &:hover {
@@ -581,9 +563,9 @@ $budgie_transition: opacity 0.2s $slope_medium,
     > .linked { margin: 0 rem(10.7px); }
 
     > button.image-button { // 'gear' button
-      min-width: rem(37.3px);
-      min-height: rem(37.3px);
-      padding: 0;
+      min-width: $icon_size;
+      min-height: $icon_size;
+      padding: rem(10.7px);
     }
 
     > button.text-button { // 'exit' button
@@ -607,8 +589,8 @@ $budgie_transition: opacity 0.2s $slope_medium,
     }
 
     button.flat.expander-button { // expander arrow buttons
-      min-width: rem(13.3px);
-      min-height: rem(13.3px);
+      min-width: $icon_size;
+      min-height: $icon_size;
       padding: rem(10.7px);
       border-radius: 100px;
       -gtk-outline-radius: 100px;
@@ -646,12 +628,129 @@ $budgie_transition: opacity 0.2s $slope_medium,
   .center-region,
   .end-region {
     // shrink label
-    widget > widget > label { font-size: 90%; }
+    widget > widget > label {
+      font-size: 80%;
+      padding-bottom: rem(1.3px, $sw: 1.0);
+    }
+  }
+}
+
+// na-tray-applet styling
+.budgie-panel > .end-region {
+  widget > widget > widget > box.horizontal {
+    > widget {
+      min-height: $icon_size;
+      margin: -4px;
+    }
+  }
+}
+
+// popover of sound-indicator styling
+.budgie-container.top,
+.budgie-container.bottom {
+  > popover.background > box.vertical > button.flat.image-button {
+    margin: 0 2px;
+
+    &:first-child { // '+' button
+      &:hover {
+        @extend %button_flat_hover;
+        background: none;
+        color: $success_color;
+        animation: volume_hover 0.2s linear forwards;
+      }
+      &:disabled {
+        @extend %button_flat_disabled;
+        background: none;
+        color: gtkalpha($success_color, 0.4);
+      }
+    }
+
+    &:last-child { // '-' button
+      &:hover {
+        @extend %button_flat_hover;
+        background: none;
+        color: $error_color;
+        animation: volume_hover 0.2s linear forwards;
+      }
+      &:disabled {
+        @extend %button_flat_disabled;
+        background: none;
+        color: gtkalpha($error_color, 0.4);
+      }
+    }
+  }
+}
+
+// places-indicator styling
+popover.places-menu {
+  padding: 0;
+
+  .places-section-header {
+    padding: rem(4px);
+
+    > label {
+      color: $secondary_fg_color;
+      font-weight: 700;
+    }
+
+    > image {
+      padding-left: 4px;
+      color: $accent_color;
+
+      &:dir(rtl) { padding-right: 4px; }
+    }
+
+    button.image-button {
+      margin: rem(2.7px);
+    }
+  }
+
+  box.vertical > revealer {
+    > list { // drop-down list
+      border-top: 1px solid $borders_color;
+      box-shadow: if($variant == 'light', $inline-shadow-light,
+                                          $inline-shadow-dark);
+    }
+
+    infobar.message-bar {
+      border-radius: 2px 2px 0 0;
+    }
+  }
+
+  list {
+    background-color: transparent;
+
+    > row.activatable {
+      &:hover,
+      &:active {
+        color: $fg_color;
+
+        .name-button { // = 'toolbutton > button'
+          &,
+          &:hover,
+          &:active {
+            color: $fg_color;
+            background-color: transparent;
+            background-image: none;
+            animation: none;
+          }
+          &:active { animation: list_ripple_effect 0.3s $slope_slow forwards; }
+        }
+      }
+
+      .unmount-button { margin: rem(2.7px); }
+    }
+
+    label.dim-label {
+      font-size: 90%;
+      font-weight: 700;
+    }
   }
 }
 
 // notifications
-.budgie-notification-window {
+.budgie-notification-window,
+.budgie-osd-window {
   border-radius: 2px;
   background-color: transparent;
 
@@ -659,7 +758,8 @@ $budgie_transition: opacity 0.2s $slope_medium,
   .drop-shadow { background-color: gtkopacity($inverted_dark_color, 0.9); }
 }
 
-.budgie-notification {
+.budgie-notification,
+.budgie-osd {
   // always use dark-variant
   color: $inverted_fg_color;
   background-color: transparent;
@@ -677,12 +777,19 @@ $budgie_transition: opacity 0.2s $slope_medium,
   }
 
   button,
-  .linked > button { // OSD-style buttons
+  buttonbox button,
+  buttonbox .linked > button { // OSD-style buttons
+    border-image: none; // hide underlines
     color: $secondary_accent_color;
     &:hover,
     &:active,
     &:checked { color: $accent_color; }
     &:disabled { color: gtkopacity($accent_color, 0.4); }
+  }
+
+  .budgie-osd-text {
+    color: $inverted_fg_color;
+    font-size: 110%;
   }
 }
 
@@ -699,7 +806,7 @@ $budgie_transition: opacity 0.2s $slope_medium,
     headerbar { border-radius: 2px; }
   }
 
-  scrolledwindow {      // FIXME: using GtkEntry style-class!?
+  scrolledwindow {
     border-image: none; // remove underline indicator
     background-color: transparent;
 
@@ -709,8 +816,23 @@ $budgie_transition: opacity 0.2s $slope_medium,
       row,
       row.activatable {
         background-color: transparent;
-        color: $inverted_fg_color;
+        color: $inverted_secondary_fg_color;
         transition: none;
+
+        .dim-label {
+          color: $inverted_secondary_fg_color;
+          opacity: 1.0;
+        }
+
+        &:hover,
+        &:active {
+          color: $inverted_fg_color;
+
+          .dim-label {
+            color: $inverted_fg_color;
+            opacity: 1.0;
+          }
+        }
       }
     }
 
@@ -886,8 +1008,8 @@ $budgie_transition: opacity 0.2s $slope_medium,
 .budgie-panel > box.horizontal {
   widget > button.flat {
     // use non-scaling units
-    min-width: 24px;
-    min-height: 24px;
+    min-width: $icon_size + 8px;
+    min-height: $icon_size + 8px;
     padding: 4px 0;
     border-radius: 0;
     color: $inverted_fg_color;
@@ -920,7 +1042,7 @@ $budgie_transition: opacity 0.2s $slope_medium,
 
 
 /*****************
- * Unity Desktop *
+ * Unity-Desktop *
  *****************/
 
 // window decorations
@@ -1004,6 +1126,159 @@ UnityPanelWidget,
 }
 
 
+/***********************
+ * Lightdm-Gtk-Greeter *
+ ***********************/
+
+.lightdm-gtk-greeter {
+  // top-panel styling
+  #panel_window {
+    color: $inverted_fg_color;
+    box-shadow: none;
+    font-weight: 700;
+    text-shadow: none;
+    box-shadow: inset 0 2px $panel_bg_color;
+
+    &, &.background,
+    & > * > * { background-color: transparent; } // FIXME: ugly wildcard
+
+    & label {
+      padding: 0 3px;
+      color: $inverted_fg_color;
+    }
+
+    menubar {
+      @extend .gnome-panel-menu-bar;
+      background-color: transparent;
+      color: $inverted_fg_color;
+
+      & label,
+      & image {
+        padding: 0 3px;
+        color: $inverted_fg_color;
+      }
+
+      &:hover {
+        color: $selected_fg_color;
+        box-shadow: inset 0 2px $selected_bg_color;
+
+        label,
+        image { color: $selected_fg_color; }
+      }
+
+      // flip underline-indicator vertically
+      > menuitem {
+        background-color: transparent;
+        &:hover { box-shadow: inset 0 2px $selected_bg_color; }
+      }
+
+      menu {
+        menuitem {
+          padding: rem(5.3px) rem(8px) rem(6.7px);
+          font-weight: 400;
+          text-shadow: none;
+
+          // override above hacks
+          &, & label { color: $secondary_fg_color; }
+          &:hover,
+          &:hover label { color: $fg_color; }
+          &:disabled,
+          &:disabled label { color: $insensitive_fg_color; }
+        }
+      }
+    }
+  }
+
+  // main container
+  #login_window,
+  #shutdown_dialog,
+  #restart_dialog {
+    @extend messagedialog;
+    border: none;
+    border-radius: 0;
+    color: $inverted_fg_color;
+    box-shadow: none;
+
+    &, &.background { background-color: transparent; }
+
+    button {
+      padding: rem(9.3px, $sw: 1.0) rem(13.3px, $sw: 1.0) rem(10.7px, $sw: 1.0);
+      color: $inverted_secondary_fg_color;
+      &:hover,
+      &:active { color: $inverted_fg_color; }
+      &:disabled { color: $insensitive_inverted_fg_color; }
+
+      &#login_button { @extend button.suggested-action; }
+
+      &#restart_button,
+      &#shutdown_button { @extend button.destructive-action; }
+
+      &.combo {
+        border-image: -gtk-gradient(radial,
+                                    center bottom, 0,
+                                    center bottom, 0.5,
+                                    to($track_color),
+                                    to(transparent))
+                                    0 0 1 / 0 0 1px;
+        color: $inverted_fg_color;
+        font-weight: 700;
+        font-size: 110%;
+        &:hover,
+        &:active {
+          border-image: -gtk-gradient(radial,
+                                      center bottom, 0,
+                                      center bottom, 0.5,
+                                      to($selected_bg_color),
+                                      to(transparent))
+                                      0 0 2 / 0 0 2px;
+          color: $selected_fg_color;
+        }
+        &:disabled,
+        &:checked:disabled {
+          border-image: -gtk-gradient(radial,
+                                      center bottom, 0,
+                                      center bottom, 0.5,
+                                      to($track_color),
+                                      to(transparent))
+                                      0 0 1 / 0 0 1px;
+          color: $insensitive_inverted_fg_color;
+        }
+      }
+    }
+
+    entry { // prevent junmping when showing CapsLock warning
+      min-height: rem($widget_size);
+      padding: 0 rem(8px);
+    }
+
+    infobar.error { // notification revealer
+      margin: 0 4px; // prevent unwanted overflow
+      border: none;
+      background-color: transparent;
+      // show notification icons at the left of label
+      background-image: -gtk-icontheme("dialog-error-symbolic");
+      background-position: left center;
+      background-size: 16px 16px;
+      background-repeat: no-repeat;
+      color: $error_color;
+      font-weight: 700;
+      font-size: 110%;
+
+      &:dir(rtl) { background-position: right center; }
+    }
+  }
+
+  #login_window {
+  }
+
+  #content_frame { padding-bottom: 14px; }
+
+  #buttonbox_frame {
+    padding-top: 8px; // reserve gap between infobar and buttonbox
+  }
+}
+
+
 /************
  * Corebird *
  ************/
@@ -1015,10 +1290,10 @@ stack button.profile-button {
 
 headerbar.titlebar box {
   button.toggle.account-button { // left-most account-button
-    min-width: rem(13.3px);
-    min-height: rem(13.3px);
+    min-width: $icon_size;
+    min-height: $icon_size;
     // it doesn't work
-    padding: rem(6.7px) rem(10px) rem(6.7px);
+    padding: rem(6.7px) rem(10.7px) rem(6.7px);
     // revert to square button since we can't make perfect circle button
     border-radius: 2px;
     -gtk-outline-radius: 2px;
@@ -1028,15 +1303,15 @@ headerbar.titlebar box {
   }
 
   button.image-button.toggle { // tweet button
-    min-width: rem(13.3px);
-    min-height: rem(13.3px);
-    padding: rem(6.7px) rem(10px) rem(6.7px);
+    min-width: $icon_size;
+    min-height: $icon_size;
+    padding: rem(10.7px);
   }
 }
 
 // use asymmetric separators
 .background.csd box.vertical > stack > scrolledwindow {
-  list.stream > row.activatable.tweet {
+  list > row.activatable.tweet {
     &:dir(ltr) {
       border-image: linear-gradient(to right,
                                     transparent 72px,
@@ -1064,8 +1339,8 @@ headerbar.titlebar box {
 }
 
 .nemo-window {
-  // workaround for invisible text in rename entry
-  .nemo-window-pane scrolledwindow widget > widget {
+  // workaround for invisible text in rename entry (Eeleditable.entry)
+  .nemo-window-pane scrolledwindow widget > widget.entry {
     &, &:focus {
       transition: none;
 
@@ -1083,37 +1358,51 @@ headerbar.titlebar box {
     box-shadow: if($variant == 'light', $toolbar-shadow-light,
                                         $toolbar-shadow-dark);
 
+    > button.flat.toggle { // 'back/forward'?
+      &, & image {
+        min-height: $icon_size * 2.2;
+        min-width: $icon_size * 2.2;
+        padding: 0;
+      }
+    }
+
     .linked.raised > button,
     .raised > button {
       // path-bar widget buttons
       &, &.text-button.toggle {
-        min-height: rem(13.3px);
-        min-width: rem(13.3px);
-        padding-top: rem(5.3px);
-        padding-bottom: rem(6.7px);
+        min-height: rem(26.7px);
+        min-width: rem(26.7px);
+        padding-top: 0;
+        padding-bottom: 0;
+
+        > widget { padding: rem(4px) 0; } // GtkArrow?
       }
 
       // general circle buttons
       &.image-button,
       &.image-button.toggle {
-        min-height: rem(13.3px);
-        min-width: rem(13.3px);
-        padding: rem(6.7px);
+        &, & image {
+          min-height: $icon_size * 2.2;
+          min-width: $icon_size * 2.2;
+          padding: 0;
+        }
       }
     }
 
     // optional buttons
     .raised:not(.linked) > button {
       &:not(.text-button):not(.toggle) {
-        image {
-          padding-left: rem(5.3px);
-          padding-right: rem(5.3px);
+        &, & image {
+          min-height: $icon_size * 2.2;
+          min-width: $icon_size * 2.2;
+          padding: 0;
         }
       }
     }
 
     // shrink height of entry node
-    box.horizontal > widget > entry {
+    box.horizontal > widget > entry,
+    button.text-button {
       padding-top: rem(5.3px);
       padding-bottom: rem(6.7px);
     }
@@ -1202,28 +1491,36 @@ headerbar.titlebar box {
 
 window > headerbar > widget > box.horizontal {
   > grid.horizontal > button.toggle.image-button {
-    min-width: rem(17.3px);
-    min-height: rem(37.3px);
-    padding: 0 rem(10px) 0;
+    min-width: $icon_size;
+    min-height: $icon_size;
+    padding: rem(10.7px);
   }
 
   > button.image-button {
-    min-width: rem(17.3px);
-    min-height: rem(37.3px);
-    margin: rem(-2px) 0;
-    padding: 0 rem(10px) 0;
+    min-width: $icon_size;
+    min-height: $icon_size;
+    margin: -2px 0;
+    padding: rem(10.7px);
   }
 }
 
 
 /***************************
- * Cinnamon-control-center *
+ * Cinnamon-Control-Center *
  ***************************/
 
-window > box.vertical > stack > scrolledwindow {
+.background:not(.csd) > box.vertical > stack > scrolledwindow {
   // stop using $base_color
   iconview {
-    &, &.view { background-color: transparent; }
+    &, &.view {
+      background-color: transparent;
+      &:selected {
+        color: $selected_fg_color;
+        background-color: $selected_bg_color;
+
+        label { color: $selected_fg_color; }
+      }
+    }
   }
 
   toolbar {
@@ -1238,7 +1535,17 @@ window > box.vertical > stack > scrolledwindow {
  * XFce4 *
  *********/
 
-.xfce4-panel {
+.XfceHeading { // FIXME: I'm not sure what's this
+  margin: 0;
+  padding: 0;
+  border-width: 0;
+  background-image: none;
+  background-color: $base_color;
+  color: $fg_color;
+  text-shadow: none;
+}
+
+.xfce4-panel.panel {
   background-color: $panel_bg_color;
   color: $inverted_fg_color;
   font-weight: 700;
@@ -1262,9 +1569,6 @@ window > box.vertical > stack > scrolledwindow {
       background-color: transparent;
       box-shadow: inset 0 -2px $selected_bg_color;
     }
-
-    label:backdrop,
-    &:backdrop { opacity: 1.0; }
   }
 
   menu { -gtk-icon-effect: none; }
@@ -1282,7 +1586,6 @@ TopMenuAppMenuBar {
       color: $selected_fg_color;
       box-shadow: inset 0 -2px $selected_bg_color;
     }
-    &:backdrop { opacity: 1.0; }
   }
 }
 
@@ -1367,9 +1670,12 @@ window > paned.titlebar > headerbar.titlebar {
   button.flat {
     // FIXME: when developer will use .image-button class?
     &:not(.titlebutton):not(.image-button):not(.text-button):not(.toggle) {
-      min-width: rem(13.3px);
-      padding-left: rem(12px);
-      padding-right: rem(12px);
+      min-width: $icon_size - 2px;
+      min-height: $icon_size - 2px;
+      margin: rem(5.3px + 2px) 0;
+      padding: 0 rem(($widget_size - $icon_size - 2px) / 2);
+
+      stack > spinner.feedlist-spinner { margin: 0; }
     }
   }
 }
@@ -1417,14 +1723,23 @@ window > box.vertical > box.horizontal {
 
 
 /*************
- * Gnome-mpv *
+ * Gnome-Mpv *
  *************/
 
 // control-bar styling
-window > box.vertical > box.background.horizontal {
+.background.csd > box.vertical > box.background.horizontal {
   padding: rem(2.7px);
 
-  button,
+  button {
+    min-width: if($ref_weight < 1.0, $icon_size * 1.8,
+                                     $widget_size);
+    min-height: if($ref_weight < 1.0, $icon_size * 1.8,
+                                      $widget_size);
+    margin-left: rem(2.7px);
+    margin-right: rem(2.7px);
+    padding: 0;
+  }
+
   scale {
     margin-left: rem(2.7px);
     margin-right: rem(2.7px);
@@ -1434,9 +1749,9 @@ window > box.vertical > box.background.horizontal {
 
   // stop using 'with-marks' sliders
   scale contents > trough > slider {
-    min-height: 20px;
-    min-width: 20px;
-    margin: -9px;
+    min-height: rem(20px, $sw: 1.0);
+    min-width: rem(20px, $sw: 1.0);
+    margin: rem(-9px, $sw: 1.0);
     background-repeat: no-repeat;
     background-position: center;
     &:not(:hover):not(:active) { background-size: $scale; }
@@ -1445,13 +1760,13 @@ window > box.vertical > box.background.horizontal {
       background-image: -gtk-scaled(url('assets/slider.png'),
                                     url('assets/slider@2.png'));
       &:hover {
-        margin: -9px;
+        margin: rem(-9px, $sw: 1.0);
         background-image: -gtk-scaled(url('assets/slider.png'),
                                       url('assets/slider@2.png'));
         background-size: 100%;
       }
       &:active {
-        margin: -9px;
+        margin: rem(-9px, $sw: 1.0);
         background-image: -gtk-scaled(url('assets/slider-active.png'),
                                       url('assets/slider-active@2.png'));
       }
@@ -1465,13 +1780,13 @@ window > box.vertical > box.background.horizontal {
       background-image: -gtk-scaled(url('assets/slider-dark.png'),
                                     url('assets/slider-dark@2.png'));
       &:hover {
-        margin: -9px;
+        margin: rem(-9px, $sw: 1.0);
         background-image: -gtk-scaled(url('assets/slider-dark.png'),
                                       url('assets/slider-dark@2.png'));
         background-size: 100%;
       }
       &:active {
-        margin: -9px;
+        margin: rem(-9px, $sw: 1.0);
         background-image: -gtk-scaled(url('assets/slider-active-dark.png'),
                                       url('assets/slider-active-dark@2.png'));
       }
@@ -1489,14 +1804,23 @@ window > box.vertical > box.background.horizontal {
  ***********/
 
 // FIXME: Gtk+3 firefox needs this!
-.background:not(.csd) > widget > menubar {
-  color: $inverted_secondary_fg_color;
-
-  & > *:hover {
-    // underline-indicator doesn't work at all...
-    // border-bottom: 2px solid $selected_bg_color;
-    color: $inverted_fg_color;
+.background:not(.csd) {
+  > widget > menubar {
+    color: $inverted_secondary_fg_color;
+    &:hover {
+      // underline-indicator doesn't work at all...
+      color: $inverted_fg_color;
+    }
+    &:disabled { color: $insensitive_inverted_fg_color; }
   }
+
+  > menu { // needs to override?
+    > menuitem > label:disabled { color: $insensitive_fg_color; }
+  }
+
+  > .background > menu > separator { color: $borders_color; }
+
+  > widget > frame { color: $borders_color; }
 }
 
 
@@ -1515,6 +1839,389 @@ window.background:not(.csd) {
     background-image: none;
     transition: none;
     animation: none;
+  }
+}
+
+
+/*****************
+ * Atom/Electron *
+ *****************/
+
+// workaround for Electron with Gtk+ 3.x
+window.background:not(.csd) { // blind shot :/
+  > menubar {
+    background-color: $dark_color;
+
+    > menuitem {
+      color: $secondary_fg_color;
+      &:hover {
+        color: $fg_color;
+        background-color: gtkopacity($fg_color, 0.1);
+      }
+      &:disabled { color: $insensitive_fg_color; }
+    }
+  }
+}
+
+
+/**************
+ * Mate-Panel *
+ **************/
+
+// Most parts are themed in Gnome-panel section
+#PanelWidget,
+#PanelPlug,
+#PanelApplet,
+PanelToplevel.background {
+  // Always use dark-color of dark variant
+  color: $inverted_secondary_fg_color;
+  background-color: $panel_bg_color;
+  box-shadow: none;
+}
+
+PanelSeparator {
+  border-width: 0;
+  background: none;
+  background-image: none;
+}
+
+.mate-panel-menu-bar menubar,
+#PanelApplet-window-menu-applet-button {
+  background-color: transparent;
+}
+
+
+/*****************
+ * Mate-Terminal *
+ *****************/
+
+.mate-terminal {
+  // &.background,
+  // vte-terminal {
+  //   background-color: $inverted_dark_color;
+  //   color: $inverted_fg_color;
+  // }
+
+  notebook > header.top { // show drop-shadows
+    background-color: $inverted_bg_color;
+    box-shadow: inset 0 2px 2px -3px rgba(0, 0, 0, 0.26),
+                inset 0 5px 3px -5px rgba(0, 0, 0, 0.39),
+                inset 0 -1px $borders_color;
+
+    tab.reorderable-page {
+      &:hover {
+        background-color: $inverted_base_color;
+        box-shadow: inset 0 2px 2px -3px rgba(0, 0, 0, 0.26),
+                    inset 0 5px 3px -5px rgba(0, 0, 0, 0.39),
+                    inset 0 -1px $borders_color;
+      }
+      &:checked {
+        background-color: $inverted_base_color;
+        box-shadow: -1px 0 2px rgba(0, 0, 0, 0.02),
+                    -1px 0 4px rgba(0, 0, 0, 0.03),
+                    1px 0 2px rgba(0, 0, 0, 0.02),
+                    1px 0 4px rgba(0, 0, 0, 0.03),
+                    inset 0 2px 2px -3px rgba(0, 0, 0, 0.26),
+                    inset 0 5px 3px -5px rgba(0, 0, 0, 0.39),
+                    inset 0 -1px $borders_color;
+      }
+    }
+
+    tab {
+      label { color: $inverted_tertiary_fg_color; }
+      &:hover label,
+      &:checked label { color: $inverted_fg_color; }
+
+      button {
+        &,
+        & image { color: $inverted_tertiary_fg_color; }
+      }
+
+      &:hover button,    // hover tab close button
+      &:checked button { // active tab close button
+        &,
+        & image { color: $inverted_fg_color; }
+      }
+    }
+
+    tabs > arrow {
+      color: $inverted_tertiary_fg_color;
+      &:hover,
+      &:active { color: $inverted_fg_color; }
+      &:disabled { color: $insensitive_inverted_secondary_fg_color; }
+    }
+  }
+
+  scrollbar {
+    background-color: $inverted_dark_color;
+    // border: 1px none transparent;
+
+    slider { // always use dark variant
+      background-color: gtkopacity($inverted_tertiary_fg_color, 0.55);
+      &:hover { background-color: gtkopacity($inverted_secondary_fg_color, 0.55); }
+      &:active { background-color: $inverted_fg_color; }
+      &:disabled { opacity: 0.4; }
+    }
+  }
+}
+
+
+/********
+ * Caja *
+ ********/
+
+widget.caja-desktop.view { // desktop icon-grid styling
+  @extend .nautilus-desktop.nautilus-canvas-item;
+
+  > widget.entry { // = EelEditableLabel.entry
+    &, &:focus {
+      transition: none;
+
+      &:selected { // FIXME: selection node doesn't work?
+        color: $selected_fg_color;
+        background-color: $selected_bg_color;
+      }
+    }
+  }
+}
+
+.caja-navigation-window {
+  // side-panel styling
+  .caja-side-pane {
+    scrolledwindow {
+      background-color: $secondary_dark_color;
+      &:dir(ltr) { box-shadow: if($variant == 'light', $sidebar-light-ltr,
+                                                       $sidebar-dark-ltr);
+      }
+      &:dir(rtl) { box-shadow: if($variant == 'light', $sidebar-light-rtl,
+                                                       $sidebar-dark-rtl);
+      }
+
+      treeview.view {
+        background-color: transparent;
+        // font-weight: 500;
+        &:selected {
+          background-color: $selected_bg_color;
+          color: $selected_fg_color;
+        }
+      }
+    }
+
+    notebook {
+      border-top: 1px solid $borders_color;
+
+      .frame { border: none; }
+    }
+
+    button.flat:last-child { // 'close' button on header
+      min-width: $icon_size;
+      min-height: $icon_size;
+      padding: rem(10.7px);
+      border-radius: 100px;
+      -gtk-outline-radius: 100px;
+    }
+  }
+
+  // main toolbar styling
+  toolbar.primary-toolbar {
+    border-bottom: 1px solid $borders_color;
+    box-shadow: if($variant == 'light', $toolbar-shadow-light,
+                                        $toolbar-shadow-dark);
+
+    button { // uniform button sizes
+      min-width: $icon_size * 1.5;
+      min-height: $icon_size * 1.5;
+      padding: rem(4px);
+    }
+  }
+
+  // path-bar styling
+  .caja-pathbar {
+    button {
+      &:first-child { // remove meaningless gaps
+        &:dir(ltr) { margin-right: -2px; }
+        &:dir(rtl) { margin-left: -2px; }
+      }
+      &:not(:first-child):not(:last-child) {
+        margin: 0 -2px;
+      }
+      &:last-child {
+        &:dir(ltr) { margin-left: -2px; }
+        &:dir(rtl) { margin-right: -2px; }
+      }
+
+      &, &.slider-button { // use linked-array button styling
+        @extend button.flat;
+        @extend %button_array;
+      }
+    }
+  }
+
+  button.image-button.toggle { // most-left toggle button in path-bar pane
+    @extend button.flat;
+    @extend %image_button;
+    &:checked { // use underline-indicator
+      border-radius: 0;
+      -gtk-outline-radius: 0;
+      background-image: none;
+      background-color: transparent;
+      box-shadow: inset 0 -2px $selected_bg_color;
+    }
+  }
+
+  .caja-notebook { // remove lateral borders
+    &, & .frame {
+      border-width: 1px 0 1px;
+    }
+
+    > header.top { // revive top-border when tabs are shown
+      border-top: 1px solid $borders_color;
+      background-color: $secondary_dark_color;
+      box-shadow: if($variant == 'light', $inline-shadow-light,
+                                          $inline-shadow-dark);
+    }
+  }
+
+  statusbar {
+    margin: 0 -10px; // hide weird lateral gaps
+    padding: 0 rem(6.7px);
+    background-color: $secondary_dark_color;
+    box-shadow: if($variant == 'light', $inline-shadow-light,
+                                        $inline-shadow-dark);
+  }
+
+  // workaround for invisible text in rename entry
+  scrolledwindow widget > widget.entry {
+    &, &:focus {
+      transition: none;
+
+      &:selected { // FIXME: selection node doesn't work?
+        color: $selected_fg_color;
+        background-color: $selected_bg_color;
+      }
+    }
+  }
+}
+
+#caja-extra-view-widget {
+  border-bottom: 1px solid $borders_color;
+  background-color: $bg_color; // needs overriding
+
+  > box > box > label { font-weight: 700; }
+}
+
+
+/********************
+ * Mate-Screensaver *
+ ********************/
+
+.lock-dialog {
+  @extend messagedialog;
+  border-radius: 2px;
+  border: 1px solid gtkopacity($inverted_dark_color, 0.9);
+  background-color: transparent;
+  // outset-shadow does not work since decoration node wasn't implemented
+  box-shadow: none;
+
+  &.background {
+    border-radius: 2px;
+    background-color: gtkopacity($inverted_dark_color, 0.9);
+  }
+
+  frame { border: none; }
+}
+
+
+/**************
+ * Mate-Tweak *
+ **************/
+
+.background:not(.csd) > box.horizontal {
+  > notebook { // right-pane
+    // remove unwanted frames/borders
+    border: none;
+    box-shadow: none;
+  }
+}
+
+
+/*******
+ * Eom *
+ *******/
+
+.eom-window {
+  statusbar { // always use dark-variant
+    margin: 0 -10px; // hide weird lateral gaps
+    padding: 0 rem(6.7px);
+    background-color: $inverted_bg_color;
+    color: $inverted_fg_color;
+    box-shadow: $inline-shadow-dark;
+  }
+
+  // toolbar.horizontal { // when will devs implement symbolic-icons?
+  //   background-color: $inverted_bg_color;
+  //   color: $inverted_secondary_fg_color;
+  //   box-shadow: $toolbar-shadow-dark;
+
+  //   button {
+  //     background-color: transparent;
+  //     color: $inverted_secondary_fg_color;
+  //     &:hover,
+  //     &:active,
+  //     &:checked { color: $inverted_fg_color; }
+  //     &:disabled { color: $insensitive_inverted_fg_color; }
+  //   }
+  // }
+}
+
+
+/*********
+ * Pluma *
+ *********/
+
+.pluma-window {
+  paned.horizontal notebook {
+    > header.top { // revive top-border when tabs are shown
+      border-top: 1px solid $borders_color;
+      background-color: $secondary_dark_color;
+      box-shadow: if($variant == 'light', $inline-shadow-light,
+                                          $inline-shadow-dark);
+    }
+
+    scrolledwindow {
+      undershoot { // remove undershoot
+        &.top,
+        &.bottom,
+        &.left,
+        &.right { background-image: none; }
+      }
+    }
+  }
+
+  statusbar {
+    margin: 0 -10px; // hide weird lateral gaps
+    padding: 0 rem(6.7px);
+    background-color: $secondary_dark_color;
+    box-shadow: if($variant == 'light', $inline-shadow-light,
+                                        $inline-shadow-dark);
+
+    frame,
+    .frame { border-style: none; }
+  }
+
+  // side-pane styling
+  paned.horizontal box.vertical notebook {
+    &.frame { border-style: solid none; }
+  }
+
+  // print-preview styling
+  .pluma-print-preview toolbar.horizontal {
+    border-width: 1px 0;
+    border-style: solid none;
+    border-color: $borders_color transparent;
+    background-color: $secondary_dark_color;
+    box-shadow: if($variant == 'light', $inline-shadow-light,
+                                        $inline-shadow-dark);
   }
 }
 

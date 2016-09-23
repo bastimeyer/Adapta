@@ -1,7 +1,6 @@
 Adapta
 =========
 An adaptive Gtk+ theme based on Material Design Guidelines.
-Lots of elements were forked from [Flat-Plat](https://github.com/nana-4/Flat-Plat) at the start.
 
 <img src=".github/img/sunlight.png" alt="Day" align="left" /> **Adapta**:
  * Light/Dark variant Gtk+ 3.22/3.20/3.18 theme
@@ -19,7 +18,20 @@ Lots of elements were forked from [Flat-Plat](https://github.com/nana-4/Flat-Pla
 
 > **Note:**
 >
->   Both also includes common GNOME-Flashback, Unity7 and XFce4 theming.
+>   Both also includes common GNOME-Flashback, Unity7, XFce4 and Mate theming.
+
+<img src=".github/img/sunlight.png" alt="Day" align="left" /> **Adapta-Eta**:
+ * Light/Dark variant Gtk+ 3.22/3.20 theme
+ * Light/Dark variant Budgie-Desktop theme
+
+<img src=".github/img/moon.png" alt="Night" align="left" /> **Adapta-Nokto-Eta**:
+ * Light/Dark variant Gtk+ 3.22/3.20 theme
+ * Light/Dark variant Budgie-Desktop theme
+
+> **Note:**
+>
+>   Eta is tiny Gtk+ 3.2x widget variant for space-saving (Gtk+ 3.22.x/3.20.x only).
+>   Others are the same as Adapta/Adapta-Nokto.
 
 Elements
 --------
@@ -27,10 +39,10 @@ Elements
 
 Required Components
 -------------------
-Adapta supports Gtk+ 3.21.x, 3.20.x and 3.18.x
+Adapta supports Gtk+ 3.22.x, 3.20.x and 3.18.x
 
  ```
- * Gtk+-3.0             >= 3.21.4 (or 3.20.1 or  3.18.9)
+ * Gtk+-3.0             >= 3.22.0 (or 3.20.1 or  3.18.9)
  * Gtk+-2.0             >= 2.24.30
  * gtk2-engines-pixbuf  >= 2.24.30
  * gtk2-engines-murrine >= 0.98.1
@@ -40,17 +52,21 @@ Supported Desktop Environments
 ------------------------------
 
  ```
- * GNOME-Shell     >= 3.21.4 (or 3.20.1 or 3.18.3)
+ * GNOME-Shell     >= 3.22.0 (or 3.20.1 or 3.18.3)
  * GNOME-Flashback >= 3.20.1 (or 3.18.2)
  * Budgie-Desktop  >= 10.2.5
  * Cinnamon        >= 3.0.1 (or 2.8.6)
- * Unity           >= 7.4.0
+ * Unity7          >= 7.4.0
  * XFce4           >= 4.12.2
+ * Mate            >= 1.14.0 (Gtk+ 3.2x only)
  ```
+
+ > **Note:**
+ >
+ >   * Mate-Desktop support is under W.I.P.
 
 Unsupported Gtk+ Based Desktops
 -------------------------------
- * Mate
  * Pantheon
 
 Installation from PPA (Ubuntu 16.04 LTS and 16.10)
@@ -63,9 +79,11 @@ Installation from PPA (Ubuntu 16.04 LTS and 16.10)
  sudo apt install adapta-gtk-theme
  ```
 
-2. select `Adapta` or `Adapta-Nokto` via proper tools.
+2. select `Adapta` or `Adapta-Eta` or `Adapta-Nokto` or `Adapta-Nokto-Eta` via proper tools.
 
  > **Note:**
+ >
+ >   * `-Eta` is the smaller widget variant.
  >
  >   * `Adapta-Nokto` is for dark variant theming:
  >     * `Adapta` + `global dark theme = off` make all light variant.
@@ -73,7 +91,6 @@ Installation from PPA (Ubuntu 16.04 LTS and 16.10)
  >     * `Adapta-Nokto` + `global dark theme = off` make light variant Gtk+3 and dark variant Gtk+2.
  >     * `Adapta-Nokto` + `global dark theme = on` make dark variant.
  >
- >   * In Xeinal, Gtk+ 3.21.x support is disabled (Yakkety package enabled it as default though).
  >   * When updating package, Adapta automatically does cleaning up pre-installed directories.
 
 Installation from Git Source
@@ -81,9 +98,9 @@ Installation from Git Source
 1. If previous version was installed/existed, remove them at first.
 
  ```
- sudo rm -rf /usr/share/themes/{Adapta,Adapta-Nokto}
- rm -rf ~/.local/share/themes/{Adapta,Adapta-Nokto}
- rm -rf ~/.themes/{Adapta,Adapta-Nokto}
+ sudo rm -rf /usr/share/themes/{Adapta,Adapta-Eta,Adapta-Nokto,Adapta-Nokto-Eta}
+ rm -rf ~/.local/share/themes/{Adapta,Adapta-Eta,Adapta-Nokto,Adapta-Nokto-Eta}
+ rm -rf ~/.themes/{Adapta,Adapta-Eta,Adapta-Nokto,Adapta-Nokto-Eta}
  ```
 
 2. Check build-requirements:
@@ -127,7 +144,7 @@ Installation from Git Source
 4. If users want to speed up with concurrency-build, please pass this specific options to `autogen.sh`:
 
  ```
- --enable-parallel       enable parallel-build support
+ --enable-parallel       enable parallel-build support (type: bool)
  ```
 
  > **Note:**
@@ -135,37 +152,38 @@ Installation from Git Source
  >   * This feature requires GNU `parallel`, so please add `parallel` to build-requirements.
  >     Parallel can execute multiple scripts and binaries to be suitable for multi-threading.
  >     Especially it could shorten the rendering-time via Inkscape and generation-time via sass.
- >   * `-jN` option to be passed to GNU `make` is surely usable though, but Adapta employes `parallel` meanwhile...
+ >   * `-jN` option to be passed to GNU `make` is surely usable though, but Adapta employs `parallel` meanwhile...
  >   * This feature should not be applied when packaging on remote/shared build-servers.
 
 5. If users want to disable some DE supports, please pass these specific options to `autogen.sh`:
 
  ```
- --disable-cinnamon      disable cinnamon support
- --disable-flashback     disable flashback support
- --disable-unity         disable unity support
- --disable-xfce          disable xfce support
+ --disable-cinnamon      disable cinnamon support (type: bool)
+ --disable-flashback     disable flashback support (type: bool)
+ --disable-unity         disable unity support (type: bool)
+ --disable-xfce          disable xfce support (type: bool)
+ --disable-mate          disable mate support (type: bool)
  ```
 
  > **Note:**
  >
  >   * Installer installs GNOME/Budgie-Desktop support even if all of options above were applied.
- >   * Cinnamon/Unity support hooks `metacity-1` directory even if GNOME-Flashback support was disabled.
+ >   * Cinnamon/Unity/Mate support hooks `metacity-1` directory even if GNOME-Flashback support was disabled.
 
-6. If users want to disable next Gtk+ release support, please pass this option:
+6. If users want to enable next Gtk+ release support, please pass this option:
 
  ```
- --disable-gtk_next      disable Gtk+ 3.21.x support
+ --enable-gtk_next      enable Gtk+ 3.23.x support (type: bool)
  ```
 
 7. If users want to change default 5 **Key-Colors**, please pass these options:
 
  ```
- --with-selection_color        Primary color for 'selected-items' (Default: #00BCD4 = Cyan500)
- --with-second_selection_color Primary color for 'select' effects (Default: #4DD0E1 = Cyan300)
- --with-accent_color           Secondary color for notifications and OSDs (Default: #4DB6AC = Teal300)
- --with-suggestion_color       Secondary color for 'suggested' buttons (Default: #009688 = Teal500)
- --with-destruction_color      Tertiary color for 'destructive' buttons (Default: #FF5252 = RedA200)
+ --with-selection_color        Primary color for 'selected-items' (Default: #00BCD4 = Cyan500, type: int)
+ --with-second_selection_color Primary color for 'select' effects (Default: #4DD0E1 = Cyan300, type: int)
+ --with-accent_color           Secondary color for notifications and OSDs (Default: #4DB6AC = Teal300, type: int)
+ --with-suggestion_color       Secondary color for 'suggested' buttons (Default: #009688 = Teal500, type: int)
+ --with-destruction_color      Tertiary color for 'destructive' buttons (Default: #FF5252 = RedA200, type: int)
  ```
 
  > **Note:**
@@ -188,7 +206,7 @@ Extra Browser Support
  If users want to try experimental browser specific theming, please pass this option:
 
  ```
- --enable-chrome         enable Chrome(ium) support
+ --enable-chrome         enable Chrome(ium) support (type: bool)
  ```
 
  The compressed `crx` files will be installed into `Adapta/chrome` and `Adapta-Nokto/chrome`.
@@ -204,8 +222,8 @@ Extra Browser Support
  >     Highlight:  #00BCD4
  >     Accent:     #2A373E
  >     Accent Color from Active Page: [ ]
- >     Apply Accent Color to Window:  [x]
- >     Transparent Tabs:              [x]
+ >     Apply Accent Color to Window:  [*]
+ >     Transparent Tabs:              [*]
  >     Corner Rounding:               2px
  >     ```
 
@@ -214,7 +232,7 @@ Extra Dock Support
  If users want to try "Plank" theming, please pass this option:
 
  ```
- --enable-plank         enable Plank support
+ --enable-plank         enable Plank support (type: bool)
  ```
 
  Then select `Gtk+` via `plank --preferences`.
@@ -236,7 +254,8 @@ I mainly use it when running Budgie, and it might be suitable for night owls...
 
 Work in Progress
 ----------------
-* Conversion to Gtk+ 3.22
+* Conversion to Gtk+ 3.23
+* Add Mate 1.14 integration
 
 TODO
 ----

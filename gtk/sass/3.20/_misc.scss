@@ -1,11 +1,10 @@
 /***************
- * Gnome panel *
+ * Gnome-Panel *
  ***************/
 
-panel-toplevel.background {
-  background-color: $panel_bg_color;
-}
+panel-toplevel.background { background-color: $panel_bg_color; }
 
+panel-applet,
 panel-plug,
 panel-toplevel > grid.horizontal > widget > widget {
   // Always use dark-color of dark variant
@@ -17,17 +16,16 @@ panel-toplevel > grid.horizontal > widget > widget {
 .gnome-panel-menu-bar,
 panel-applet > menubar,
 #clock-applet-button {
-  font-weight: 700;
   color: $inverted_secondary_fg_color;
   background-color: transparent;
   box-shadow: none;
-  label:backdrop,
-  &:backdrop { opacity: 1.0; }
+  font-weight: 700;
 }
 
 .gnome-panel-menu-bar,
 panel-applet menubar {
   box-shadow: none;
+
   & menuitem {
     color: $inverted_secondary_fg_color;
     background-color: transparent;
@@ -35,11 +33,12 @@ panel-applet menubar {
       color: $inverted_fg_color;
       box-shadow: inset 0 -2px $selected_bg_color;
     }
-    &:backdrop { opacity: 1.0; }
   }
+
   & menu {
     font-weight: 400;
     font-size: 100%;
+
     & menuitem {
       color: $secondary_fg_color;
       background-color: $base_color;
@@ -48,8 +47,8 @@ panel-applet menubar {
         background-color: gtkalpha(currentColor, 0.1);
 	box-shadow: none;
       }
-      &:backdrop { opacity: 1.0; }
     }
+
     separator { color: $borders_color; }
   }
 }
@@ -63,7 +62,6 @@ panel-applet menubar {
   border-radius: 0;
   color: $inverted_secondary_fg_color;
   background-color: transparent;
-  font-weight: 700;
   &:hover {
     color: $inverted_fg_color;
     background-color: transparent;
@@ -76,26 +74,22 @@ panel-applet menubar {
     background-color: transparent;
     box-shadow: inset 0 -2px $selected_bg_color;
   }
-  label:backdrop,
-  &:backdrop { opacity: 1.0; }
 }
 
-widget { // ubuntu-indicator container
-  > menubar {
-    background-color: $panel_bg_color;
-    box-shadow: none;
-  }
+wnck-tasklist {
+  button.toggle { font-weight: 400; }
 }
 
 wnck-pager {
+  background: transparent;
+  color: $inverted_fg_color;
+  &:hover { box-shadow: inset 0 -2px $track_color; }
   &:selected { box-shadow: inset 0 -2px $selected_bg_color; }
-  &:backdrop { opacity: 1.0; }
 }
 
 na-tray-applet {
   -NaTrayApplet-icon-padding: 2;
   -NaTrayApplet-icon-size: 16;
-  &:backdrop { opacity: 1.0; }
 }
 
 gp-arrow-button {
@@ -112,9 +106,9 @@ gp-arrow-button {
 sn-button { padding: rem(4px); }
 
 
-/**************
- * Tweak-tool *
- **************/
+/********************
+ * Gnome-Tweak-Tool *
+ ********************/
 
 // sidebar
 .tweak-categories {
@@ -358,6 +352,21 @@ NautilusTrashBar {
   &.unknown { background-color: $warning_color; }
 }
 
+// 'batch-rename' dialogs
+.conflict-row {
+  background-color: $warning_bg_color;
+  color: $secondary_fixed_fg_color;
+  &:hover,
+  &:active {
+    background-color: $warning_color;
+    color: $fixed_fg_color;
+  }
+  &:selected {
+    background-color: $selected_bg_color;
+    color: $selected_fg_color;
+  }
+}
+
 
 /*********
  * Geary *
@@ -372,6 +381,11 @@ NautilusTrashBar {
 .geary-titlebar-right {
   // stop double-shadows on right paned header-bar
   box-shadow: none;
+
+  button.image-button:not(.text-button):not(.titlebutton) { // need to override geoemtry
+    padding: rem(($widget_size - $icon_size - 8px - 2px) / 2)
+             rem(($widget_size - $icon_size - 8px + 2px) / 2);
+  }
 }
 
 window box > paned > overlay > scrolledwindow {
@@ -391,6 +405,18 @@ window box > paned > overlay > scrolledwindow {
 // reset inverted foreground colour
 EphyWindow {
   .nautilus-window .floating-bar { color: $secondary_fg_color; }
+}
+
+// hide double-title remained in GtkHeaderBar when SSDs
+.background:not(.csd) > box.vertical > headerbar > stack {
+  > box.vertical { // title-box
+    .title { color: transparent; }
+
+    .subtitle { // move subtitlebox to center
+      margin-top: rem(-17.3px, $sw: 1.0);
+      font-size: 100%;
+    }
+  }
 }
 
 
@@ -496,6 +522,14 @@ box > headerbar > label.polari-titlebar-separator {
                   inset 3px 0 3px -2px rgba(0, 0, 0, 0.04);
     }
   }
+
+  button.image-button {
+    min-width: $icon_size;
+    min-width: $icon_size;
+    padding: rem(5.3px);
+
+    > widget > box > image { padding: 0; }
+  }
 }
 
 // tweak sidebar styling
@@ -515,14 +549,26 @@ box > headerbar > label.polari-titlebar-separator {
   }
 }
 
-// remove unwanted drop-shadow
-window > box.vertical > box.vertical {
-  > toolbar.horizontal { box-shadow: none; }
+// tweak drop-shadow and frame in alt-toolbar
+window.csd > box.vertical > box.vertical {
+  > toolbar.horizontal {
+    margin-top: -1px;
+    border-top: 1px solid $borders_color;
+    background-color: $secondary_dark_color;
+    box-shadow: if($variant == 'light', $inline-shadow-light,
+                                        $inline-shadow-dark);
+  }
+
+  > frame > border { border: none; }
 }
 
 // force using circle buttons for 'play/pause' etc
-window > box.vertical > box.vertical > toolbar {
+.background.csd > box.vertical > box.vertical > toolbar {
+  button,
   .linked > button {
+    min-width: $widget_size;
+    min-height: $widget_size;
+    padding: 0;
     border-radius: 100px;
     -gtk-outline-radius: 100px;
   }
@@ -574,9 +620,9 @@ window > box.vertical > toolbar.primary-toolbar {
 }
 
 
-/**************
- * Calculator *
- **************/
+/********************
+ * Gnome-Calculator *
+ ********************/
 
 window {
   > grid.vertical > box.vertical > widget {
@@ -584,8 +630,8 @@ window {
       @extend button.flat;
       min-width: rem(13.3px);
       min-height: rem(13.3px);
-      padding: 0.75em 1em 0.75em;  // FIXME: broken in 12pt fonts?
-      border: 0.75em solid transparent;
+      padding: rem(10.7px) rem(13.3px) rem(10.7px);  // FIXME: broken in 12pt fonts?
+      border: rem(10.7px) solid transparent;
       border-radius: 2px;
       font-weight: 700;
 
@@ -661,8 +707,8 @@ $fake-shadow-dark: linear-gradient(to bottom, rgba(0, 0, 0, 0.20),
 
     button,
     .linked > button {
-      min-width: rem(13.3px);
-      min-height: rem(13.3px);
+      min-width: $icon_size;
+      min-height: $icon_size;
       padding: rem(6.7px) rem(4px);
     }
   }
@@ -781,20 +827,21 @@ notebook grid.horizontal > widget > box.horizontal > scrolledwindow {
     }
 
     > box.horizontal {  // header-part
-      margin-bottom: rem(4px);
+      margin: rem(4px) 0;
 
-      button.image-button.small-button { // add spacers
-        margin: rem(2.7px);
-        padding: rem(5.3px);
-
+      button.image-button.small-button {
         // FIXME: why does gedit break our geometry everytime?
-        > widget > box > image { padding: 0 rem(2.7px); }
+        min-width: $icon_size + 4px;
+        min-height: $icon_size + 4px;
+        padding: rem(5.3px);
+	border-radius: 2px;
+	-gtk-outline-radius: 2px;
       }
 
-      .linked > .small-button { margin: rem(2.7px) 0; }
+      .linked > .small-button { min-height: $icon_size + 4px; }
 
       button.popup.small-button.toggle {
-        margin: rem(2.7px);
+        min-height: $icon_size + 4px;
         padding: rem(5.3px);
       }
     }
@@ -839,8 +886,8 @@ notebook grid.horizontal > widget > box.horizontal > scrolledwindow {
 
     // 'close' button
     widget > box.horizontal > button.flat.small-button {
-      min-height: rem(13.3px);
-      min-width: rem(13.3px);
+      min-height: $icon_size;
+      min-width: $icon_size;
       margin: rem(2.7px);
       padding: rem(5.3px);
       border-radius: 100px;
@@ -880,9 +927,9 @@ notebook grid.horizontal > widget > box.horizontal > scrolledwindow {
 }
 
 
-/***********
- * Builder *
- ***********/
+/*****************
+ * Gnome-Builder *
+ *****************/
 
 //
 // do not use box-shadows. it's too problematic!
@@ -1078,7 +1125,7 @@ layoutstack { // remove undershoot from main editor pane
 
 
 /***************
- * Gnome-music *
+ * Gnome-Music *
  ***************/
 
 // side-bar styling
@@ -1131,10 +1178,12 @@ actionbar {
                                 to($track_color),
                                 to(transparent))
                                 0 0 0 / 0 0 0px;
+    background-color: transparent;
     color: $secondary_fg_color;
     &:hover {
       @extend %button_flat_hover;
       border-image: none;
+      background-color: transparent;
       color: $fg_color;
     }
     &:checked {
@@ -1165,7 +1214,7 @@ actionbar {
 
 
 /******************
- * Gnome-contacts *
+ * Gnome-Contacts *
  ******************/
 
 .contacts-left-header-bar {
@@ -1218,6 +1267,7 @@ actionbar {
         box-shadow: if($variant == 'light', $tiled-header-shadow-light-rtl,
                                             $tiled-header-shadow-dark-rtl);
       }
+
       .maximized & {
         @extend %maxd_integration;
         box-shadow: if($variant == 'light', $tiled-header-shadow-light-rtl,
@@ -1309,8 +1359,6 @@ window > box.vertical > grid.vertical > stack {
  **********/
 
 window.background {
-  padding: rem(5.3px);
-
   > box.vertical > box.horizontal {
     > widget > label {
       color: $fixed_fg_color;
@@ -1318,8 +1366,8 @@ window.background {
     }
 
     > button.flat:not(.image-button):not(.text-button):not(.toggle):not(.scale) {
-      min-width: rem(13.3px);
-      min-height: rem(13.3px);
+      min-width: $icon_size;
+      min-height: $icon_size;
       padding: rem(10.7px);
       border: none;
       border-radius: 100px;
@@ -1340,10 +1388,15 @@ headerbar > button.flat.popup.title-menu-button.toggle {
   -gtk-outline-radius: 2px;
 
   > grid {
-    .title,
+    .title {
+      margin: rem(-2.7px) 0;
+      padding: rem(1.3px) rem(13.3px) 0;
+      font-size: if($ref_weight < 1.0, 90%, 100%);
+    }
     .subtitle {
-      padding: rem(1.3px) rem(13.3px) rem(1.3px);
-      font-size: 90%;
+      margin: rem(-2.7px) 0;
+      padding: 0 rem(13.3px) rem(1.3px);
+      font-size: if($ref_weight < 1.0, 80%, 90%);
     }
   }
 }
@@ -1410,6 +1463,12 @@ window > box.vertical > box.vertical > widget > grid.vertical {
  ******************/
 
 terminal-window {
+  &.background,
+  vte-terminal { // set the same background with Mutter
+    background-color: $inverted_dark_color;
+    color: $inverted_fg_color;
+  }
+
   // Re-define menubar node to fix side-effect
   // of the workarounds for LibreOffice
   menubar > menuitem {
@@ -1485,11 +1544,23 @@ terminal-window {
       }
     }
   }
+
+  scrollbar { // always use dark-variant
+    background-color: gtkopacity($inverted_base_color, 0.55);
+
+    slider {
+      background-color: gtkopacity($inverted_fg_color, 0.55 * 0.5);
+      &:hover {
+        background-color: gtkopacity($inverted_secondary_fg_color, 0.55);
+      }
+      &:active { background-color: $inverted_fg_color; }
+    }
+  }
 }
 
 
 /*****************
- * Gnome-weather *
+ * Gnome-Weather *
  *****************/
 
 window stack > frame > frame > grid.horizontal > grid.horizontal {
@@ -1512,9 +1583,9 @@ window stack > frame > frame > grid.horizontal > grid.horizontal {
   }
 
   button.osd {
-    min-width: rem(13.3px);
-    min-height: rem(13.3px);
-    padding: rem(13.3px);
+    min-width: $icon_size;
+    min-height: $icon_size;
+    padding: rem($icon_size);
     border-radius: 100px;
     -gtk-outline-radius: 100px;
     background-color: gtkopacity($dark_color, 0.9);
@@ -1540,7 +1611,7 @@ window stack > frame > frame > grid.horizontal {
 
 
 /**************
- * Gnome-todo *
+ * Gnome-Todo *
  **************/
 
 window headerbar > box.horizontal {
@@ -1554,9 +1625,9 @@ window headerbar > box.horizontal {
     &:not(.toggle):not(.popup):not(.color):not(.titlebutton) {
       &:not(.destructive-action):not(.suggested-action) {
         // 'list/grid' view changer
-        min-width: rem(26.7px);
-        padding-left: rem(6.7px);
-        padding-right: rem(6.7px);
+        min-width: $icon_size;
+        min-width: $icon_size;
+        padding: rem(($widget_size - $icon_size) / 2);
       }
     }
   }
@@ -1564,9 +1635,9 @@ window headerbar > box.horizontal {
   > button.color {
     &:not(.destructive-action):not(.suggested-action) {
       // force using square-button
-      min-width: rem(26.7px);
-      padding-left: rem(6.7px);
-      padding-right: rem(6.7px);
+      min-width: $icon_size + 8px;
+      min-height: $icon_size;
+      padding: rem(($widget_size - $icon_size) / 2);
       border-radius: 2px;
       -gtk-outline-radius: 2px;
     }
@@ -1587,7 +1658,7 @@ window > popover > stack > grid > button {
 
 
 /************
- * Gtk-demo *
+ * Gtk-Demo *
  ************/
 
 .background.csd > box.horizontal > frame > scrolledwindow {
@@ -1618,8 +1689,9 @@ window > popover > stack > grid > button {
   }
 }
 
+
 /***************
- * Gnome-disks *
+ * Gnome-Disks *
  ***************/
 
 .background.csd > box.vertical > paned.horizontal > scrolledwindow {
@@ -1653,7 +1725,7 @@ window > popover > stack > grid > button {
 
 
 /************************
- * Gnome-control-center *
+ * Gnome-Control-Center *
  ************************/
 
 // network settings
@@ -1661,6 +1733,53 @@ window > popover > stack > grid > button {
   notebook > stack > notebook > stack > box.vertical {
     // use buttonbox's flat-buttons
     > box.horizontal { @extend buttonbox; }
+  }
+}
+
+
+/*************
+ * Evolution *
+ *************/
+
+.background:not(.csd) > box.vertical {
+  > box.horizontal #main-toolbar { // main toolbar styling
+    border-bottom: 1px solid $borders_color;
+    box-shadow: if($variant == 'light', $toolbar-shadow-light,
+                                        $toolbar-shadow-dark);
+  }
+
+  paned.horizontal > widget > notebook.switcher-visible { // side-pane styling
+   widget > scrolledwindow {
+      background-color: $secondary_dark_color;
+
+      treeview.view {
+        background-color: transparent;
+        &:selected {
+          background-color: $selected_bg_color;
+          color: $selected_fg_color;
+        }
+      }
+
+      undershoot {
+        &.top { @include undershoot(top, $secondary_dark_color); }
+        &.bottom { @include undershoot(bottom, $secondary_dark_color); }
+        &.left { @include undershoot(left, $secondary_dark_color); }
+        &.right { @include undershoot(right, $secondary_dark_color); }
+      }
+    }
+  }
+}
+
+
+/*******************
+ * Gnome-Documents *
+ *******************/
+
+window.background > grid.horizontal.titlebar {
+  // search-bar revealer
+  searchbar {
+    background-color: $inverted_dark_color;
+    box-shadow: $menubar-shadow;
   }
 }
 

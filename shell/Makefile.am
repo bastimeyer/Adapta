@@ -1,6 +1,8 @@
-themedir  = $(datadir)/themes
-adaptadir = $(DESTDIR)$(themedir)/Adapta
-noktodir  = $(DESTDIR)$(themedir)/Adapta-Nokto
+themedir     = $(datadir)/themes
+adaptadir    = $(DESTDIR)$(themedir)/Adapta
+noktodir     = $(DESTDIR)$(themedir)/Adapta-Nokto
+adaptaetadir = $(DESTDIR)$(themedir)/Adapta-Eta
+noktoetadir  = $(DESTDIR)$(themedir)/Adapta-Nokto-Eta
 
 shelldir   = $(srcdir)/gnome-shell
 shell_file = \
@@ -36,22 +38,38 @@ shell_asset_file = \
 	$(shelldir)/assets/window-close-hover.svg \
 	$(shelldir)/assets/window-close.svg
 shell_asset_dot_file = \
-	$(shelldir)/assets/dot/running1-focused.svg \
-	$(shelldir)/assets/dot/running1.svg \
-	$(shelldir)/assets/dot/running1-vert-focused.svg \
-	$(shelldir)/assets/dot/running1-vert.svg \
-	$(shelldir)/assets/dot/running2-focused.svg \
-	$(shelldir)/assets/dot/running2.svg \
-	$(shelldir)/assets/dot/running2-vert-focused.svg \
-	$(shelldir)/assets/dot/running2-vert.svg \
-	$(shelldir)/assets/dot/running3-focused.svg \
-	$(shelldir)/assets/dot/running3.svg \
-	$(shelldir)/assets/dot/running3-vert-focused.svg \
-	$(shelldir)/assets/dot/running3-vert.svg \
-	$(shelldir)/assets/dot/running4-focused.svg \
-	$(shelldir)/assets/dot/running4.svg \
-	$(shelldir)/assets/dot/running4-vert-focused.svg \
-	$(shelldir)/assets/dot/running4-vert.svg
+	$(shelldir)/assets/dot/running1-bottom-focused.svg \
+	$(shelldir)/assets/dot/running1-bottom.svg \
+	$(shelldir)/assets/dot/running1-left-focused.svg \
+	$(shelldir)/assets/dot/running1-left.svg \
+	$(shelldir)/assets/dot/running1-right-focused.svg \
+	$(shelldir)/assets/dot/running1-right.svg \
+	$(shelldir)/assets/dot/running1-top-focused.svg \
+	$(shelldir)/assets/dot/running1-top.svg \
+	$(shelldir)/assets/dot/running2-bottom-focused.svg \
+	$(shelldir)/assets/dot/running2-bottom.svg \
+	$(shelldir)/assets/dot/running2-left-focused.svg \
+	$(shelldir)/assets/dot/running2-left.svg \
+	$(shelldir)/assets/dot/running2-right-focused.svg \
+	$(shelldir)/assets/dot/running2-right.svg \
+	$(shelldir)/assets/dot/running2-top-focused.svg \
+	$(shelldir)/assets/dot/running2-top.svg \
+	$(shelldir)/assets/dot/running3-bottom-focused.svg \
+	$(shelldir)/assets/dot/running3-bottom.svg \
+	$(shelldir)/assets/dot/running3-left-focused.svg \
+	$(shelldir)/assets/dot/running3-left.svg \
+	$(shelldir)/assets/dot/running3-right-focused.svg \
+	$(shelldir)/assets/dot/running3-right.svg \
+	$(shelldir)/assets/dot/running3-top-focused.svg \
+	$(shelldir)/assets/dot/running3-top.svg \
+	$(shelldir)/assets/dot/running4-bottom-focused.svg \
+	$(shelldir)/assets/dot/running4-bottom.svg \
+	$(shelldir)/assets/dot/running4-left-focused.svg \
+	$(shelldir)/assets/dot/running4-left.svg \
+	$(shelldir)/assets/dot/running4-right-focused.svg \
+	$(shelldir)/assets/dot/running4-right.svg \
+	$(shelldir)/assets/dot/running4-top-focused.svg \
+	$(shelldir)/assets/dot/running4-top.svg
 shell_extension_windowlist_file = \
 	$(shelldir)/extensions/window-list/classic.css \
 	$(shelldir)/extensions/window-list/stylesheet.css \
@@ -434,6 +452,8 @@ if ENABLE_UNITY
 	cp -Rv $(unity_file) $(adaptadir)/unity
 	cd $(adaptadir)
 	ln -sf ../Adapta/unity $(noktodir)/unity
+	ln -sf ../Adapta/unity $(adaptaetadir)/unity
+	ln -sf ../Adapta/unity $(noktoetadir)/unity
 endif
 
 if ENABLE_XFCE
@@ -441,6 +461,8 @@ if ENABLE_XFCE
 	cp -Rv $(xfce_file) $(adaptadir)/xfce-notify-4.0
 	cd $(adaptadir)
 	ln -sf ../Adapta/xfce-notify-4.0 $(noktodir)/xfce-notify-4.0
+	ln -sf ../Adapta/xfce-notify-4.0 $(adaptaetadir)/xfce-notify-4.0
+	ln -sf ../Adapta/xfce-notify-4.0 $(noktoetadir)/xfce-notify-4.0
 endif
 
 # *******************
@@ -459,6 +481,8 @@ endif
 if ENABLE_UNITY
 	test -e $(noktodir)/unity && rm -rfv $(noktodir)/unity
 	test -e $(adaptadir)/unity && rm -rfv $(adaptadir)/unity
+	test -e $(noktoetadir)/unity && rm -rfv $(noktoetadir)/unity
+	test -e $(adaptaetadir)/unity && rm -rfv $(adaptaetadir)/unity
 endif
 
 if ENABLE_XFCE
@@ -466,6 +490,10 @@ if ENABLE_XFCE
 		rm -rfv $(noktodir)/xfce-notify-4.0
 	test -e $(adaptadir)/xfce-notify-4.0 && \
 		rm -rfv $(adaptadir)/xfce-notify-4.0
+	test -e $(noktoetadir)/xfce-notify-4.0 && \
+		rm -rfv $(noktoetadir)/xfce-notify-4.0
+	test -e $(adaptaetadir)/xfce-notify-4.0 && \
+		rm -rfv $(adaptaetadir)/xfce-notify-4.0
 endif
 
 # ****************************

@@ -15,15 +15,14 @@
 // Generic drawing of more complex things
 //
 
-
 //
 // Scaling function
 //
 
 $ref_size: 13.33px; // = 10pt = 1em
 
-@function rem($px, $fs: $ref_size) {
-  @return ($px / $fs ) * 1rem;
+@function rem($px, $fs: $ref_size, $sw: $ref_weight) {
+  @return round($px / $fs * $sw * 100) / 100 * 1rem;
 }
 
 
@@ -44,8 +43,8 @@ $z-depth-1-backdrop: 0 2px 2px transparent,
                      0 3px 4px transparent,
                      0 3px 3px -1px rgba(0, 0, 0, 0.08);
 // z-depth-2 actual shadows + dummy z-depth-4 area
-$z-depth-2-backdrop: 0 10px 6px transparent,
-                     0 6px 8px -4px transparent,
+$z-depth-2-backdrop: 0 6px 8px -4px transparent,
+                     0 10px 6px transparent,
                      0 2px 2px rgba(0, 0, 0, 0.12),
                      0 3px 4px rgba(0, 0, 0, 0.20);
 
@@ -83,23 +82,19 @@ $sub-header-shadow-dark-rtl: 0 1px 1px rgba(0, 0, 0, 0.06),
 $selected-header-shadow-light-ltr: 0 1px 1px rgba(0, 0, 0, 0.16),
                                    0 1px 2px rgba(0, 0, 0, 0.26),
                                    0 2px 3px rgba(0, 0, 0, 0.32),
-                                   -5px 0 0 -1px $selected_bg_color,
-                                   -2px 0 0 -1px $solid_dark_borders_color;
+                                   -5px 0 0 -1px $selected_bg_color;
 $selected-header-shadow-dark-ltr: 0 1px 1px rgba(0, 0, 0, 0.06),
                                   0 1px 2px rgba(0, 0, 0, 0.14),
                                   0 2px 3px rgba(0, 0, 0, 0.20),
-                                  -5px 0 0 -1px $selected_bg_color,
-                                  -2px 0 0 -1px $solid_dark_borders_color;
+                                  -5px 0 0 -1px $selected_bg_color;
 $selected_header-shadow-light-rtl: 0 1px 1px rgba(0, 0, 0, 0.16),
                                    0 1px 2px rgba(0, 0, 0, 0.26),
                                    0 2px 3px rgba(0, 0, 0, 0.32),
-                                   5px 0 0 -1px $selected_bg_color,
-                                   2px 0 0 -1px $solid_dark_borders_color;
+                                   5px 0 0 -1px $selected_bg_color;
 $selected-header-shadow-dark-rtl: 0 1px 1px rgba(0, 0, 0, 0.06),
                                   0 1px 2px rgba(0, 0, 0, 0.14),
                                   0 2px 3px rgba(0, 0, 0, 0.20),
-                                  5px 0 0 -1px $selected_bg_color,
-                                  2px 0 0 -1px $solid_dark_borders_color;
+                                  5px 0 0 -1px $selected_bg_color;
 $tiled-header-shadow-light-ltr: 0 1px 1px rgba(0, 0, 0, 0.16),
                                 0 1px 2px rgba(0, 0, 0, 0.26),
                                 0 2px 3px rgba(0, 0, 0, 0.32),
