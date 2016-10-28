@@ -44,7 +44,7 @@ $full_orientation: ((top, bottom),
   font-weight: 700;
 
   // used to indicate unread notifications
-  .alert { color: $accent_color; }
+  .alert { color: $inverted_accent_label_color; }
 
   // do no make un-clickable gaps
   > GtkBox:first-child {
@@ -173,7 +173,7 @@ $full_orientation: ((top, bottom),
       // FIXME: Upstream deformed aspect-ratio to 1:1.1
       border-image: -gtk-scaled(url("assets/running-dot-#{$_dot}.png"),
                                 url("assets/running-dot-#{$_dot}@2.png"))
-                    1.8 / 1.8px;
+                    2.0 1.8 / 2.0px 1.8px;
       &:hover,
       &:active,
       &:checked {
@@ -239,8 +239,8 @@ $full_orientation: ((top, bottom),
   }
 }
 
-// add slight lateral spacing for symbolic icons
 .budgie-panel .end-region {
+  // add slight lateral spacing for symbolic icons
   // FIXME: Paper icon-pack has thin 'battery' and 'bluetooth' symbolic icon
   // battery
   PowerIndicator GtkImage { padding: 0 2px 0; }
@@ -249,6 +249,9 @@ $full_orientation: ((top, bottom),
     &:dir(ltr) { padding-right: 2px; }
     &:dir(rtl) { padding-left: 2px; }
   }
+
+  // dim symbolic icons to get better uniformity same as NaTray icons
+  * > GtkImage { opacity: 0.9; }
 }
 
 // main menu styling
@@ -336,9 +339,9 @@ $full_orientation: ((top, bottom),
     &.activatable:selected {
       background-image: none;
       background-color: $secondary_base_color;
+      // child button node has hover state already
+      color: $secondary_fg_color;
       transition: none;
-
-      &, & .label { color: $fg_color; }
     }
   }
 
@@ -353,6 +356,11 @@ $full_orientation: ((top, bottom),
 
         GtkLabel { color: inherit; }
       }
+    }
+
+    .label { // tweak vertical spacing and font weight
+      padding: 0.5em 0 0.6em;
+      font-weight: 500;
     }
   }
 
@@ -398,12 +406,19 @@ $full_orientation: ((top, bottom),
     &.activatable:selected {
       background-image: none;
       background-color: $secondary_base_color;
-      color: $fg_color;
+      color: $secondary_fg_color;
       transition: none;
 
-      &, & .indicator-item {
+      .indicator-item {
         .label,
-        GtkImage { color: $fg_color; }
+        GtkImage { color: $secondary_fg_color; }
+
+        &:hover,
+        &:active,
+        &:checked {
+          .label,
+          GtkImage { color: $fg_color; }
+        }
       }
     }
 
@@ -417,6 +432,9 @@ $full_orientation: ((top, bottom),
         background-color: $suggested_color;
         box-shadow: $z-depth-1,
                     inset 0 1px $highlight_color;
+        transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        transition-property: box-shadow;
+        transition-duration: 0.2s;
 
         &:dir(ltr) { // mask avatar's background
           padding-left: 7px; // non-scaling unit
@@ -476,7 +494,7 @@ $full_orientation: ((top, bottom),
       // FIXME: hide weird backgrounds
       background-color: transparent;
 
-      // use asymmetric separators
+      // use asymmetrical separators
       &:dir(ltr) { padding-left: 3em; }
       &:dir(rtl) { padding-right: 3em; }
     }
@@ -489,6 +507,8 @@ $full_orientation: ((top, bottom),
   border: none;
   color: $secondary_fg_color;
   background-color: $secondary_dark_color;
+  // FIXME: jst bad idea
+  font-size: 90%;
 
   // mixin with drop-shadows to avoid the raven edge shine-through
   &:dir(ltr) {
@@ -614,9 +634,13 @@ $full_orientation: ((top, bottom),
   }
 
   .raven-header {
+    > .button.image-button { // 'gear' button
+      padding: 0.6em;
+    }
+
     > .button.text-button { // 'exit' button
       @extend .button.suggested-action;
-      padding: 0.85em 1.2em 0.95em;
+      padding: 0.5em 1em 0.6em;
       color: $secondary_selected_fg_color;
       &:hover { color: $selected_fg_color; }
       &:active {
@@ -626,13 +650,18 @@ $full_orientation: ((top, bottom),
     }
 
     .expander-button { // expander arrow buttons
-      padding: 1.0em;
+      padding: 0.5em;
       border-radius: 100px;
       outline-radius: 100px;
       color: $tertiary_fg_color;
       &:hover,
       &:active { color: $fg_color; }
     }
+  }
+
+  .linked.stack-switcher > .button.text-button { // switcher buttons
+    padding-top: 0.45em;
+    padding-bottom: 0.55em;
   }
 
   BudgieAppearanceSettings {
@@ -643,6 +672,12 @@ $full_orientation: ((top, bottom),
 
   BudgieBackgroundSettings {
     // override built-in vertical spacing
+    GtkGrid > .label:first-child { padding: 8px 0; }
+  }
+
+  BudgieWmSettings {
+    // override built-in vertical spacing
+    // FIXME: if 'window-scaling' was unveiled, should move to nth-child(2)
     GtkGrid > .label:first-child { padding: 8px 0; }
   }
 
@@ -816,17 +851,26 @@ $full_orientation: ((top, bottom),
   GtkButtonBox > botton,
   GtkButtonBox > .linked > botton { // OSD-style buttons
     border-image: none;
-    color: $secondary_accent_color;
+    color: $inverted_secondary_accent_label_color;
     &:hover,
     &:active,
-    &:checked { color: $accent_color; }
-    &:insensitive { color: gtkopacity($accent_color, 0.4); }
+    &:checked { color: $inverted_accent_label_color; }
+    &:insensitive { color: gtkopacity($inverted_accent_label_color, 0.4); }
   }
 
   .budgie-osd-text {
     color: $inverted_fg_color;
     font-size: 110%;
   }
+
+  GtkProgressBar { // mimic level-bar
+    &.trough {
+      color: $inverted_fg_color;
+      background-color: $track_color;
+    }
+  }
+
+  .progressbar { background-color: $success_color; }
 }
 
 // dialog styling
@@ -909,11 +953,11 @@ $full_orientation: ((top, bottom),
 
   // 'close' button
   .button.flat.image-button {
-    color: $secondary_accent_color;
+    color: $inverted_secondary_accent_label_color;
     &:hover,
     &:active,
-    &:checked { color: $accent_color; }
-    &:insensitive { color: gtkopacity($accent_color, 0.4); }
+    &:checked { color: $inverted_accent_label_color; }
+    &:insensitive { color: gtkopacity($inverted_accent_label_color, 0.4); }
   }
 }
 
@@ -924,11 +968,6 @@ $full_orientation: ((top, bottom),
   background-color: gtkopacity($inverted_dark_color, 0.9);
   color: $inverted_fg_color;
   font-weight: 700;
-
-  GtkBox > GtkGrid > .label { // add some spaces to label-end
-    &:dir(ltr) { padding-right: 2em; }
-    &:dir(rtl) { padding-left: 2em; }
-  }
 
   .entry {
     color: $inverted_fg_color;
@@ -942,23 +981,23 @@ $full_orientation: ((top, bottom),
     padding: 0.7em 1em 0.8em;
     border: 2px solid transparent;
     border-radius: 0;
-    color: $secondary_accent_color;
+    color: $inverted_secondary_accent_label_color;
     background-color: transparent;
     background-size: 192px * 1 / 0.8 192px * 1 / 0.8, auto;
     &:hover {
       @extend %button_flat_hover;
       background-color: transparent;
-      color: $accent_color;
+      color: $inverted_accent_label_color;
     }
     &:active {
       @extend %button_flat_active;
       background-color: transparent;
-      color: $accent_color;
+      color: $inverted_accent_label_color;
     }
     &:checked {
      @extend %button_flat_checked;
       background-color: transparent;
-      color: $secondary_accent_color;
+      color: $inverted_secondary_accent_label_color;
     }
     &:insensitive { @include button(flat-insensitive); }
 
@@ -1034,15 +1073,15 @@ $full_orientation: ((top, bottom),
 
 // window decorations
 UnityDecoration { // FIXME: do not use scalable units
-  -UnityDecoration-extents: 28px 0 0 0;
+  -UnityDecoration-extents: 24px 0 0 0;
   -UnityDecoration-input-extents: 8px;
 
   -UnityDecoration-shadow-offset-x: 0;
-  -UnityDecoration-shadow-offset-y: 4px;
-  -UnityDecoration-active-shadow-color: rgba(0, 0, 0, 0.28);
-  -UnityDecoration-active-shadow-radius: 16px;
-  -UnityDecoration-inactive-shadow-color: rgba(0, 0, 0, 0.16);
-  -UnityDecoration-inactive-shadow-radius: 6px;
+  -UnityDecoration-shadow-offset-y: 6px;
+  -UnityDecoration-active-shadow-color: rgba(0, 0, 0, 0.34);
+  -UnityDecoration-active-shadow-radius: 18px;
+  -UnityDecoration-inactive-shadow-color: rgba(0, 0, 0, 0.12);
+  -UnityDecoration-inactive-shadow-radius: 10px;
 
   -UnityDecoration-glow-size: 10px;
   -UnityDecoration-glow-color: $selected_bg_color;
@@ -1105,7 +1144,7 @@ UnityPanelWidget,
 }
 
 // workaround for stupid compiz
-.background:not(.csd):not(.ssd) .header-bar {
+.background:not(.csd):not(.ssd):not(.solid-csd) .header-bar {
   &, &:not(:last-child) {
     padding: 0.4em;
     border-radius: 0;
@@ -1287,7 +1326,7 @@ GtkStack .button.profile-button {
   }
 }
 
-// use asymmetric separators
+// use asymmetrical separators
 .list > .list-row.activatable.tweet {
   &:dir(ltr) {
     border-image: linear-gradient(to right,
@@ -1476,29 +1515,42 @@ CcShellCategoryView { // stop using $base_color
   background-color: $panel_bg_color;
   color: $inverted_fg_color;
   font-weight: 700;
+  text-shadow: none;
+  icon-shadow: none;
 
   .button {
-    @extend %button_flat_normal;
     padding: 0px 4px;
     border: none;
     border-radius: 0;
-    color: $inverted_fg_color;
     background-color: transparent;
+    background-image: none;
+    color: $inverted_fg_color;
+    font-weight: 700;
+    transition: none;
     &:hover {
       color: $selected_fg_color;
       background-color: transparent;
+      background-image: none;
       box-shadow: inset 0 -2px $track_color;
+      transition: none;
     }
+    &:active,
     &:checked,
     &:hover:checked,
     &:insensitive:checked { // 'checked' = 'active'
       color: $selected_fg_color;
       background-color: transparent;
+      background-image: none;
       box-shadow: inset 0 -2px $selected_bg_color;
+      transition: none;
+      animation: none;
     }
   }
 
-  .menu { -gtk-image-effect: none; }
+  .menu {
+    text-shadow: none;
+    -gtk-image-effect: none;
+  }
 }
 
 TopMenuAppMenuBar {
@@ -1512,6 +1564,7 @@ TopMenuAppMenuBar {
     &:hover {
       color: $selected_fg_color;
       box-shadow: inset 0 -2px $selected_bg_color;
+      transition: none;
     }
   }
 }
@@ -1541,25 +1594,25 @@ TopMenuAppMenuBar {
     background-color: transparent;
     &:not(:active):not(:insensitive):not(hover) {
       background-color: transparent;
-      color: $secondary_accent_color;
+      color: $inverted_secondary_accent_label_color;
     }
     &:hover {
       @extend %button_flat_hover;
       background-color: transparent;
-      color: $accent_color;
+      color: $inverted_accent_label_color;
     }
     &:active {
       @extend %button_flat_active;
       border-image: none;
       background-color: transparent;
-      color: $accent_color;
+      color: $inverted_accent_label_color;
       box-shadow: none;
     }
     &:checked {
       @extend %button_flat_checked;
       border-image: none;
       background-color: transparent;
-      color: $accent_color;
+      color: $inverted_accent_label_color;
       box-shadow: none;
     }
     &:insensitive { @include button(flat-insensitive); }

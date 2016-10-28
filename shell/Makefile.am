@@ -10,6 +10,7 @@ shell_file = \
 	$(shelldir)/gnome-shell-theme.gresource \
 	$(shelldir)/no-events.svg \
 	$(shelldir)/no-notifications.svg \
+	$(shelldir)/noise-texture.png \
 	$(shelldir)/process-working.svg \
 	$(shelldir)/toggle-off-hover.svg \
 	$(shelldir)/toggle-off.svg \
@@ -104,6 +105,7 @@ shell_nokto_file = \
 	$(shellnoktodir)/gnome-shell-theme.gresource \
 	$(shellnoktodir)/no-events.svg \
 	$(shellnoktodir)/no-notifications.svg \
+	$(shellnoktodir)/noise-texture.png \
 	$(shellnoktodir)/process-working.svg \
 	$(shellnoktodir)/toggle-off-hover.svg \
 	$(shellnoktodir)/toggle-off.svg \
@@ -175,6 +177,8 @@ cinnamon_asset_panel_file = \
 cinnamon_asset_switch_file = \
 	$(cinnamondir)/assets/switch/switch-off.svg \
 	$(cinnamondir)/assets/switch/switch-on.svg
+cinnamon_asset_thumb_file = \
+	$(cinnamondir)/assets/thumbnail.png
 
 cinnamonnoktodir = $(srcdir)/cinnamon-nokto
 cinnamon_nokto_file = \
@@ -219,6 +223,8 @@ cinnamon_nokto_asset_panel_file = \
 cinnamon_nokto_asset_switch_file = \
 	$(cinnamonnoktodir)/assets/switch/switch-off.svg \
 	$(cinnamonnoktodir)/assets/switch/switch-on.svg
+cinnamon_nokto_asset_thumb_file = \
+	$(cinnamonnoktodir)/assets/thumbnail.png
 
 unitydir   = $(srcdir)/unity
 unity_file = \
@@ -233,6 +239,14 @@ unity_file = \
 	$(unitydir)/close_unfocused_prelight.svg \
 	$(unitydir)/close_unfocused_pressed.svg \
 	$(unitydir)/close_unfocused.svg \
+	$(unitydir)/launcher_arrow_btt_19.svg \
+	$(unitydir)/launcher_arrow_btt_37.svg \
+	$(unitydir)/launcher_arrow_ltr_19.svg \
+	$(unitydir)/launcher_arrow_ltr_37.svg \
+	$(unitydir)/launcher_arrow_rtl_19.svg \
+	$(unitydir)/launcher_arrow_rtl_37.svg \
+	$(unitydir)/launcher_arrow_ttb_19.svg \
+	$(unitydir)/launcher_arrow_ttb_37.svg \
 	$(unitydir)/launcher_icon_back_150.svg \
 	$(unitydir)/launcher_icon_back_54.svg \
 	$(unitydir)/launcher_icon_edge_150.svg \
@@ -245,6 +259,14 @@ unity_file = \
 	$(unitydir)/launcher_icon_shadow_62.svg \
 	$(unitydir)/launcher_icon_shine_150.svg \
 	$(unitydir)/launcher_icon_shine_54.svg \
+	$(unitydir)/launcher_pip_btt_19.svg \
+	$(unitydir)/launcher_pip_btt_37.svg \
+	$(unitydir)/launcher_pip_ltr_19.svg \
+	$(unitydir)/launcher_pip_ltr_37.svg \
+	$(unitydir)/launcher_pip_rtl_19.svg \
+	$(unitydir)/launcher_pip_rtl_37.svg \
+	$(unitydir)/launcher_pip_ttb_19.svg \
+	$(unitydir)/launcher_pip_ttb_37.svg \
 	$(unitydir)/maximize_dash_disabled.svg \
 	$(unitydir)/maximize_dash_prelight.svg \
 	$(unitydir)/maximize_dash_pressed.svg \
@@ -302,7 +324,7 @@ all:
 if ENABLE_PARALLEL
 	cd $(srcdir)/sass && \
 	$(PARALLEL) --no-notice --line-buffer -j0 \
-	$(BUNDLE) exec $(SASS) --update --force --sourcemap=none ::: \
+	$(BUNDLE) exec $(SASS) --update --force --sourcemap=none --style=compact ::: \
 		gnome-shell/gnome-shell.scss:../gnome-shell/gnome-shell.css \
 		gnome-shell/gnome-shell-dark.scss:../gnome-shell-nokto/gnome-shell.css \
 		gnome-shell/stylesheet.scss:../gnome-shell/extensions/window-list/stylesheet.css \
@@ -310,7 +332,7 @@ if ENABLE_PARALLEL
 		gnome-shell/workspaces-to-dock.scss:../gnome-shell/extensions/workspaces-to-dock/workspaces-to-dock.css
 else
 	cd $(srcdir)/sass && \
-	$(BUNDLE) exec $(SASS) --update --force --sourcemap=none \
+	$(BUNDLE) exec $(SASS) --update --force --sourcemap=none --style=compact \
 		gnome-shell/gnome-shell.scss:../gnome-shell/gnome-shell.css \
 		gnome-shell/gnome-shell-dark.scss:../gnome-shell-nokto/gnome-shell.css \
 		gnome-shell/stylesheet.scss:../gnome-shell/extensions/window-list/stylesheet.css \
@@ -334,12 +356,12 @@ if ENABLE_CINNAMON
 if ENABLE_PARALLEL
 	cd $(srcdir)/sass && \
 	$(PARALLEL) --no-notice --line-buffer -j0 \
-	$(BUNDLE) exec $(SASS) --update --force --sourcemap=none ::: \
+	$(BUNDLE) exec $(SASS) --update --force --sourcemap=none --style=compact ::: \
 		cinnamon/cinnamon.scss:../cinnamon/cinnamon.css \
 		cinnamon/cinnamon-dark.scss:../cinnamon-nokto/cinnamon.css
 else
 	cd $(srcdir)/sass && \
-	$(BUNDLE) exec $(SASS) --update --force --sourcemap=none \
+	$(BUNDLE) exec $(SASS) --update --force --sourcemap=none --style=compact \
 		cinnamon/cinnamon.scss:../cinnamon/cinnamon.css \
 		cinnamon/cinnamon-dark.scss:../cinnamon-nokto/cinnamon.css
 endif
@@ -357,6 +379,7 @@ endif
 	$(MKDIR_P) $(srcdir)/cinnamon-nokto/assets/panel
 	$(MKDIR_P) $(srcdir)/cinnamon-nokto/assets/switch
 	cd $(srcdir)/asset && ./clone-assets-cinnamon.sh
+	cd $(srcdir)/asset && ./render-assets-cinnamon-thumb.sh
 endif
 
 if ENABLE_UNITY
@@ -426,6 +449,10 @@ if ENABLE_CINNAMON
 		$(adaptadir)/cinnamon/assets/panel
 	cp -Rv $(cinnamon_asset_switch_file) \
 		$(adaptadir)/cinnamon/assets/switch
+	cp -Rv $(cinnamon_asset_thumb_file) \
+		$(adaptadir)/cinnamon/assets
+	cd $(adaptadir)/cinnamon && \
+		ln -sf ./assets/thumbnail.png thumbnail.png
 
 	$(MKDIR_P) $(noktodir)/cinnamon
 	$(MKDIR_P) $(noktodir)/cinnamon/assets
@@ -445,6 +472,10 @@ if ENABLE_CINNAMON
 		$(noktodir)/cinnamon/assets/panel
 	cp -Rv $(cinnamon_nokto_asset_switch_file) \
 		$(noktodir)/cinnamon/assets/switch
+	cp -Rv $(cinnamon_nokto_asset_thumb_file) \
+		$(noktodir)/cinnamon/assets
+	cd $(noktodir)/cinnamon && \
+		ln -sf ./assets/thumbnail.png thumbnail.png
 endif
 
 if ENABLE_UNITY
@@ -539,6 +570,8 @@ if ENABLE_CINNAMON
 CLEANFILES += \
 	$(srcdir)/cinnamon/cinnamon.css \
 	$(srcdir)/cinnamon-nokto/cinnamon.css \
+	$(srcdir)/cinnamon/assets/thumbnail.png \
+	$(srcdir)/cinnamon-nokto/assets/thumbnail.png \
 	$(srcdir)/cinnamon/assets/*/*.svg \
 	$(srcdir)/cinnamon-nokto/assets/*/*.svg \
 	$(srcdir)/asset/assets-cinnamon/common/checkbox/*.svg \

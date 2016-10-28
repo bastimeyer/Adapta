@@ -10,6 +10,10 @@ maximize-active
 maximize-inactive
 maximize-prelight
 maximize-pressed
+maximize-toggled-active
+maximize-toggled-inactive
+maximize-toggled-prelight
+maximize-toggled-pressed
 menu-active
 menu-inactive
 menu-prelight
@@ -18,7 +22,15 @@ shade-active
 shade-inactive
 shade-prelight
 shade-pressed
+shade-toggled-active
+shade-toggled-inactive
+shade-toggled-prelight
+shade-toggled-pressed
 stick-active
 stick-inactive
 stick-prelight
 stick-pressed
+stick-toggled-active
+stick-toggled-inactive
+stick-toggled-prelight
+stick-toggled-pressed

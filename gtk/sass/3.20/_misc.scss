@@ -215,6 +215,7 @@ sn-button { padding: rem(4px); }
 // use message-dialog style for popup osd windows
 
 // popup window widget
+#gf-label-window,
 #gf-bubble,
 #gf-osd-window,
 #gf-input-source-popup {
@@ -230,23 +231,22 @@ sn-button { padding: rem(4px); }
   }
 }
 
-// FIXME: it doesn't work at all...
-// #gf-label-window {
-//   font-size: rem(45px);
-//   font-weight: 400;
-// }
+#gf-label-window {
+  font-size: rem(40px, $sw: 1.0);
+  font-weight: 400;
+}
 
 // input-source switcher labels
 #gf-input-source {
-  min-width: rem(120px);
-  min-height: rem(120px);
+  min-width: rem(120px, $sw: 1.0);
+  min-height: rem(120px, $sw: 1.0);
   color: $inverted_fg_color;
-  font-size: rem(24px);
+  font-size: rem(40px, $sw: 1.0);
   font-weight: 400;
   &:selected {
     border-radius: 2px;
     background-color: $track_color;
-    color: $accent_color;
+    color: $inverted_accent_label_color;
   }
 }
 
@@ -262,7 +262,10 @@ sn-button { padding: rem(4px); }
   gf-candidate-box {
     transition: none;
     // a half of .menuitem
-    label { padding: rem(2.7px) rem(2.7px) rem(4px); }
+    label {
+      padding: rem(2.7px) rem(2.7px) rem(4px);
+      font-size: 110%;
+    }
 
     &:last-child { padding-left: 0; }
     &:hover,
@@ -282,7 +285,7 @@ sn-button { padding: rem(4px); }
       border-radius: 0;
       border: none;
       background-color: transparent;
-      color: $secondary_accent_color;
+      color: $inverted_secondary_accent_label_color;
       box-shadow: none;
     }
   }
@@ -367,6 +370,26 @@ NautilusTrashBar {
   }
 }
 
+.nautilus {
+  &-canvas-item {
+    border-radius: 2px;
+
+    &.dim-label {
+      color: $tertiary_fg_color;
+      &:selected {
+        &, &:focus { color: mix($selected_fg_color, $selected_bg_color, 50%); }
+      }
+    }
+  }
+
+  &-list-dim-label {
+    color: $tertiary_fg_color;
+    &:selected {
+      &, &:focus { color: mix($selected_fg_color, $selected_bg_color, 50%); }
+    }
+  }
+}
+
 
 /*********
  * Geary *
@@ -382,9 +405,46 @@ NautilusTrashBar {
   // stop double-shadows on right paned header-bar
   box-shadow: none;
 
-  button.image-button:not(.text-button):not(.titlebutton) { // need to override geoemtry
-    padding: rem(($widget_size - $icon_size - 8px - 2px) / 2)
-             rem(($widget_size - $icon_size - 8px + 2px) / 2);
+  > .linked.raised > button {
+    // tool-button array
+    &.image-button:not(.text-button) {
+      min-height: $icon_size;
+      min-width: $icon_size;
+      padding: rem(($widget_size - $icon_size - 2.7px) / 2)
+               rem(($widget_size - $icon_size) / 2);
+    }
+
+    // should be .text-button
+    &:not(.image-button):not(.text-button):not(.suggested-action) {
+      min-height: $icon_size;
+      padding-top: rem(($widget_size - $icon_size - 4px) / 2);
+      padding-bottom: rem(($widget_size - $icon_size - 1.3px) / 2);
+    }
+  }
+
+  button.image-button:not(.text-button):not(.titlebutton) {
+    > widget > box > image { padding: 0 rem(1.3px); }
+  }
+}
+
+// left-pane styling
+.sidebar.vertical > paned.sidebar-pane-separator {
+  // remove unwanted frame
+  .folder-frame > border {
+    border-width: 0 0 1px;
+  }
+
+  .conversation-frame > border { border: none; }
+
+  .folder-frame > scrolledwindow {
+    background-color: $secondary_dark_color;
+
+    &:dir(ltr) { box-shadow: if($variant == 'light', $sidebar-light-ltr,
+                                                     $sidebar-dark-ltr);
+    }
+    &:dir(rtl) { box-shadow: if($variant == 'light', $sidebar-light-rtl,
+                                                     $sidebar-dark-rtl);
+    }
   }
 }
 
@@ -415,7 +475,22 @@ EphyWindow {
     .subtitle { // move subtitlebox to center
       margin-top: rem(-17.3px, $sw: 1.0);
       font-size: 100%;
+
+      &:dir(ltr) { margin-left: rem(-($widget_size - 8px) * 3); }
+      &:dir(rtl) { margin-right: rem(-($widget_size - 8px) * 3); }
     }
+  }
+}
+
+window.background.csd > headerbar.titlebar > stack > box.vertical {
+  > box.subtitle {
+    // Keep minimum header-bar height in Eta variant
+    > label {
+      margin-top:if($ref_weight < 1.0, rem(-1.3px, $sw: 1.0), 0);
+      padding-bottom: if($ref_weight < 1.0, rem(1.3px, $sw: 1.0), 0);
+    }
+
+    > image { margin: if($ref_weight < 1.0, -1px 0, 0); }
   }
 }
 
@@ -550,7 +625,8 @@ box > headerbar > label.polari-titlebar-separator {
 }
 
 // tweak drop-shadow and frame in alt-toolbar
-window.csd > box.vertical > box.vertical {
+window.csd > box.vertical > box.vertical,
+window.solid-csd > box.vertical > box.vertical {
   > toolbar.horizontal {
     margin-top: -1px;
     border-top: 1px solid $borders_color;
@@ -563,7 +639,8 @@ window.csd > box.vertical > box.vertical {
 }
 
 // force using circle buttons for 'play/pause' etc
-.background.csd > box.vertical > box.vertical > toolbar {
+.background.csd > box.vertical > box.vertical > toolbar,
+.background.solid-csd > box.vertical > box.vertical > toolbar {
   button,
   .linked > button {
     min-width: $widget_size;
@@ -1018,6 +1095,8 @@ layouttabbar {
   padding: rem(5.3px);
   border-bottom: 1px solid $solid_light_borders_color;
   background-color: $secondary_dark_color;
+  background-image: if($variant == 'light', $fake-shadow-light,
+                                            $fake-shadow-dark);
 
   > box > button {
     opacity: 0.55;
@@ -1095,6 +1174,8 @@ tabstrip {
   padding: rem(5.3px) rem(16px);
   border-bottom: 1px solid $solid_light_borders_color;
   background-color: $secondary_dark_color;
+  background-image: if($variant == 'light', $fake-shadow-light,
+                                            $fake-shadow-dark);
 
   docktab,
   tab {
@@ -1120,6 +1201,13 @@ layoutstack { // remove undershoot from main editor pane
       &.left,
       &.right {background-image: none; }
     }
+  }
+}
+
+greeter > box.vertical > stack > box.vertical > stack {
+  > box.vertical > scrolledwindow {
+    background-image: if($variant == 'light', $fake-shadow-light,
+                                              $fake-shadow-dark);
   }
 }
 
@@ -1377,6 +1465,18 @@ window.background {
   }
 }
 
+window.background > box.vertical > paned.horizontal > box.vertical {
+  > overlay > scrolledwindow {
+    // remove undershoots from main view
+    undershoot {
+      &.top,
+      &.bottom,
+      &.left,
+      &.right { background-image: none; }
+    }
+  }
+}
+
 
 /**************
  * Gnome-Logs *
@@ -1532,19 +1632,6 @@ terminal-window {
     }
   }
 
-  // workaround for XWayland-mode
-  // to keep tiny 34px headerbar height.
-  .titlebar {
-    box.left,
-    box.right {
-      button.titlebutton {
-        min-width: $titlebutton_small;
-        min-height: $titlebutton_small;
-        padding: 0;
-      }
-    }
-  }
-
   scrollbar { // always use dark-variant
     background-color: gtkopacity($inverted_base_color, 0.55);
 
@@ -1614,7 +1701,7 @@ window stack > frame > frame > grid.horizontal {
  * Gnome-Todo *
  **************/
 
-window headerbar > box.horizontal {
+window headerbar > box.horizontal:not(.linked) {
   > button.toggle.popup { // 'new-list' text-button
     border-radius: 2px;
     -gtk-outline-radius: 2px;
@@ -1741,7 +1828,7 @@ window > popover > stack > grid > button {
  * Evolution *
  *************/
 
-.background:not(.csd) > box.vertical {
+window.background > box.vertical {
   > box.horizontal #main-toolbar { // main toolbar styling
     border-bottom: 1px solid $borders_color;
     box-shadow: if($variant == 'light', $toolbar-shadow-light,
@@ -1780,6 +1867,182 @@ window.background > grid.horizontal.titlebar {
   searchbar {
     background-color: $inverted_dark_color;
     box-shadow: $menubar-shadow;
+  }
+}
+
+
+/***************
+ * Gnome-Sushi *
+ ***************/
+
+// override semi-transparent window node
+// FIXME: any colours will turn black, caused their cairo codes?
+#MainWindow.csd {
+  &,
+  &.background,
+  .titlebar { background-color: $panel_bg_color; }
+}
+
+
+/***********************
+ * Gnome-Character-Map *
+ ***********************/
+
+window.background > grid.horizontal {
+  > paned.horizontal {
+    > scrolledwindow.frame {
+      border-width: 1px 0 1px;
+
+      // prevent unwanted shrinking
+      > treeview.view > header > button {
+        min-width: rem(133.3px, $sw: 1.0);
+      }
+    }
+
+    > notebook.frame {
+      border-style: none none solid;
+
+      // FIXME: it doesn't work
+      > stack > scrolledwindow > widget {
+        &, &:backdrop {
+          border-color: $borders_color;
+          color: $secondary_fg_color;
+          &:hover {
+            color: $fg_color;
+            background-color: $track_color;
+          }
+          &:selected,
+          &:checked {
+            color: $selected_fg_color;
+            background-color: $selected_bg_color;
+          }
+        }
+      }
+    }
+  }
+
+  > statusbar {
+    margin: -8px -10px;
+    border-top: 1px solid $borders_color;
+    background-color: $secondary_dark_color;
+
+    > frame {
+      background: none;
+      box-shadow: if($variant == 'light', $inline-shadow-light,
+                                          $inline-shadow-dark);
+
+      > box > label {
+        margin: rem(-5.3px) rem(8px);
+        color: $tertiary_fg_color;
+        font-weight: 700;
+      }
+    }
+  }
+}
+
+
+/***********************
+ * Gnome-Power-Manager *
+ ***********************/
+
+window.background > box.horizontal > notebook.frame > stack {
+  margin: 0 -1px 0;
+  border-width: 0 1px 1px;
+  border-style: none solid solid;
+  border-color: $borders_color;
+
+  > scrolledwindow.frame {
+    margin: -13px 0 0;
+    border-style: none;
+
+    > treeview.view > header > button > box > widget > label { padding: 3px 0; }
+
+    > undershoot,
+    > overshoot {
+      &.top { background-position: center 13px - 1px; }
+    }
+
+    > scrollbar.vertical { padding: 13px - 1px 0 0; }
+  }
+}
+
+
+/******************
+ * Gnome-Software *
+ ******************/
+
+// get more uniformity for all 'All', 'Installed', 'Updates' buttons
+headerbar > box.horizontal > buttonbox.linked {
+  > button.toggle.toolbar-primary-buttons-software {
+    > box.horizontal > label.text-button { font-weight: 700; }
+
+    &:hover,
+    &:active,
+    &:checked {
+      color: $inverted_fg_color;
+
+      > box.horizontal > label.text-button {
+        color: $inverted_fg_color;
+      }
+    }
+  }
+}
+
+window.background > box.vertical > stack > widget > stack {
+  // "Installed" stack
+  > box.vertical > scrolledwindow > viewport.frame > widget > list {
+    background-color: $bg_color; // override $base_color
+
+    // > row.activatable > box.horizontal widget button.star {
+    //   > image { // star images
+    //     &.star-enabled { color: $accent_color; }
+    //     &.star-disabled { color: gtkopacity($accent_color, 0.2); }
+    //   }
+    // }
+
+    // use asymmetrical separators
+    > separator {
+      &:dir(ltr) { border-left: $icon_size * 6 solid transparent; }
+      &:dir(rtl) { border-right: $icon_size * 6 solid transparent; }
+    }
+  }
+
+  // "Updates" stack
+  > scrolledwindow > viewport.frame > widget > box.vertical {
+    // override $base_color
+    > list { background-color: $bg_color; }
+
+    // use asymmetrical separators
+    > separator {
+      &:dir(ltr) { border-left: $icon_size * 6 solid transparent; }
+      &:dir(rtl) { border-right: $icon_size * 6 solid transparent; }
+    }
+  }
+}
+
+// sidebar-pane styling
+window.background > box.vertical > stack > widget > box.horizontal {
+  > scrolledwindow.category-sidebar.frame > viewport.frame > list {
+    margin-top: -4px; // hide weird header-gap
+    background-color: $secondary_dark_color;
+    &:dir(ltr) { box-shadow: if($variant == 'light', $sidebar-light-ltr,
+                                                     $sidebar-dark-ltr);
+    }
+    &:dir(rtl) { box-shadow: if($variant == 'light', $sidebar-light-rtl,
+                                                     $sidebar-dark-rtl);
+    }
+
+    > row.activatable {
+      color: $secondary_fg_color;
+      font-weight: 500;
+      &:hover { color: $fg_color; }
+      &:selected {
+        color: $selected_bg_color;
+        background-color: transparent;
+
+        > label { color: $selected_bg_color; }
+      }
+    }
   }
 }
 

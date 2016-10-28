@@ -278,12 +278,68 @@ widget "xfwm4-tabwin*GtkButton*"                      style "xfwm-tabwin-button"
 widget_class "*XfsmLogoutDialog*"                         style "xfsm-logout"
 widget_class "*XfsmLogoutDialog*GtkVBox.GtkVBox.GtkLabel" style "xfsm-label"
 
+
+#
+# Thunar
+#
+
+style "thunar_location_button" = "location_button" {
+  ThunarLocationButtons::spacing = 0
+
+  fg[NORMAL] = mix(0.75, @fg_color, @bg_color)
+  fg[PRELIGHT] = @fg_color
+  fg[ACTIVE] = @fg_color
+  fg[INSENSITIVE] = mix(0.4, @fg_color, @bg_color)
+
+  engine "pixmap" {
+    image {
+      function = BOX
+      state    = NORMAL
+      file     = "Others/null.svg"
+      border   = { 2, 2, 5, 5 }
+      stretch  = TRUE
+    }
+    image {
+      function = BOX
+      state    = PRELIGHT
+      file     = "Buttons/flat-button-hover-dark.png"
+      border   = { 2, 2, 5, 5 }
+      stretch  = TRUE
+    }
+    image {
+      function = BOX
+      state    = ACTIVE
+      file     = "Others/top.png"
+      border   = { 0, 0, 0, 2 }
+      stretch  = TRUE
+    }
+    image {
+      function = BOX
+      state    = INSENSITIVE
+      file     = "Others/null.svg"
+      border   = { 2, 2, 5, 5 }
+      stretch  = TRUE
+    }
+  }
+}
+
+style "thunar_side_pane" {
+  font_name = "Medium"
+
+  base[NORMAL] = mix(0.25, "#455A64", "#37474F")
+}
+
+widget_class "*ThunarLocationButtons*" style "thunar_location_button"
+widget_class "*ThunarShortcutsView*"   style "thunar_side_pane"
+widget_class "*ThunarTreeView*"        style "thunar_side_pane"
+
+
 #
 # Eclipse/SWT
 #
 style "eclipse-tooltips" {
-  xthickness = 9
-  ythickness = 9
+  xthickness = 5
+  ythickness = 5
 
   bg[NORMAL] = @tooltip_bg_color
   fg[NORMAL] = @tooltip_fg_color
@@ -454,6 +510,8 @@ widget "*libreoffice-toplevel*GtkMenuBar.*GtkMenuItem" style "menubar_item_libre
 #
 
 style "fm_side_pane" {
+  font_name = "Medium"
+
   base[NORMAL] = mix(0.25, "#455A64", "#37474F")
 }
 
@@ -470,5 +528,11 @@ style "fm_toolbar" {
   }
 }
 
-widget_class "*<FmMainWin>*<GtkToolbar>" style "fm_toolbar"
-widget_class "*<FmMainWin>*<FmSidePane>*<GtkTreeView>" style "fm_side_pane"
+style "location_button_label" {
+  fg[ACTIVE] = @fg_color
+}
+
+widget_class "*<FmMainWin>*<GtkToolbar>"                          style "fm_toolbar"
+widget_class "*<FmMainWin>*<FmSidePane>*<GtkTreeView>"            style "fm_side_pane"
+widget_class "*<FmMainWin>*<FmPathBar>*<GtkButton>"               style "location_button"
+widget_class "*<FmMainWin>*<FmPathBar>*<GtkButton>*<GtkLabel>"    style "location_button_label"

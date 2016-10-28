@@ -1,7 +1,7 @@
 AC_INIT(
 	[Adapta ],
-	3.22.0,
-	[https://github.com/tista500/Adapta],
+	3.22.2,
+	[https://github.com/adapta-project/adapta-gtk-theme],
 	[adapta-gtk-theme]
 )
 
@@ -17,6 +17,7 @@ ADAPTA_OPTION([FLASHBACK], [flashback], [Flashback],      [disable])
 ADAPTA_OPTION([UNITY],     [unity],     [Unity],          [disable])
 ADAPTA_OPTION([XFCE],      [xfce],      [XFce],           [disable])
 ADAPTA_OPTION([MATE],      [mate],      [Mate],           [disable])
+ADAPTA_OPTION([OPENBOX],   [openbox],   [Openbox],        [disable])
 ADAPTA_OPTION([CHROME],    [chrome],    [Chrome(ium)],    [disable])
 ADAPTA_OPTION([PLANK],     [plank],     [Plank],          [disable])
 
@@ -102,12 +103,13 @@ AC_MSG_RESULT([
          Unity:                $ENABLE_UNITY
          XFce:                 $ENABLE_XFCE
          Mate:                 $ENABLE_MATE
+         Openbox:              $ENABLE_OPENBOX
 
         -----------------------------------------------------------
         | Next Gtk+ support
         -----------------------------------------------------------
 
-         Gtk+ 3.24:            $ENABLE_GTK_NEXT
+         Gtk+ 4.0:             $ENABLE_GTK_NEXT
 
         -----------------------------------------------------------
         | Extra support

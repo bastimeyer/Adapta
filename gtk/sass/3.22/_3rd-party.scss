@@ -51,7 +51,7 @@ $budgie_transition: opacity 0.2s $slope_medium,
   font-weight: 700;
 
   // used to indicate unread notifications
-  .alert { color: $accent_color; }
+  .alert { color: $inverted_accent_label_color; }
 }
 
 @each $along_side, $opp_side in $full_orientation {
@@ -162,7 +162,7 @@ $budgie_transition: opacity 0.2s $slope_medium,
       // FIXME: Upstream deformed aspect-ratio to 1:1.1
       border-image: -gtk-scaled(url("assets/running-dot-#{$_dot}.png"),
                                 url("assets/running-dot-#{$_dot}@2.png"))
-                    1.8 / 1.8px;
+                    2.0 1.8 / 2.0px 1.8px;
       &:hover,
       &:active,
       &:checked {
@@ -173,8 +173,8 @@ $budgie_transition: opacity 0.2s $slope_medium,
   }
 }
 
-// limit minimum lateral spacing for symbolic icons
 .budgie-panel .end-region {
+  // limit minimum lateral spacing for symbolic icons
   // FIXME: Paper icon-pack has thin 'battery' and 'bluetooth' symbolic icon
   > widget > widget > box.horizontal {
     // battery
@@ -186,6 +186,9 @@ $budgie_transition: opacity 0.2s $slope_medium,
       &:dir(rtl) { margin: 0 -2px 0 0; }
     }
   }
+
+  // dim symbolic icons to get better uniformity same as NaTray icons
+  * > image { opacity: 0.9; }
 }
 
 // main menu styling
@@ -257,9 +260,9 @@ $budgie_transition: opacity 0.2s $slope_medium,
     &.activatable:selected {
       background-image: none;
       background-color: $secondary_base_color;
+      // child button node has hover state already
+      color: $secondary_fg_color;
       transition: none;
-
-      &, & label { color: $fg_color; }
     }
   }
 
@@ -274,6 +277,11 @@ $budgie_transition: opacity 0.2s $slope_medium,
 
         label { color: inherit; }
       }
+    }
+
+    label { // tweak vertical spacing and font weight
+      padding: rem(6.7px) 0 rem(8px);
+      font-weight: 500;
     }
   }
 
@@ -324,12 +332,19 @@ $budgie_transition: opacity 0.2s $slope_medium,
     &.activatable:selected {
       background-image: none;
       background-color: $secondary_base_color;
-      color: $fg_color;
+      color: $secondary_fg_color;
       transition: none;
 
-      &, & .indicator-item {
+      .indicator-item {
         label,
-        image { color: $fg_color; }
+        image { color: $secondary_fg_color; }
+
+        &:hover,
+        &:active,
+        &:checked {
+          label,
+          image { color: $fg_color; }
+        }
       }
     }
 
@@ -343,6 +358,9 @@ $budgie_transition: opacity 0.2s $slope_medium,
         background-color: $suggested_color;
         box-shadow: $z-depth-1,
                     inset 0 1px $highlight_color;
+        transition-timing-function: $slope_medium;
+        transition-property: box-shadow;
+        transition-duration: 0.2s;
 
         &:dir(ltr) { // mask avatar's background
           padding-left: 7px; // non-scaling unit
@@ -402,7 +420,7 @@ $budgie_transition: opacity 0.2s $slope_medium,
       outline-offset: 0;
       outline-width: 0;
 
-      // use asymmetric separators
+      // use asymmetrical separators
       separator.horizontal {
         min-width: 1px;
         min-height: 1px;
@@ -415,26 +433,15 @@ $budgie_transition: opacity 0.2s $slope_medium,
 }
 
 // raven styling
-.raven-frame { border: none; }
+.raven-frame { // hide frame
+  > border { border: none 0 transparent; }
+}
 
 .raven {
-  margin: -1px; // FIXME: unwanted 1px gap exists around raven
   padding: 0;
   border: none;
   color: $secondary_fg_color;
   background-color: $secondary_dark_color;
-
-  // mixin with drop-shadows to avoid the raven edge shine-through
-  &:dir(ltr) {
-    box-shadow: if($variant == 'light',
-                               -1px 0 1px rgba(0, 0, 0, 0.12),
-                               -1px 0 1px rgba(0, 0, 0, 0.22));
-  }
-  &:dir(rtl) {
-    box-shadow: if($variant == 'light',
-                               1px 0 1px rgba(0, 0, 0, 0.12),
-                               1px 0 1px rgba(0, 0, 0, 0.22));
-  }
 
   .raven-header {
     border: none;
@@ -566,15 +573,15 @@ $budgie_transition: opacity 0.2s $slope_medium,
     > .linked { margin: 0 rem(10.7px); }
 
     > button.image-button { // 'gear' button
-      min-width: $icon_size;
-      min-height: $icon_size;
-      padding: rem(10.7px);
+      min-width: $widget_size - if($ref_weight < 1.0, 10.7px, 5.3px);
+      min-height: $widget_size - if($ref_weight < 1.0, 10.7px, 5.3px);
+      padding: 0;
     }
 
     > button.text-button { // 'exit' button
-      min-height: rem(13.3px);
-      min-width: rem(13.3px);
-      padding: rem(9.3px) rem(10.7px) rem(10.7px);
+      min-width: $widget_size - if($ref_weight < 1.0, 2.7px, 0);
+      min-height: $widget_size - if($ref_weight < 1.0, 10.7px, 5.3px);
+      padding: 0;
       color: $secondary_selected_fg_color;
       background-color: $suggested_color;
       &:hover { color: $selected_fg_color; }
@@ -589,6 +596,8 @@ $budgie_transition: opacity 0.2s $slope_medium,
       &:disabled {
         @include button(flat-insensitive, $track_color, $insensitive_fg_color);
       }
+
+      label { padding-bottom: rem(1.3px); }
     }
 
     button.flat.expander-button { // expander arrow buttons
@@ -603,9 +612,39 @@ $budgie_transition: opacity 0.2s $slope_medium,
     }
   }
 
+  stackswitcher.linked > button.text-button.radio { // switcher buttons
+    min-height: $widget_size - if($ref_weight < 1.0, 10.7px, 5.3px);
+    padding-top: 0;
+    padding-bottom: 0;
+
+    label { padding-bottom: rem(1.3px); }
+  }
+
   calendar {
     border: none;
     background-color: transparent;
+  }
+
+  // notification list
+  stack > box.vertical > stack > box.vertical > .raven-background {
+    > viewport.frame > list > row.activatable {
+      border-bottom: 1px;
+
+      &:dir(ltr) {
+        border-image: linear-gradient(to right,
+                                      transparent 48px,
+                                      $borders_color 48px,
+                                      $borders_color)
+                                      0 0 1 / 0 0 1px;
+      }
+      &:dir(rtl) {
+        border-image: linear-gradient(to left,
+                                      transparent 48px,
+                                      $borders_color 48px,
+                                      $borders_color)
+                                      0 0 1 / 0 0 1px;
+      }
+    }
   }
 
   undershoot { // remove undershoot
@@ -693,7 +732,7 @@ popover.places-menu {
 
     > label {
       color: $secondary_fg_color;
-      font-weight: 400;
+      font-weight: 700;
     }
 
     > image {
@@ -705,12 +744,22 @@ popover.places-menu {
 
     button.image-button {
       margin: rem(2.7px);
+      &:not(:active) {
+        transition: opacity 0.2s $slope_medium,
+                    border-color 0.2s $slope_medium,
+                    background-color 0.2s $slope_slow,
+                    background-image 0.2s $slope_slow,
+                    box-shadow 0.2s $slope_slow;
+      }
     }
   }
 
   box.vertical > revealer {
     > list { // drop-down list
-      border-top: 1px solid $borders_color;
+      border-width: 1px 0 1px;
+      border-style: solid none solid;
+      border-color: $borders_color transparent $borders_color;
+      background-color: $secondary_dark_color;
       box-shadow: if($variant == 'light', $inline-shadow-light,
                                           $inline-shadow-dark);
     }
@@ -724,6 +773,7 @@ popover.places-menu {
     background-color: transparent;
 
     > row.activatable {
+      transition: none;
       &:hover,
       &:active {
         color: $fg_color;
@@ -735,13 +785,27 @@ popover.places-menu {
             color: $fg_color;
             background-color: transparent;
             background-image: none;
+            transition: none;
             animation: none;
           }
           &:active { animation: list_ripple_effect 0.3s $slope_slow forwards; }
         }
       }
 
-      .unmount-button { margin: rem(2.7px); }
+      .unmount-button {
+        margin: rem(1.3px) rem(5.3px);
+        padding: rem(4px);
+      }
+
+      button.image-button { // revive button transitions
+        &:not(:active) {
+          transition: opacity 0.2s $slope_medium,
+                      border-color 0.2s $slope_medium,
+                      background-color 0.2s $slope_slow,
+                      background-image 0.2s $slope_slow,
+                      box-shadow 0.2s $slope_slow;
+        }
+      }
     }
 
     label.dim-label {
@@ -783,16 +847,31 @@ popover.places-menu {
   buttonbox button,
   buttonbox .linked > button { // OSD-style buttons
     border-image: none; // hide underlines
-    color: $secondary_accent_color;
+    color: $inverted_secondary_accent_label_color;
     &:hover,
     &:active,
-    &:checked { color: $accent_color; }
-    &:disabled { color: gtkopacity($accent_color, 0.4); }
+    &:checked { color: $inverted_accent_label_color; }
+    &:disabled { color: gtkopacity($inverted_accent_label_color, 0.4); }
   }
 
   .budgie-osd-text {
     color: $inverted_fg_color;
     font-size: 110%;
+  }
+
+  progressbar { // mimic level-bar
+    min-height: 4px;
+    padding: 2px;
+    border-radius: 2px;
+    background-color: $inverted_dark_color;
+    box-shadow: $z-depth-1;
+
+    trough {
+      color: $inverted_fg_color;
+      background-color: $track_color;
+    }
+
+    progress { background-color: $success_color; }
   }
 }
 
@@ -856,6 +935,7 @@ popover.places-menu {
 
   box > box {
     entry {
+      min-width: $icon_size * 25;
       color: $inverted_fg_color;
       caret-color: $inverted_fg_color;
       &:focus {
@@ -888,11 +968,11 @@ popover.places-menu {
 
   // 'close' button
   button.image-button {
-    color: $secondary_accent_color;
+    color: $inverted_secondary_accent_label_color;
     &:hover,
     &:active,
-    &:checked { color: $accent_color; }
-    &:disabled { color: gtkopacity($accent_color, 0.4); }
+    &:checked { color: $inverted_accent_label_color; }
+    &:disabled { color: gtkopacity($inverted_accent_label_color, 0.4); }
   }
 }
 
@@ -915,11 +995,6 @@ popover.places-menu {
     }
   }
 
-  box > grid > label { // add some spaces to label-end
-    &:dir(ltr) { padding-right: rem(26.7px); }
-    &:dir(rtl) { padding-left: rem(26.7px); }
-  }
-
   entry {
     &, &:focus {
       color: $inverted_fg_color;
@@ -934,22 +1009,22 @@ popover.places-menu {
     padding: rem(9.3px) rem(13.3px) rem(10.7px);
     border: 2px solid transparent;
     border-radius: 0;
-    color: $secondary_accent_color;
+    color: $inverted_secondary_accent_label_color;
     background-color: transparent;
     &:hover {
       @extend %button_flat_hover;
       background-color: transparent;
-      color: $accent_color;
+      color: $inverted_accent_label_color;
     }
     &:active {
       @extend %button_flat_active;
       background-color: transparent;
-      color: $accent_color;
+      color: $inverted_accent_label_color;
     }
     &:checked {
       @extend %button_flat_checked;
       background-color: transparent;
-      color: $secondary_accent_color;
+      color: $inverted_secondary_accent_label_color;
     }
     &:disabled { @include button(flat-insensitive); }
 
@@ -1050,15 +1125,15 @@ popover.places-menu {
 
 // window decorations
 UnityDecoration {
-  -UnityDecoration-extents: 28px 0 0 0;
+  -UnityDecoration-extents: 24px 0 0 0;
   -UnityDecoration-input-extents: 8px;
 
   -UnityDecoration-shadow-offset-x: 0;
-  -UnityDecoration-shadow-offset-y: 8px;
-  -UnityDecoration-active-shadow-color: rgba(0, 0, 0, 0.24);
-  -UnityDecoration-active-shadow-radius: 12px;
-  -UnityDecoration-inactive-shadow-color: rgba(0, 0, 0, 0.16);
-  -UnityDecoration-inactive-shadow-radius: 6px;
+  -UnityDecoration-shadow-offset-y: 6px;
+  -UnityDecoration-active-shadow-color: rgba(0, 0, 0, 0.34);
+  -UnityDecoration-active-shadow-radius: 18px;
+  -UnityDecoration-inactive-shadow-color: rgba(0, 0, 0, 0.12);
+  -UnityDecoration-inactive-shadow-radius: 10px;
 
   -UnityDecoration-glow-size: 10px;
   -UnityDecoration-glow-color: $selected_bg_color;
@@ -1148,19 +1223,14 @@ UnityPanelWidget,
     &, &.background,
     & > * > * { background-color: transparent; } // FIXME: ugly wildcard
 
-    & label {
-      padding: 0 3px;
-      color: $inverted_fg_color;
-    }
-
     menubar {
       @extend .gnome-panel-menu-bar;
       background-color: transparent;
       color: $inverted_fg_color;
 
-      & label,
-      & image {
-        padding: 0 3px;
+      label,
+      image {
+        padding: 0 rem(6.7px, $sw: 1.0);
         color: $inverted_fg_color;
       }
 
@@ -1174,6 +1244,7 @@ UnityPanelWidget,
 
       // flip underline-indicator vertically
       > menuitem {
+        padding: rem(5.3px, $sw: 1.0) 0 rem(6.7px, $sw: 1.0);
         background-color: transparent;
         &:hover { box-shadow: inset 0 2px $selected_bg_color; }
       }
@@ -1269,6 +1340,7 @@ UnityPanelWidget,
       color: $error_color;
       font-weight: 700;
       font-size: 110%;
+      transition: none; // transition causes visual glitches
 
       &:dir(rtl) { background-position: right center; }
     }
@@ -1315,8 +1387,9 @@ headerbar.titlebar box {
   }
 }
 
-// use asymmetric separators
-.background.csd box.vertical > stack > scrolledwindow {
+// use asymmetrical separators
+.background.csd box.vertical > stack > scrolledwindow,
+.background.solid-csd box.vertical > stack > scrolledwindow {
   list > row.activatable.tweet {
     &:dir(ltr) {
       border-image: linear-gradient(to right,
@@ -1551,33 +1624,46 @@ window > headerbar > widget > box.horizontal {
   text-shadow: none;
 }
 
-.xfce4-panel.panel {
+.xfce4-panel {
   background-color: $panel_bg_color;
   color: $inverted_fg_color;
   font-weight: 700;
+  text-shadow: none;
+  -gtk-icon-shadow: none;
 
   button {
-    @extend %button_flat_normal;
     padding: 0px 4px;
     border: none;
     border-radius: 0;
-    color: $inverted_fg_color;
     background-color: transparent;
+    background-image: none;
+    color: $inverted_fg_color;
+    font-weight: 700;
+    transition: none;
     &:hover {
-      color: $selected_fg_color;
       background-color: transparent;
+      background-image: none;
+      color: $selected_fg_color;
       box-shadow: inset 0 -2px $track_color;
+      transition: none;
     }
+    &:active,
     &:checked,
     &:hover:checked,
     &:disabled:checked { // 'checked' = 'active'
-      color: $selected_fg_color;
       background-color: transparent;
+      background-image: none;
+      color: $selected_fg_color;
       box-shadow: inset 0 -2px $selected_bg_color;
+      transition: none;
+      animation: none;
     }
   }
 
-  menu { -gtk-icon-effect: none; }
+  menu {
+    text-shadow: none;
+    -gtk-icon-effect: none;
+  }
 }
 
 TopMenuAppMenuBar {
@@ -1591,6 +1677,7 @@ TopMenuAppMenuBar {
     &:hover {
       color: $selected_fg_color;
       box-shadow: inset 0 -2px $selected_bg_color;
+      transition: none;
     }
   }
 }
@@ -1620,31 +1707,31 @@ TopMenuAppMenuBar {
     background-color: transparent;
     &:not(:active):not(:disabled):not(hover) {
       background-color: transparent;
-      color: $secondary_accent_color;
+      color: $inverted_secondary_accent_label_color;
     }
     &:hover {
       @extend %button_flat_hover;
       background-color: transparent;
-      color: $accent_color;
+      color: $inverted_accent_label_color;
     }
     &:active {
       @extend %button_flat_active;
       border-image: none;
       background-color: transparent;
-      color: $accent_color;
+      color: $inverted_accent_label_color;
       box-shadow: none;
     }
     &:checked {
       @extend %button_flat_checked;
       border-image: none;
       background-color: transparent;
-      color: $accent_color;
+      color: $inverted_accent_label_color;
       box-shadow: none;
     }
     &:disabled {
       @extend %button_flat_disabled;
       background-color: transparent;
-      color: gtkopacity($accent_color, 0.4);
+      color: gtkopacity($inverted_accent_label_color, 0.4);
     }
   }
 
@@ -1717,7 +1804,7 @@ window > box.vertical > box.horizontal {
  * Eclipse/SWT (neon) *
  **********************/
 
-.background:not(.csd) > box.vertical {
+window.background > box.vertical {
   > menubar { // force setting foreground colour
     color: $inverted_secondary_fg_color;
   }
@@ -1733,7 +1820,8 @@ window > box.vertical > box.horizontal {
  *************/
 
 // control-bar styling
-.background.csd > box.vertical > box.background.horizontal {
+.background.csd > box.vertical > box.background.horizontal,
+.background.solid-csd > box.vertical > box.background.horizontal {
   padding: rem(2.7px);
 
   button {
@@ -1810,21 +1898,8 @@ window > box.vertical > box.horizontal {
  ***********/
 
 // FIXME: Gtk+3 firefox needs this!
-.background:not(.csd) {
-  > widget > menubar {
-    color: $inverted_secondary_fg_color;
-    &:hover {
-      // underline-indicator doesn't work at all...
-      color: $inverted_fg_color;
-    }
-    &:disabled { color: $insensitive_inverted_fg_color; }
-  }
-
-  > menu { // needs to override?
-    > menuitem > label:disabled { color: $insensitive_fg_color; }
-  }
-
-  > .background > menu > separator { color: $borders_color; }
+window.background {
+  > window.background > menu > separator { color: $borders_color; }
 
   > widget > frame { color: $borders_color; }
 }
@@ -1834,7 +1909,7 @@ window > box.vertical > box.horizontal {
  * Wireshark *
  *************/
 
-window.background:not(.csd) {
+window.background {
   > box.vertical > toolbar:not(.primary-toolbar).horizontal {
     border-bottom: 1px solid $borders_color;
     box-shadow: none; // hide fake-shadows
@@ -1845,27 +1920,6 @@ window.background:not(.csd) {
     background-image: none;
     transition: none;
     animation: none;
-  }
-}
-
-
-/*****************
- * Atom/Electron *
- *****************/
-
-// workaround for Electron with Gtk+ 3.x
-window.background:not(.csd) { // blind shot :/
-  > menubar {
-    background-color: $dark_color;
-
-    > menuitem {
-      color: $secondary_fg_color;
-      &:hover {
-        color: $fg_color;
-        background-color: gtkopacity($fg_color, 0.1);
-      }
-      &:disabled { color: $insensitive_fg_color; }
-    }
   }
 }
 
@@ -2228,6 +2282,49 @@ widget.caja-desktop.view { // desktop icon-grid styling
     background-color: $secondary_dark_color;
     box-shadow: if($variant == 'light', $inline-shadow-light,
                                         $inline-shadow-dark);
+  }
+}
+
+
+/*************************
+ * Mate-MediaControl-OSD *
+ *************************/
+
+// OSDs are much blurred?
+MsdOsdWindow {
+  &.background.osd {
+    border-radius: 2px;
+    border: 1px solid gtkopacity($inverted_dark_color, 0.9);
+    background-color: gtkopacity($inverted_dark_color, 0.9);
+    box-shadow: none;
+
+    // FIXME: seems images have inverted fore/back colours?
+    image { color: $inverted_fg_color; }
+
+    .trough {
+      border-radius: 0;
+      border: none;
+      background-color: gtkopacity($inverted_fg_color, 0.2);
+    }
+
+    .progressbar {
+      border-radius: 0;
+      border: none;
+      background-color: $success_color;
+    }
+  }
+}
+
+
+/****************
+ * Libre-Office *
+ ****************/
+
+// FIXME: ignored box-shadow and wrong pseudo-class for toggled-state
+.libreoffice-toolbar {
+  button {
+    // active <- checked
+    &:active { background-color: $selected_bg_color; }
   }
 }
 

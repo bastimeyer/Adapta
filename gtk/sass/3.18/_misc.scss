@@ -227,7 +227,7 @@ GfInputSourcePopup {
     &:selected {
       border-radius: 2px;
       background-color: $track_color;
-      color: $accent_color;
+      color: $inverted_accent_label_color;
     }
   }
 }
@@ -266,7 +266,7 @@ GfCandidatePopup {
       border-radius: 0;
       border: none;
       background-color: transparent;
-      color: $secondary_accent_color;
+      color: $inverted_secondary_accent_label_color;
       box-shadow: none;
     }
   }
@@ -285,25 +285,41 @@ EelEditableLabel.entry {
   &, &:focus { transition: none; }
 }
 
-.nautilus-desktop-window,
-.nautilus-desktop-window .notebook,
-.nautilus-desktop-window .notebook > GtkStack {
-  background: transparent;
-}
+.nautilus {
+  &-desktop-window {
+    .notebook {
+      &, & > GtkStack { background: transparent; }
+    }
+  }
 
-.nautilus-desktop.nautilus-canvas-item {
-  color: $selected_fg_color;
-  text-shadow: $z-depth-1;
-  &:selected { text-shadow: none; }
-}
+  &-desktop.nautilus-canvas-item {
+    color: $selected_fg_color;
+    text-shadow: $z-depth-1;
+    &:selected { text-shadow: none; }
+  }
 
-.nautilus-canvas-item {
-  border-radius: 2px;
-}
+  &-canvas-item {
+    border-radius: 2px;
 
-.nautilus-circular-button {
-  border-radius: 100px;
-  outline-radius: 100px;
+    &.dim-label {
+      color: $tertiary_fg_color;
+      &:selected {
+        &, &:focus { color: mix($selected_fg_color, $selected_bg_color, 50%); }
+      }
+    }
+  }
+
+  &-list-dim-label {
+    color: $tertiary_fg_color;
+    &:selected {
+      &, &:focus { color: mix($selected_fg_color, $selected_bg_color, 50%); }
+    }
+  }
+
+  &-circular-button {
+    border-radius: 100px;
+    outline-radius: 100px;
+  }
 }
 
 NautilusTrashBar {

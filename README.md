@@ -1,5 +1,7 @@
-Adapta
-=========
+<img src=".github/img/logo_thumb.png" alt="Logo" align="left" /> Adapta-gtk-theme
+======
+
+
 An adaptive Gtk+ theme based on Material Design Guidelines.
 
 <img src=".github/img/sunlight.png" alt="Day" align="left" /> **Adapta**:
@@ -18,13 +20,13 @@ An adaptive Gtk+ theme based on Material Design Guidelines.
 
 > **Note:**
 >
->   Both also includes common GNOME-Flashback, Unity7, XFce4 and Mate theming.
+>   Both also includes common GNOME-Flashback, Unity7, XFce4, Mate and LXDE theming.
 
-<img src=".github/img/sunlight.png" alt="Day" align="left" /> **Adapta-Eta**:
+<img src=".github/img/sunlight-eta.png" alt="Day" align="left" /> **Adapta-Eta**:
  * Light/Dark variant Gtk+ 3.22/3.20 theme
  * Light/Dark variant Budgie-Desktop theme
 
-<img src=".github/img/moon.png" alt="Night" align="left" /> **Adapta-Nokto-Eta**:
+<img src=".github/img/moon-eta.png" alt="Night" align="left" /> **Adapta-Nokto-Eta**:
  * Light/Dark variant Gtk+ 3.22/3.20 theme
  * Light/Dark variant Budgie-Desktop theme
 
@@ -32,6 +34,9 @@ An adaptive Gtk+ theme based on Material Design Guidelines.
 >
 >   Eta is tiny Gtk+ 3.2x widget variant for space-saving (Gtk+ 3.22.x/3.20.x only).
 >   Others are the same as Adapta/Adapta-Nokto.
+>
+>   For example, 
+>   * If your LCDs resolution is lower than FHD (1080p), I can suggest you should use Eta variants.
 
 Elements
 --------
@@ -53,12 +58,13 @@ Supported Desktop Environments
 
  ```
  * GNOME-Shell     >= 3.22.0 (or 3.20.1 or 3.18.3)
- * GNOME-Flashback >= 3.20.1 (or 3.18.2)
+ * GNOME-Flashback >= 3.22.0 (or 3.20.1 or 3.18.2)
  * Budgie-Desktop  >= 10.2.5
  * Cinnamon        >= 3.0.1 (or 2.8.6)
  * Unity7          >= 7.4.0
  * XFce4           >= 4.12.2
  * Mate            >= 1.14.0 (Gtk+ 3.2x only)
+ * LXDE            >= 0.99.1 (Gtk+ 2.x only)
  ```
 
  > **Note:**
@@ -69,32 +75,20 @@ Unsupported Gtk+ Based Desktops
 -------------------------------
  * Pantheon
 
-Installation from PPA (Ubuntu 16.04 LTS and 16.10)
-------------
-1. Run
+Installation from Package(s)
+----------------------------
+ * AUR: https://aur.archlinux.org/packages/adapta-gtk-theme/ and some others
 
- ```
- sudo apt-add-repository ppa:tista/adapta -y
- sudo apt update
- sudo apt install adapta-gtk-theme
- ```
+ * Copr: https://copr.fedorainfracloud.org/coprs/heikoada/gtk-themes/
 
-2. select `Adapta` or `Adapta-Eta` or `Adapta-Nokto` or `Adapta-Nokto-Eta` via proper tools.
+ * PPA: https://launchpad.net/~tista/+archive/ubuntu/adapta
 
  > **Note:**
  >
- >   * `-Eta` is the smaller widget variant.
- >
- >   * `Adapta-Nokto` is for dark variant theming:
- >     * `Adapta` + `global dark theme = off` make all light variant.
- >     * `Adapta` + `global dark theme = on` make dark variant Gtk+3 and light variant Gtk+2.
- >     * `Adapta-Nokto` + `global dark theme = off` make light variant Gtk+3 and dark variant Gtk+2.
- >     * `Adapta-Nokto` + `global dark theme = on` make dark variant.
- >
- >   * When updating package, Adapta automatically does cleaning up pre-installed directories.
+ >   * Solus OS has an eopkg (ypkg) in main repository.
 
 Installation from Git Source
-------------
+----------------------------
 1. If previous version was installed/existed, remove them at first.
 
  ```
@@ -111,7 +105,7 @@ Installation from Git Source
  * autoconf
  * automake
  * inkscape
- * libglib-2.0-dev (glib2)         >= 2.48.0
+ * libglib2.0-dev (glib2)          >= 2.48.0
  * libxml2-utils (libxml2)
  * pkg-config (pkgconfig)
  * ruby-bundler (rubygem-bundler)  >= 1.11
@@ -163,6 +157,7 @@ Installation from Git Source
  --disable-unity         disable unity support (type: bool)
  --disable-xfce          disable xfce support (type: bool)
  --disable-mate          disable mate support (type: bool)
+ --disable-openbox       disable openbox support (type: bool)
  ```
 
  > **Note:**
@@ -173,7 +168,7 @@ Installation from Git Source
 6. If users want to enable next Gtk+ release support, please pass this option:
 
  ```
- --enable-gtk_next      enable Gtk+ 3.23.x support (type: bool)
+ --enable-gtk_next      enable Gtk+ 4.0 support (type: bool)
  ```
 
 7. If users want to change default 5 **Key-Colors**, please pass these options:
@@ -228,7 +223,7 @@ Extra Browser Support
  >     ```
 
 Extra Dock Support
----------------------
+------------------
  If users want to try "Plank" theming, please pass this option:
 
  ```
@@ -242,15 +237,11 @@ Extra Dock Support
  >   * Both Adapta and Adapta-Nokto shares same theming.
  >   * Don't expect too much. Plank is NOT themeable widget for me!
 
-Official Wallpaper of Adapta <img src=".github/img/tri-fadeno-thumbnail.jpg" alt="Tri-Fadeno-Thumbnail" align="right" />
-----------------------------
-Raw image is [here](https://github.com/tista500/Adapta/raw/master/.github/img/tri-fadeno.jpg).
+Extra Compositor Support
+------------------------
+ Compton is the famous stand-alone compositor worked well with Openbox window-manager. Installer installs recommended configuration file `compton.conf` into `Adapta/openbox-3` directory if Openbox support was enabled.
 
- * Resolution: 3840 x 2160 (4K = 2160p)
- * Created with Gimp and Inkscape
- * License under GPLv2
-
-I mainly use it when running Budgie, and it might be suitable for night owls...
+ Then copy that file into `~/.config/` and restart compton to read settings.  Still that compositor had some limitations in its features for Adapta though...
 
 Work in Progress
 ----------------

@@ -44,11 +44,18 @@ metacity_file = \
 	$(metacitydir)/max_button_unshade_prelight.svg \
 	$(metacitydir)/max_button_unshade_pressed.svg \
 	$(metacitydir)/max_button_unshade.svg \
+	$(metacitydir)/thumbnail.png \
 	$(metacitydir)/metacity-theme-2.xml \
 	$(metacitydir)/metacity-theme-3.xml
 
 xfwmdir = $(srcdir)/xfwm4
 xfwm_file = \
+	$(xfwmdir)/bottom-active.png \
+	$(xfwmdir)/bottom-inactive.png \
+	$(xfwmdir)/bottom-left-active.png \
+	$(xfwmdir)/bottom-left-inactive.png \
+	$(xfwmdir)/bottom-right-active.png \
+	$(xfwmdir)/bottom-right-inactive.png \
 	$(xfwmdir)/close-active.png \
 	$(xfwmdir)/close-inactive.png \
 	$(xfwmdir)/close-prelight.png \
@@ -57,22 +64,38 @@ xfwm_file = \
 	$(xfwmdir)/hide-inactive.png \
 	$(xfwmdir)/hide-prelight.png \
 	$(xfwmdir)/hide-pressed.png \
+	$(xfwmdir)/left-active.png \
+	$(xfwmdir)/left-inactive.png \
 	$(xfwmdir)/maximize-active.png \
 	$(xfwmdir)/maximize-inactive.png \
 	$(xfwmdir)/maximize-prelight.png \
 	$(xfwmdir)/maximize-pressed.png \
+	$(xfwmdir)/maximize-toggled-active.png \
+	$(xfwmdir)/maximize-toggled-inactive.png \
+	$(xfwmdir)/maximize-toggled-prelight.png \
+	$(xfwmdir)/maximize-toggled-pressed.png \
 	$(xfwmdir)/menu-active.png \
 	$(xfwmdir)/menu-inactive.png \
 	$(xfwmdir)/menu-prelight.png \
 	$(xfwmdir)/menu-pressed.png \
+	$(xfwmdir)/right-active.png \
+	$(xfwmdir)/right-inactive.png \
 	$(xfwmdir)/shade-active.png \
 	$(xfwmdir)/shade-inactive.png \
 	$(xfwmdir)/shade-prelight.png \
 	$(xfwmdir)/shade-pressed.png \
+	$(xfwmdir)/shade-toggled-active.png \
+	$(xfwmdir)/shade-toggled-inactive.png \
+	$(xfwmdir)/shade-toggled-prelight.png \
+	$(xfwmdir)/shade-toggled-pressed.png \
 	$(xfwmdir)/stick-active.png \
 	$(xfwmdir)/stick-inactive.png \
 	$(xfwmdir)/stick-prelight.png \
 	$(xfwmdir)/stick-pressed.png \
+	$(xfwmdir)/stick-toggled-active.png \
+	$(xfwmdir)/stick-toggled-inactive.png \
+	$(xfwmdir)/stick-toggled-prelight.png \
+	$(xfwmdir)/stick-toggled-pressed.png \
 	$(xfwmdir)/themerc \
 	$(xfwmdir)/title-1-active-shaded.png \
 	$(xfwmdir)/title-1-active.png \
@@ -92,27 +115,47 @@ xfwm_file = \
 	$(xfwmdir)/top-right-active.png \
 	$(xfwmdir)/top-right-inactive.png
 
-# *******************************************
-# * Generate PNG images and clone SVG files *
-# *******************************************
+openboxdir = $(srcdir)/openbox-3
+openbox_file = \
+	$(openboxdir)/close.xbm \
+	$(openboxdir)/desk_toggled.xbm \
+	$(openboxdir)/desk.xbm \
+	$(openboxdir)/iconify.xbm \
+	$(openboxdir)/max_toggled.xbm \
+	$(openboxdir)/max.xbm \
+	$(openboxdir)/shade_toggled.xbm \
+	$(openboxdir)/shade.xbm
+openbox_rc_file = \
+	$(openboxdir)/themerc
+openbox_rc_nokto_file = \
+	$(openboxdir)/themerc-nokto
+openbox_compton_file = \
+	$(openboxdir)/compton.conf
+
+# ***************************************************
+# * Generate PNG images and clone SVG and XBM files *
+# ***************************************************
 
 all:
 if ENABLE_FLASHBACK
 	cd $(srcdir)/asset/assets-metacity-scripts && \
-	./clone-assets-metacity.sh
+	./clone-assets-metacity.sh && \
+	./render-assets-metacity.sh
 endif
 
 if ENABLE_CINNAMON
 if !ENABLE_FLASHBACK
 	cd $(srcdir)/asset/assets-metacity-scripts && \
-	./clone-assets-metacity.sh
+	./clone-assets-metacity.sh && \
+	./render-assets-metacity.sh
 endif
 endif
 
 if ENABLE_UNITY
 if !ENABLE_FLASHBACK
 	cd $(srcdir)/asset/assets-metacity-scripts && \
-	./clone-assets-metacity.sh
+	./clone-assets-metacity.sh && \
+	./render-assets-metacity.sh
 endif
 endif
 
@@ -129,6 +172,11 @@ else
 	cd $(srcdir)/asset/assets-xfwm-scripts && \
 		./render-assets-xfwm.sh
 endif
+endif
+
+if ENABLE_OPENBOX
+	cd $(srcdir)/asset/assets-openbox-scripts && \
+	./clone-assets-openbox.sh
 endif
 
 # *****************
@@ -194,6 +242,16 @@ if ENABLE_XFCE
 	ln -sf ../Adapta/xfwm4 $(noktodir)/xfwm4
 endif
 
+if ENABLE_OPENBOX
+	$(MKDIR_P) $(adaptadir)/openbox-3
+	$(MKDIR_P) $(noktodir)/openbox-3
+	cp -Rv $(openbox_file) $(adaptadir)/openbox-3
+	cp -Rv $(openbox_rc_file) $(adaptadir)/openbox-3/themerc
+	cp -Rv $(openbox_compton_file) $(adaptadir)/openbox-3/
+	cp -Rv $(openbox_file) $(noktodir)/openbox-3
+	cp -Rv $(openbox_rc_nokto_file) $(noktodir)/openbox-3/themerc
+endif
+
 # *******************
 # * Uninstall files *
 # *******************
@@ -245,6 +303,11 @@ if ENABLE_XFCE
 	test -e $(adaptadir)/xfwm4 && rm -rfv $(adaptadir)/xfwm4
 endif
 
+if ENABLE_OPENBOX
+	test -e $(noktodir)/openbox-3 && rm -rfv $(noktodir)/openbox-3
+	test -e $(adaptadir)/openbox-3 && rm -rfv $(adaptadir)/openbox-3
+endif
+
 # ****************************
 # * Clean up generated files *
 # ****************************
@@ -254,6 +317,7 @@ CLEANFILES =
 if ENABLE_FLASHBACK
 CLEANFILES += \
 	$(metacitydir)/*.svg \
+	$(metacitydir)/*.png \
 	$(srcdir)/asset/assets-metacity/button_close_pressed.svg \
 	$(srcdir)/asset/assets-metacity/button_close_prelight.svg
 endif
@@ -261,6 +325,7 @@ endif
 if ENABLE_MATE
 CLEANFILES += \
 	$(metacitydir)/*.svg \
+	$(metacitydir)/*.png \
 	$(srcdir)/asset/assets-metacity/button_close_pressed.svg \
 	$(srcdir)/asset/assets-metacity/button_close_prelight.svg
 endif
@@ -269,6 +334,7 @@ if ENABLE_CINNAMON
 if !ENABLE_FLASHBACK
 CLEANFILES += \
 	$(metacitydir)/*.svg \
+	$(metacitydir)/*.png \
 	$(srcdir)/asset/assets-metacity/button_close_pressed.svg \
 	$(srcdir)/asset/assets-metacity/button_close_prelight.svg
 endif
@@ -278,6 +344,7 @@ if ENABLE_UNITY
 if !ENABLE_FLASHBACK
 CLEANFILES += \
 	$(metacitydir)/*.svg \
+	$(metacitydir)/*.png \
 	$(srcdir)/asset/assets-metacity/button_close_pressed.svg \
 	$(srcdir)/asset/assets-metacity/button_close_prelight.svg
 endif
@@ -287,6 +354,7 @@ if ENABLE_MATE
 if !ENABLE_FLASHBACK
 CLEANFILES += \
 	$(metacitydir)/*.svg \
+	$(metacitydir)/*.png \
 	$(srcdir)/asset/assets-metacity/button_close_pressed.svg \
 	$(srcdir)/asset/assets-metacity/button_close_prelight.svg
 endif
@@ -298,6 +366,11 @@ CLEANFILES += \
 	$(srcdir)/asset/assets-xfwm/close-pressed.svg \
 	$(srcdir)/asset/assets-xfwm/close-prelight.svg \
 	$(srcdir)/asset/assets-xfwm/menu-pressed.svg
+endif
+
+if ENABLE_OPENBOX
+CLEANFILES += \
+	$(openboxdir)/*.xbm
 endif
 
 DISTCLEANFILES = \

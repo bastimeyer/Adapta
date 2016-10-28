@@ -33,8 +33,6 @@ style "default" {
   GtkButton::default-border = { 0, 0, 0, 0 }
   GtkButton::default-outside_border = { 0, 0, 0, 0 }
 
-  GtkEntry::state-hint = 1
-
   GtkScrollbar::trough-border = 0
   GtkRange::trough-border = 0
   GtkRange::slider-width = 13
@@ -48,10 +46,11 @@ style "default" {
   GtkScrolledWindow::scrollbar-spacing = 0
   GtkScrolledWindow::scrollbars-within-bevel = 1
 
-  GtkVScale::slider_length = 20
-  GtkVScale::slider_width = 20
-  GtkHScale::slider_length = 20
-  GtkHScale::slider_width = 20
+  GtkVScale::slider_length = 16
+  GtkVScale::slider_width = 16
+  GtkHScale::slider_length = 16
+  GtkHScale::slider_width = 16
+  GtkScale::trough-side-details = 1
 
   GtkStatusbar::shadow_type = GTK_SHADOW_NONE
   GtkSpinButton::shadow_type = GTK_SHADOW_NONE
@@ -654,37 +653,73 @@ style "range" {
   engine "pixmap" {
     image {
       function    = BOX
-      # state     = NORMAL
-      detail      = "trough"
+      state       = ACTIVE
+      detail      = "trough-upper"
       file        = "Range/h-scale-trough-dark.png"
-      border      = { 10, 10, 0, 0 }
+      border      = { 8, 8, 0, 0 }
+      stretch     = TRUE
+      orientation = HORIZONTAL
+    }
+    image {
+      function    = BOX
+      state       = ACTIVE
+      detail      = "trough-lower"
+      file        = "Range/h-scale-trough-active.png"
+      border      = { 8, 8, 0, 0 }
       stretch     = TRUE
       orientation = HORIZONTAL
     }
     image {
       function    = BOX
       state       = INSENSITIVE
-      detail      = "trough"
+      detail      = "trough-upper"
       file        = "Range/h-scale-trough-insensitive-dark.png"
-      border      = { 10, 10, 0, 0 }
+      border      = { 8, 8, 0, 0 }
       stretch     = TRUE
       orientation = HORIZONTAL
     }
     image {
       function    = BOX
-      # state     = NORMAL
-      detail      = "trough"
+      state       = INSENSITIVE
+      detail      = "trough-lower"
+      file        = "Range/h-scale-trough-dark.png"
+      border      = { 8, 8, 0, 0 }
+      stretch     = TRUE
+      orientation = HORIZONTAL
+    }
+    image {
+      function    = BOX
+      state       = ACTIVE
+      detail      = "trough-upper"
       file        = "Range/v-scale-trough-dark.png"
-      border      = { 0, 0, 10, 10 }
+      border      = { 0, 0, 8, 8 }
+      stretch     = TRUE
+      orientation = VERTICAL
+    }
+    image {
+      function    = BOX
+      state       = ACTIVE
+      detail      = "trough-lower"
+      file        = "Range/v-scale-trough-active.png"
+      border      = { 0, 0, 8, 8 }
       stretch     = TRUE
       orientation = VERTICAL
     }
     image {
       function    = BOX
       state       = INSENSITIVE
-      detail      = "trough"
+      detail      = "trough-upper"
       file        = "Range/v-scale-trough-insensitive-dark.png"
-      border      = { 0, 0, 10, 10 }
+      border      = { 0, 0, 8, 8 }
+      stretch     = TRUE
+      orientation = VERTICAL
+    }
+    image {
+      function    = BOX
+      state       = INSENSITIVE
+      detail      = "trough-lower"
+      file        = "Range/v-scale-trough-dark.png"
+      border      = { 0, 0, 8, 8 }
       stretch     = TRUE
       orientation = VERTICAL
     }
@@ -709,16 +744,6 @@ style "range" {
       border          = { 0, 0, 0, 0 }
       stretch         = TRUE
       overlay_file    = "Range/scale-slider-hover.png"
-      overlay_stretch = FALSE
-      orientation     = HORIZONTAL
-    }
-    image {
-      function        = SLIDER
-      state           = ACTIVE
-      file            = "Others/null.svg"
-      border          = { 0, 0, 0, 0 }
-      stretch         = TRUE
-      overlay_file    = "Range/scale-slider-active.png"
       overlay_stretch = FALSE
       orientation     = HORIZONTAL
     }
@@ -753,16 +778,6 @@ style "range" {
       border          = { 0, 0, 0, 0 }
       stretch         = TRUE
       overlay_file    = "Range/scale-slider-hover.png"
-      overlay_stretch = FALSE
-      orientation     = VERTICAL
-    }
-    image {
-      function        = SLIDER
-      state           = ACTIVE
-      file            = "Others/null.svg"
-      border          = { 0, 0, 0, 0 }
-      stretch         = TRUE
-      overlay_file    = "Range/scale-slider-active.png"
       overlay_stretch = FALSE
       orientation     = VERTICAL
     }
@@ -991,7 +1006,9 @@ style "button" {
   ythickness = 5
 
   fg[NORMAL] = mix(0.75, @fg_color, @bg_color)
-  font_name = "Medium"
+  fg[PRELIGHT] = @fg_color
+  fg[ACTIVE] = @selected_fg_color
+  fg[INSENSITIVE] = mix(0.4, @fg_color, @bg_color)
 
   engine "pixmap" {
     image {
@@ -1045,7 +1062,18 @@ style "button" {
 
 style "button_label" {
   fg[NORMAL] = mix(0.75, @fg_color, @bg_color)
+  fg[PRELIGHT] = @fg_color
   fg[ACTIVE] = @selected_fg_color
+  fg[INSENSITIVE] = mix(0.4, @fg_color, @bg_color)
+  font_name = "Bold"
+}
+
+style "misc_button_label" {
+  fg[NORMAL] = mix(0.75, @fg_color, @bg_color)
+  fg[PRELIGHT] = @fg_color
+  fg[ACTIVE] = @selected_fg_color
+  fg[INSENSITIVE] = mix(0.4, @fg_color, @bg_color)
+  font_name = "Regular"
 }
 
 style "flat_button" {
@@ -1053,7 +1081,9 @@ style "flat_button" {
   ythickness = 5
 
   fg[NORMAL] = mix(0.75, @fg_color, @bg_color)
-  font_name = "Medium"
+  fg[PRELIGHT] = @fg_color
+  fg[ACTIVE] = @selected_fg_color
+  fg[INSENSITIVE] = mix(0.4, @fg_color, @bg_color)
 
   engine "pixmap" {
     image {
@@ -1103,6 +1133,59 @@ style "flat_button" {
       stretch  = TRUE
     }
   }
+}
+
+style "location_button" {
+  xthickness = 2
+  ythickness = 5
+
+  fg[NORMAL] = mix(0.75, @fg_color, @bg_color)
+  fg[PRELIGHT] = @fg_color
+  fg[ACTIVE] = @fg_color
+  fg[INSENSITIVE] = mix(0.4, @fg_color, @bg_color)
+
+  engine "pixmap" {
+    image {
+      function = BOX
+      state    = NORMAL
+      file     = "Others/null.svg"
+      border   = { 2, 2, 5, 5 }
+      stretch  = TRUE
+    }
+    image {
+      function = BOX
+      state    = PRELIGHT
+      file     = "Buttons/flat-button-hover-dark.png"
+      border   = { 2, 2, 5, 5 }
+      stretch  = TRUE
+    }
+    image {
+      function = BOX
+      state    = ACTIVE
+      file     = "Others/top.png"
+      border   = { 0, 0, 0, 2 }
+      stretch  = TRUE
+    }
+    image {
+      function = BOX
+      state    = INSENSITIVE
+      file     = "Others/null.svg"
+      border   = { 2, 2, 5, 5 }
+      stretch  = TRUE
+    }
+  }
+}
+
+style "location_button_label" {
+  fg[NORMAL] = mix(0.75, @fg_color, @bg_color)
+  fg[PRELIGHT] = @fg_color
+  fg[ACTIVE] = @fg_color
+  fg[INSENSITIVE] = mix(0.4, @fg_color, @bg_color)
+  font_name = "Bold"
+}
+
+style "button_check_radio" = "bg" {
+  bg[PRELIGHT] = @bg_color
 }
 
 style "button_separator" {
@@ -1953,6 +2036,7 @@ style "notebook_viewport" {
 }
 
 style "notebook_tab_label" {
+  fg[NORMAL] = @fg_color
   fg[ACTIVE] = mix(0.6, @fg_color, @bg_color)
   font_name = "Bold"
 }
@@ -2172,8 +2256,8 @@ style "base" {
 }
 
 style "tooltips" {
-  xthickness = 9
-  ythickness = 9
+  xthickness = 5
+  ythickness = 5
 
   bg[NORMAL] = @tooltip_bg_color
   fg[NORMAL] = @tooltip_fg_color
@@ -2198,7 +2282,12 @@ class "GtkScrolledWindow"    style "scrolled_window"
 class "GtkFrame"             style "frame"
 class "GtkToolbar"           style "toolbar"
 
-widget_class "*<GtkButton>*<GtkLabel>"           style "button_label"
+widget_class "*<GtkButton>*<GtkLabel>"               style "button_label"
+widget_class "*<GtkComboBox>*<GtkButton>*<GtkLabel>" style "misc_button_label"
+widget_class "*<GtkCombo>*<GtkButton>*<GtkLabel>"    style "misc_button_label"
+widget_class "*<GtkFontButton>*<GtkLabel>"           style "misc_button_label"
+widget_class "*<GtkSpinButton>*<GtkLabel>"           style "misc_button_label"
+widget_class "*<GtkCheckButton>*<GtkLabel>"          style "misc_button_label"
 
 widget_class "*<GtkMenuBar>*"                    style "menubar"
 widget_class "*<GtkMenu>*"                       style "menu"
@@ -2229,13 +2318,16 @@ widget_class "*<GtkSpinButton>*"  style "bg"
 widget_class "*<GtkCheckButton>*" style "bg"
 widget_class "*<GtkExpander>*"    style "bg"
 widget_class "*<GtkNotebook>*<GtkSpinButton>"  style "base"
-widget_class "*<GtkNotebook>*<GtkCheckButton>" style "base"
+widget_class "*<GtkNotebook>*<GtkCheckButton>" style "button_check_radio"
 widget_class "*<GtkNotebook>*<GtkExpander>"    style "base"
 widget_class "*<GtkNotebook>*<GtkEventBox>*<GtkSpinButton>"  style "bg"
 widget_class "*<GtkNotebook>*<GtkEventBox>*<GtkCheckButton>" style "bg"
 widget_class "*<GtkNotebook>*<GtkEventBox>*<GtkExpander>"    style "bg"
 
-widget_class "*<GtkToolbar>*<GtkButton>" style "flat_button"
+widget_class "*<GtkToolbar>*<GtkButton>"            style "flat_button"
+widget_class "*<GtkToolbar>*<GtkButton>*<GtkLabel>" style "button_label"
+widget_class "*<GtkPathBar>*<GtkButton>"            style "location_button"
+widget_class "*<GtkPathBar>*<GtkButton>*<GtkLabel>" style "location_button_label"
 
 # Entries in notebooks draw with notebook's base color, but not if there's
 # something else in the middle that draws gray again
@@ -2247,6 +2339,8 @@ widget_class "*<GtkNotebook>*<GtkEventBox>*<GtkComboBoxEntry>*<GtkEntry>" style 
 
 # We also need to avoid changing fg color for the inactive notebook tab labels
 widget_class "*<GtkNotebook>.<GtkLabel>" style "notebook_tab_label"
+widget_class "*<GtkNotebook>.<GtkWidget>.<GtkLabel>" style "notebook_tab_label"
+widget_class "*<GtkNotebook>.<GtkWidget>.<GtkBox>.<GtkLabel>" style "notebook_tab_label"
 
 # GTK tooltips
 widget "gtk-tooltip*" style "tooltips"

@@ -282,6 +282,8 @@ gtk3_asset_file = \
 	$(gtk3_assetdir)/toggle-on-insensitive-dark.png \
 	$(gtk3_assetdir)/toggle-on-insensitive.png \
 	$(gtk3_assetdir)/toggle-on.png \
+	$(gtk3_assetdir)/thumbnail@2.png \
+	$(gtk3_assetdir)/thumbnail.png \
 	$(gtk3_assetdir)/window-close@2.png \
 	$(gtk3_assetdir)/window-close-active@2.png \
 	$(gtk3_assetdir)/window-close-active.png \
@@ -428,6 +430,13 @@ gtk2_file = \
 	$(gtk2dir)/misc.rc
 gtk2_gtkrc_file = \
 	$(gtk2dir)/gtkrc
+gtk2_eta_file = \
+	$(gtk2dir)/3rd-party-eta.rc \
+	$(gtk2dir)/colors.rc \
+	$(gtk2dir)/common-eta.rc \
+	$(gtk2dir)/misc-eta.rc
+gtk2_eta_gtkrc_file = \
+	$(gtk2dir)/gtkrc-eta
 gtk2_assetdir   = $(srcdir)/asset/assets-gtk2
 gtk2_arrow_file = \
 	$(gtk2_assetdir)/Arrows/down-alt-hover.png \
@@ -543,12 +552,13 @@ gtk2_progress_file = \
 	$(gtk2_assetdir)/ProgressBar/bar.png \
 	$(gtk2_assetdir)/ProgressBar/trough.png
 gtk2_range_file = \
+	$(gtk2_assetdir)/Range/h-scale-trough-active.png \
 	$(gtk2_assetdir)/Range/h-scale-trough-insensitive.png \
 	$(gtk2_assetdir)/Range/h-scale-trough.png \
-	$(gtk2_assetdir)/Range/scale-slider-active.png \
 	$(gtk2_assetdir)/Range/scale-slider-hover.png \
 	$(gtk2_assetdir)/Range/scale-slider-insensitive.png \
 	$(gtk2_assetdir)/Range/scale-slider.png \
+	$(gtk2_assetdir)/Range/v-scale-trough-active.png \
 	$(gtk2_assetdir)/Range/v-scale-trough-insensitive.png \
 	$(gtk2_assetdir)/Range/v-scale-trough.png
 gtk2_scrollbar_file = \
@@ -592,8 +602,15 @@ gtk2_nokto_file = \
 	$(gtk2dir)/colors-dark.rc \
 	$(gtk2dir)/common-dark.rc \
 	$(gtk2dir)/misc-dark.rc
+gtk2_nokto_eta_file = \
+	$(gtk2dir)/3rd-party-dark-eta.rc \
+	$(gtk2dir)/colors-dark.rc \
+	$(gtk2dir)/common-dark-eta.rc \
+	$(gtk2dir)/misc-dark-eta.rc
 gtk2_nokto_gtkrc_file = \
 	$(gtk2dir)/gtkrc-dark
+gtk2_nokto_eta_gtkrc_file = \
+	$(gtk2dir)/gtkrc-dark-eta
 gtk2_nokto_arrow_file = \
 	$(gtk2_assetdir)/Arrows/down-alt-dark.png \
 	$(gtk2_assetdir)/Arrows/down-alt-hover-dark.png \
@@ -708,12 +725,13 @@ gtk2_nokto_progress_file = \
 	$(gtk2_assetdir)/ProgressBar/bar.png \
 	$(gtk2_assetdir)/ProgressBar/trough-dark.png
 gtk2_nokto_range_file = \
+	$(gtk2_assetdir)/Range/h-scale-trough-active.png \
 	$(gtk2_assetdir)/Range/h-scale-trough-dark.png \
 	$(gtk2_assetdir)/Range/h-scale-trough-insensitive-dark.png \
-	$(gtk2_assetdir)/Range/scale-slider-active.png \
 	$(gtk2_assetdir)/Range/scale-slider-hover.png \
 	$(gtk2_assetdir)/Range/scale-slider-insensitive-dark.png \
 	$(gtk2_assetdir)/Range/scale-slider.png \
+	$(gtk2_assetdir)/Range/v-scale-trough-active.png \
 	$(gtk2_assetdir)/Range/v-scale-trough-dark.png \
 	$(gtk2_assetdir)/Range/v-scale-trough-insensitive-dark.png
 gtk2_nokto_scrollbar_file = \
@@ -752,12 +770,12 @@ gtk2_nokto_spin_file = \
 gtk2_nokto_toolbar_file = \
 	$(gtk2_assetdir)/Toolbar/inline-toolbar-dark.png
 
-gtknextdir   = $(srcdir)/gtk-3.24
+gtknextdir   = $(srcdir)/gtk-4.0
 gtknext_file = \
 	$(gtknextdir)/gtk.css \
 	$(gtknextdir)/gtk-dark.css
 
-gtknextetadir   = $(srcdir)/gtk-3.24-eta
+gtknextetadir   = $(srcdir)/gtk-4.0-eta
 gtknexteta_file = \
 	$(gtknextetadir)/gtk.css \
 	$(gtknextetadir)/gtk-dark.css
@@ -801,7 +819,7 @@ all:
 if ENABLE_PARALLEL
 	cd $(srcdir)/sass && \
 	$(PARALLEL) --no-notice --line-buffer -j0 \
-	$(BUNDLE) exec $(SASS) --update --force --sourcemap=none ::: \
+	$(BUNDLE) exec $(SASS) --update --force --sourcemap=none --style=compact ::: \
 		3.18/gtk.scss:../gtk-3.18/gtk.css \
 		3.18/gtk-dark.scss:../gtk-3.18/gtk-dark.css \
 		3.20/gtk.scss:../gtk-3.20/gtk.css \
@@ -814,7 +832,7 @@ if ENABLE_PARALLEL
 		3.22/gtk-dark-eta.scss:../gtk-3.22-eta/gtk-dark.css
 else
 	cd $(srcdir)/sass && \
-	$(BUNDLE) exec $(SASS) --update --force --sourcemap=none \
+	$(BUNDLE) exec $(SASS) --update --force --sourcemap=none --style=compact \
 		3.18/gtk.scss:../gtk-3.18/gtk.css \
 		3.18/gtk-dark.scss:../gtk-3.18/gtk-dark.css \
 		3.20/gtk.scss:../gtk-3.20/gtk.css \
@@ -828,24 +846,24 @@ else
 endif
 
 if ENABLE_GTK_NEXT
-	$(MKDIR_P) $(srcdir)/gtk-3.24
-	$(MKDIR_P) $(srcdir)/gtk-3.24-eta
+	$(MKDIR_P) $(srcdir)/gtk-4.0
+	$(MKDIR_P) $(srcdir)/gtk-4.0-eta
 
 if ENABLE_PARALLEL
 	cd $(srcdir)/sass && \
 	$(PARALLEL) --no-notice --line-buffer -j0 \
-	$(BUNDLE) exec $(SASS) --update --force --sourcemap=none ::: \
-		3.24/gtk.scss:../gtk-3.24/gtk.css \
-		3.24/gtk-dark.scss:../gtk-3.24/gtk-dark.css \
-		3.24/gtk-eta.scss:../gtk-3.24-eta/gtk.css \
-		3.24/gtk-dark-eta.scss:../gtk-3.24-eta/gtk-dark.css
+	$(BUNDLE) exec $(SASS) --update --force --sourcemap=none --style=compact ::: \
+		4.0/gtk.scss:../gtk-4.0/gtk.css \
+		4.0/gtk-dark.scss:../gtk-4.0/gtk-dark.css \
+		4.0/gtk-eta.scss:../gtk-4.0-eta/gtk.css \
+		4.0/gtk-dark-eta.scss:../gtk-4.0-eta/gtk-dark.css
 else
 	cd $(srcdir)/sass && \
-	$(BUNDLE) exec $(SASS) --update --force --sourcemap=none \
-		3.24/gtk.scss:../gtk-3.24/gtk.css \
-		3.24/gtk-dark.scss:../gtk-3.24/gtk-dark.css \
-		3.24/gtk-eta.scss:../gtk-3.24-eta/gtk.css \
-		3.24/gtk-dark-eta.scss:../gtk-3.24-eta/gtk-dark.css
+	$(BUNDLE) exec $(SASS) --update --force --sourcemap=none --style=compact \
+		4.0/gtk.scss:../gtk-4.0/gtk.css \
+		4.0/gtk-dark.scss:../gtk-4.0/gtk-dark.css \
+		4.0/gtk-eta.scss:../gtk-4.0-eta/gtk.css \
+		4.0/gtk-dark-eta.scss:../gtk-4.0-eta/gtk-dark.css
 endif
 endif
 
@@ -917,6 +935,8 @@ install-data-local:
 	ln -sf ../Adapta/gtk-3.0 $(noktodir)/gtk-3.0
 	ln -sf ../Adapta/gtk-3.20 $(noktodir)/gtk-3.20
 	ln -sf ../Adapta/gtk-3.22 $(noktodir)/gtk-3.22
+	cd $(adaptadir)/gtk-3.0 && \
+		ln -sf ./assets/thumbnail.png thumbnail.png
 
 	$(MKDIR_P) $(adaptaetadir)/gtk-3.20
 	$(MKDIR_P) $(adaptaetadir)/gtk-3.20/assets
@@ -964,6 +984,38 @@ install-data-local:
 	cp -Rv $(gtk2_spin_file) $(adaptadir)/gtk-2.0/Spin
 	cp -Rv $(gtk2_toolbar_file) $(adaptadir)/gtk-2.0/Toolbar
 
+	$(MKDIR_P) $(adaptaetadir)/gtk-2.0
+	$(MKDIR_P) $(adaptaetadir)/gtk-2.0/Arrows
+	$(MKDIR_P) $(adaptaetadir)/gtk-2.0/Buttons
+	$(MKDIR_P) $(adaptaetadir)/gtk-2.0/Check-Radio
+	$(MKDIR_P) $(adaptaetadir)/gtk-2.0/Column
+	$(MKDIR_P) $(adaptaetadir)/gtk-2.0/Entry
+	$(MKDIR_P) $(adaptaetadir)/gtk-2.0/Handles
+	$(MKDIR_P) $(adaptaetadir)/gtk-2.0/Lines
+	$(MKDIR_P) $(adaptaetadir)/gtk-2.0/Others
+	$(MKDIR_P) $(adaptaetadir)/gtk-2.0/ProgressBar
+	$(MKDIR_P) $(adaptaetadir)/gtk-2.0/Range
+	$(MKDIR_P) $(adaptaetadir)/gtk-2.0/Scrollbars
+	$(MKDIR_P) $(adaptaetadir)/gtk-2.0/Shadows
+	$(MKDIR_P) $(adaptaetadir)/gtk-2.0/Spin
+	$(MKDIR_P) $(adaptaetadir)/gtk-2.0/Toolbar
+	cp -Rv $(gtk2_eta_file) $(adaptaetadir)/gtk-2.0
+	cp -Rv $(gtk2_eta_gtkrc_file) $(adaptaetadir)/gtk-2.0/gtkrc
+	cp -Rv $(gtk2_arrow_file) $(adaptaetadir)/gtk-2.0/Arrows
+	cp -Rv $(gtk2_button_file) $(adaptaetadir)/gtk-2.0/Buttons
+	cp -Rv $(gtk2_checkradio_file) $(adaptaetadir)/gtk-2.0/Check-Radio
+	cp -Rv $(gtk2_column_file) $(adaptaetadir)/gtk-2.0/Column
+	cp -Rv $(gtk2_entry_file) $(adaptaetadir)/gtk-2.0/Entry
+	cp -Rv $(gtk2_handle_file) $(adaptaetadir)/gtk-2.0/Handles
+	cp -Rv $(gtk2_line_file) $(adaptaetadir)/gtk-2.0/Lines
+	cp -Rv $(gtk2_other_file) $(adaptaetadir)/gtk-2.0/Others
+	cp -Rv $(gtk2_progress_file) $(adaptaetadir)/gtk-2.0/ProgressBar
+	cp -Rv $(gtk2_range_file) $(adaptaetadir)/gtk-2.0/Range
+	cp -Rv $(gtk2_scrollbar_file) $(adaptaetadir)/gtk-2.0/Scrollbars
+	cp -Rv $(gtk2_shadow_file) $(adaptaetadir)/gtk-2.0/Shadows
+	cp -Rv $(gtk2_spin_file) $(adaptaetadir)/gtk-2.0/Spin
+	cp -Rv $(gtk2_toolbar_file) $(adaptaetadir)/gtk-2.0/Toolbar
+
 	$(MKDIR_P) $(noktodir)/gtk-2.0
 	$(MKDIR_P) $(noktodir)/gtk-2.0/Arrows
 	$(MKDIR_P) $(noktodir)/gtk-2.0/Buttons
@@ -996,24 +1048,52 @@ install-data-local:
 	cp -Rv $(gtk2_nokto_spin_file) $(noktodir)/gtk-2.0/Spin
 	cp -Rv $(gtk2_nokto_toolbar_file) $(noktodir)/gtk-2.0/Toolbar
 
-	cd $(adaptadir)
-	ln -sf ../Adapta/gtk-2.0 $(adaptaetadir)/gtk-2.0
-	ln -sf ../Adapta-Nokto/gtk-2.0 $(noktoetadir)/gtk-2.0
+	$(MKDIR_P) $(noktoetadir)/gtk-2.0
+	$(MKDIR_P) $(noktoetadir)/gtk-2.0/Arrows
+	$(MKDIR_P) $(noktoetadir)/gtk-2.0/Buttons
+	$(MKDIR_P) $(noktoetadir)/gtk-2.0/Check-Radio
+	$(MKDIR_P) $(noktoetadir)/gtk-2.0/Column
+	$(MKDIR_P) $(noktoetadir)/gtk-2.0/Entry
+	$(MKDIR_P) $(noktoetadir)/gtk-2.0/Handles
+	$(MKDIR_P) $(noktoetadir)/gtk-2.0/Lines
+	$(MKDIR_P) $(noktoetadir)/gtk-2.0/Others
+	$(MKDIR_P) $(noktoetadir)/gtk-2.0/ProgressBar
+	$(MKDIR_P) $(noktoetadir)/gtk-2.0/Range
+	$(MKDIR_P) $(noktoetadir)/gtk-2.0/Scrollbars
+	$(MKDIR_P) $(noktoetadir)/gtk-2.0/Shadows
+	$(MKDIR_P) $(noktoetadir)/gtk-2.0/Spin
+	$(MKDIR_P) $(noktoetadir)/gtk-2.0/Toolbar
+	cp -Rv $(gtk2_nokto_eta_file) $(noktoetadir)/gtk-2.0
+	cp -Rv $(gtk2_nokto_eta_gtkrc_file) $(noktoetadir)/gtk-2.0/gtkrc
+	cp -Rv $(gtk2_nokto_arrow_file) $(noktoetadir)/gtk-2.0/Arrows
+	cp -Rv $(gtk2_nokto_button_file) $(noktoetadir)/gtk-2.0/Buttons
+	cp -Rv $(gtk2_nokto_checkradio_file) $(noktoetadir)/gtk-2.0/Check-Radio
+	cp -Rv $(gtk2_nokto_column_file) $(noktoetadir)/gtk-2.0/Column
+	cp -Rv $(gtk2_nokto_entry_file) $(noktoetadir)/gtk-2.0/Entry
+	cp -Rv $(gtk2_nokto_handle_file) $(noktoetadir)/gtk-2.0/Handles
+	cp -Rv $(gtk2_nokto_line_file) $(noktoetadir)/gtk-2.0/Lines
+	cp -Rv $(gtk2_nokto_other_file) $(noktoetadir)/gtk-2.0/Others
+	cp -Rv $(gtk2_nokto_progress_file) $(noktoetadir)/gtk-2.0/ProgressBar
+	cp -Rv $(gtk2_nokto_range_file) $(noktoetadir)/gtk-2.0/Range
+	cp -Rv $(gtk2_nokto_scrollbar_file) $(noktoetadir)/gtk-2.0/Scrollbars
+	cp -Rv $(gtk2_nokto_shadow_file) $(noktoetadir)/gtk-2.0/Shadows
+	cp -Rv $(gtk2_nokto_spin_file) $(noktoetadir)/gtk-2.0/Spin
+	cp -Rv $(gtk2_nokto_toolbar_file) $(noktoetadir)/gtk-2.0/Toolbar
 
 if ENABLE_GTK_NEXT
-	$(MKDIR_P) $(adaptadir)/gtk-3.24
-	$(MKDIR_P) $(adaptadir)/gtk-3.24/assets
-	$(MKDIR_P) $(adaptaetadir)/gtk-3.24
-	$(MKDIR_P) $(adaptaetadir)/gtk-3.24/assets
-	cp -Rv $(gtknext_file) $(adaptadir)/gtk-3.24
-	cp -Rv $(gtk3_asset_file) $(adaptadir)/gtk-3.24/assets
+	$(MKDIR_P) $(adaptadir)/gtk-4.0
+	$(MKDIR_P) $(adaptadir)/gtk-4.0/assets
+	$(MKDIR_P) $(adaptaetadir)/gtk-4.0
+	$(MKDIR_P) $(adaptaetadir)/gtk-4.0/assets
+	cp -Rv $(gtknext_file) $(adaptadir)/gtk-4.0
+	cp -Rv $(gtk3_asset_file) $(adaptadir)/gtk-4.0/assets
 	cd $(adaptadir)
-	ln -sf ../Adapta/gtk-3.24 $(noktodir)/gtk-3.24
+	ln -sf ../Adapta/gtk-4.0 $(noktodir)/gtk-4.0
 
-	cp -Rv $(gtknexteta_file) $(adaptaetadir)/gtk-3.24
-	cp -Rv $(gtk3_asset_file) $(adaptaetadir)/gtk-3.24/assets
+	cp -Rv $(gtknexteta_file) $(adaptaetadir)/gtk-4.0
+	cp -Rv $(gtk3_asset_file) $(adaptaetadir)/gtk-4.0/assets
 	cd $(adaptadir)
-	ln -sf ../Adapta-Eta/gtk-3.24 $(noktoetadir)/gtk-3.24
+	ln -sf ../Adapta-Eta/gtk-4.0 $(noktoetadir)/gtk-4.0
 endif
 
 # *******************
@@ -1046,11 +1126,11 @@ uninstall-local:
 	test -e $(adaptaetadir)/gtk-2.0 && rm -rfv $(adaptaetadir)/gtk-2.0
 
 if ENABLE_GTK_NEXT
-	test -e $(noktodir)/gtk-3.24 && rm -rfv $(noktodir)/gtk-3.24
-	test -e $(adaptadir)/gtk-3.24 && rm -rfv $(adaptadir)/gtk-3.24
+	test -e $(noktodir)/gtk-4.0 && rm -rfv $(noktodir)/gtk-4.0
+	test -e $(adaptadir)/gtk-4.0 && rm -rfv $(adaptadir)/gtk-4.0
 
-	test -e $(noktoetadir)/gtk-3.24 && rm -rfv $(noktoetadir)/gtk-3.24
-	test -e $(adaptaetadir)/gtk-3.24 && rm -rfv $(adaptaetadir)/gtk-3.24
+	test -e $(noktoetadir)/gtk-4.0 && rm -rfv $(noktoetadir)/gtk-4.0
+	test -e $(adaptaetadir)/gtk-4.0 && rm -rfv $(adaptaetadir)/gtk-4.0
 endif
 
 # ****************************
@@ -1074,16 +1154,14 @@ CLEANFILES = \
 	$(srcdir)/asset/assets-gtk3/*.png \
 	$(srcdir)/asset/assets-gtk2.svg \
 	$(srcdir)/asset/assets-gtk3.svg \
-	$(srcdir)/sass/common/_key_colors.scss \
-	$(srcdir)/sass/common/_key_scale.scss \
 	$(srcdir)/gtk-2.0/colors.rc \
 	$(srcdir)/gtk-2.0/colors-dark.rc
 if ENABLE_GTK_NEXT
 CLEANFILES += \
-	$(srcdir)/gtk-3.24/gtk.css \
-	$(srcdir)/gtk-3.24/gtk-dark.css \
-	$(srcdir)/gtk-3.24-eta/gtk.css \
-	$(srcdir)/gtk-3.24-eta/gtk-dark.css
+	$(srcdir)/gtk-4.0/gtk.css \
+	$(srcdir)/gtk-4.0/gtk-dark.css \
+	$(srcdir)/gtk-4.0-eta/gtk.css \
+	$(srcdir)/gtk-4.0-eta/gtk-dark.css
 endif
 
 DISTCLEANFILES = \
