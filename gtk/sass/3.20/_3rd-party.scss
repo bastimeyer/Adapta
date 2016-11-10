@@ -192,19 +192,6 @@ $budgie_transition: opacity 0.2s $slope_medium,
 }
 
 // main menu styling
-.budgie-panel widget > box.horizontal > image.primary-control {
-  // this is backward-compat for legacy
-  // override stock icon with specific one
-  min-width: 20px;
-  min-height: 20px;
-  margin: 3px 0;
-  background-image: url("assets/show-apps.svg");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: contain;
-  color: transparent;
-}
-
 .budgie-panel button.flat.budgie-menu-launcher {
   image {
     // override stock icon with specific one
@@ -251,7 +238,7 @@ $budgie_transition: opacity 0.2s $slope_medium,
       color: $secondary_fg_color;
       transition: none;
 
-      // FIXME: enlarge vertical spacing with icon's paddding
+      // FIXME: enlarge vertical spacing with icon's padding
       image { padding: rem(5.3px) 0 rem(6.7px); }
     }
     &:hover,
@@ -388,6 +375,8 @@ $budgie_transition: opacity 0.2s $slope_medium,
           color: $inverted_secondary_fg_color;
 
           &:first-child { // avatar image
+            min-width: 20px;
+            min-height: 20px;
             padding-top: rem(6.7px);
             opacity: 0.9;
           }
@@ -462,12 +451,20 @@ $budgie_transition: opacity 0.2s $slope_medium,
       }
     }
 
+    // reduce the gap between child elements
+    &:not(.top):not(.bottom) { margin-top: rem(-10.7px); }
+
     // last-child is constructed without header-label
     &:not(.top):not(.bottom):not(:last-child) {
       > label,
       > box > label,
       > box > image { color: $tertiary_fg_color; }
     }
+  }
+
+  > stack > box.vertical > stack > stack > box.vertical > .raven-header {
+    // revert to original top-margin for 'AppletSettings'
+    margin-top: 0;
   }
 
   .raven-background {
@@ -600,13 +597,25 @@ $budgie_transition: opacity 0.2s $slope_medium,
     button.flat.expander-button { // expander arrow buttons
       min-width: $icon_size;
       min-height: $icon_size;
-      padding: rem(10.7px);
+      padding: rem(8px);
       border-radius: 100px;
       -gtk-outline-radius: 100px;
       color: $tertiary_fg_color;
       &:hover,
       &:active { color: $fg_color; }
+
+      &:dir(ltr) { margin-right: rem(2.7px); }
+      &:dir(rtl) { margin-left: rem(2.7px); }
     }
+
+    button.flat.image-button.primary-control { // close button in MPRIS
+      min-width: $icon_size;
+      min-height: $icon_size;
+      padding: rem(8px);
+    }
+
+    // reduce height of scale node
+    scale { padding: rem(10px - 2px, $sw: 1.0); }
   }
 
   stackswitcher.linked > button.text-button.radio { // switcher buttons
@@ -810,6 +819,12 @@ popover.places-menu {
       font-weight: 700;
     }
   }
+}
+
+// keyboard indicator applet
+widget.keyboard-label > label {
+  // tweak base-line
+  padding-bottom: rem(1.3px, $sw: 1.0);
 }
 
 // notifications
@@ -1071,8 +1086,9 @@ popover.places-menu {
   // polkit-dialog specific styling
   &:not(.budgie-session-dialog) {
     .message { color: $inverted_secondary_fg_color; }
+
     .failure {
-      color: $warning_color;
+      color: $error_color;
       font-weight: 700;
     }
   }
@@ -1374,9 +1390,11 @@ headerbar.titlebar box {
   }
 
   button.image-button.toggle { // tweet button
-    min-width: $icon_size;
-    min-height: $icon_size;
-    padding: rem(10.7px);
+    min-width: $icon_size * 1.5;
+    min-height: $icon_size * 1.5;
+    padding: if($ref_weight < 1.0,
+             rem(($widget_size - $icon_size * 1.5 - 2px) / 2),
+             rem(($widget_size - $icon_size * 1.5) / 2));
   }
 }
 
@@ -1563,16 +1581,20 @@ headerbar.titlebar box {
 
 window > headerbar > widget > box.horizontal {
   > grid.horizontal > button.toggle.image-button {
-    min-width: $icon_size;
-    min-height: $icon_size;
-    padding: rem(10.7px);
+    min-width: $icon_size * 1.5;
+    min-height: $icon_size * 1.5;
+    padding: if($ref_weight < 1.0,
+             rem(($widget_size - $icon_size * 1.5 - 2px) / 2),
+             rem(($widget_size - $icon_size * 1.5) / 2));
   }
 
   > button.image-button {
-    min-width: $icon_size;
-    min-height: $icon_size;
+    min-width: $icon_size * 1.5;
+    min-height: $icon_size * 1.5;
     margin: -2px 0;
-    padding: rem(10.7px);
+    padding: if($ref_weight < 1.0,
+             rem(($widget_size - $icon_size * 1.5 - 2px) / 2),
+             rem(($widget_size - $icon_size * 1.5) / 2));
   }
 }
 
@@ -1617,7 +1639,8 @@ window > headerbar > widget > box.horizontal {
   text-shadow: none;
 }
 
-.xfce4-panel {
+.xfce4-panel,
+.xfce4-panel.background {
   background-color: $panel_bg_color;
   color: $inverted_fg_color;
   font-weight: 700;
@@ -1752,7 +1775,7 @@ TopMenuAppMenuBar {
  * FeedReader *
  **************/
 
-window > paned.titlebar > headerbar.titlebar {
+window.background > paned.titlebar > headerbar.titlebar {
   button.flat {
     // FIXME: when developer will use .image-button class?
     &:not(.titlebutton):not(.image-button):not(.text-button):not(.toggle) {
@@ -1760,8 +1783,21 @@ window > paned.titlebar > headerbar.titlebar {
       min-height: $icon_size - 2px;
       margin: rem(5.3px + 2px) 0;
       padding: 0 rem(($widget_size - $icon_size - 2px) / 2);
+    }
+  }
 
-      stack > spinner.feedlist-spinner { margin: 0; }
+  // prevent filled allocation
+  spinner.feedlist-spinner { padding: rem(12px) 0; }
+}
+
+// hide unneeded spinner
+overlay.article-list > stack > box.horizontal {
+  spinner {
+    &,
+    &:checked,
+    &:checked:disabled,
+    &:checked:backdrop {
+      opacity: 0; // makes no sense here
     }
   }
 }
@@ -2331,6 +2367,51 @@ MsdOsdWindow {
   button {
     // active <- checked
     &:active { background-color: $selected_bg_color; }
+  }
+}
+
+
+/************
+ * Inkscape *
+ ************/
+
+// 2nd-row toolbars
+#SelectToolbar,
+#Kludge {
+  border-top: 1px solid $borders_color;
+  box-shadow: none;
+}
+
+// left/right-side, vertical toolbars
+#SnapToolbar,
+#ToolToolbar {
+  > button,
+  > toolitem > button,
+  > toolbutton > button { // revert to rectangular buttons
+    border-radius: 2px;
+    -gtk-outline-radius: 2px;
+    &:checked { // revert to Gtk+ 2.x styling
+      border-image: none;
+      background-color: $selected_bg_color;
+      color: $selected_fg_color;
+    }
+  }
+}
+
+// scrolled colour-palette
+#PreviewHolderScroller > viewport.frame {
+  padding: 1px 0;
+  border-style: solid none; // add fake border to top/bottom
+  border-width: 1px 0;
+  border-color: transparent;
+}
+
+// misc
+spinbutton#ZoomStatus {
+  > button {
+    min-width: rem($widget_size, $sw: 1.0);
+    min-height: rem($widget_size, $sw: 1.0);
+    padding: 0;
   }
 }
 

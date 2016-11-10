@@ -76,8 +76,9 @@ panel-applet menubar {
   }
 }
 
-wnck-tasklist {
-  button.toggle { font-weight: 400; }
+wnck-tasklist > button.toggle,
+#tasklist-button {
+  &, & label { font-weight: 400; }
 }
 
 wnck-pager {
@@ -95,10 +96,10 @@ na-tray-applet {
 gp-arrow-button {
   min-width: rem(20px);
   min-height: 0;
+  margin: rem(2px);
   border: 1px solid transparent;
   background-image: none;
   color: $inverted_secondary_fg_color;
-  margin: rem(2px);
   &:hover,
   &:active { color: $inverted_fg_color; }
 }
@@ -408,31 +409,48 @@ NautilusTrashBar {
   > .linked.raised > button {
     // tool-button array
     &.image-button:not(.text-button) {
-      min-height: $icon_size;
-      min-width: $icon_size;
-      padding: rem(($widget_size - $icon_size - 2.7px) / 2)
-               rem(($widget_size - $icon_size) / 2);
+      min-height: $icon_size * 1.5;
+      min-width: $icon_size * 1.5;
+      margin: if($ref_weight < 1.0, rem(5.3px + 2.7px) 0,
+                                    rem(5.3px) 0);
+      padding: if($ref_weight < 1.0,
+               rem(($widget_size - $icon_size * 1.5 - 2px) / 2),
+               rem(($widget_size - $icon_size * 1.5) / 2));
     }
 
     // should be .text-button
     &:not(.image-button):not(.text-button):not(.suggested-action) {
       min-height: $icon_size;
-      padding-top: rem(($widget_size - $icon_size - 4px) / 2);
-      padding-bottom: rem(($widget_size - $icon_size - 1.3px) / 2);
+      padding-top: rem(($widget_size - $icon_size - 2.7px) / 2);
+      padding-bottom: rem(($widget_size - $icon_size - 2.7px) / 2);
+
+      label { margin: rem(-2px) 0; }
     }
   }
 
-  button.image-button:not(.text-button):not(.titlebutton) {
-    > widget > box > image { padding: 0 rem(1.3px); }
+  box.horizontal:not(.linked):not(.right) {
+    button.image-button:not(.text-button):not(.titlebutton) {
+      margin: if($ref_weight < 1.0, rem(5.3px + 2.7px) 0,
+                                    rem(5.3px) 0);
+      padding: if($ref_weight < 1.0,
+               rem(($widget_size - $icon_size * 1.5 - 2px) / 2),
+               rem(($widget_size - $icon_size * 1.5) / 2));
+    }
+  }
+
+  button.suggested-action { // 'send' button
+    min-height: $icon_size;
+    padding-top: rem(($widget_size - $icon_size - 2.7px) / 2);
+    padding-bottom: rem(($widget_size - $icon_size - 2.7px) / 2);
+
+    label { margin: rem(-2px) 0; }
   }
 }
 
 // left-pane styling
 .sidebar.vertical > paned.sidebar-pane-separator {
   // remove unwanted frame
-  .folder-frame > border {
-    border-width: 0 0 1px;
-  }
+  .folder-frame > border { border-width: 0 0 1px; }
 
   .conversation-frame > border { border: none; }
 
@@ -639,8 +657,8 @@ window.solid-csd > box.vertical > box.vertical {
 }
 
 // force using circle buttons for 'play/pause' etc
-.background.csd > box.vertical > box.vertical > toolbar,
-.background.solid-csd > box.vertical > box.vertical > toolbar {
+window.background.csd > box.vertical > box.vertical > toolbar,
+window.background.solid-csd > box.vertical > box.vertical > toolbar {
   button,
   .linked > button {
     min-width: $widget_size;
@@ -696,6 +714,42 @@ window > box.vertical > toolbar.primary-toolbar {
   }
 }
 
+window.background.csd > headerbar.titlebar > box.horizontal > box.horizontal,
+window.background.solid-csd > headerbar.titlebar > box.horizontal > box.horizontal {
+  // 'search' button
+  > button.toggle:not(.text-button):not(.image-button):not(.popup) {
+    min-width: $icon_size * 1.5;
+    min-height: $icon_size * 1.5;
+    padding: if($ref_weight < 1.0,
+             rem(($widget_size - $icon_size * 1.5 - 2px) / 2),
+             rem(($widget_size - $icon_size * 1.5) / 2));
+  }
+}
+
+// 'plugins' dialog
+dialog.background > box.dialog-vbox.vertical > box.vertical {
+  > toolbar.inline-toolbar.horizontal {
+    // remove weird margins
+    margin: -2px -2px;
+
+    > toolitem {
+      box > button {
+        min-width: $widget_size - 10.7px;
+        min-height: $widget_size - 10.7px;
+        padding: 0;
+      }
+
+      buttonbox > button {
+        min-width: $widget_size - 10.7px;
+        min-height: $widget_size - 10.7px;
+        padding: 0;
+        border-radius: 2px;
+        -gtk-outline-radius: 2px;
+      }
+    }
+  }
+}
+
 
 /********************
  * Gnome-Calculator *
@@ -707,7 +761,8 @@ window {
       @extend button.flat;
       min-width: rem(13.3px);
       min-height: rem(13.3px);
-      padding: rem(10.7px) rem(13.3px) rem(10.7px);  // FIXME: broken in 12pt fonts?
+      // FIXME: broken in 12pt fonts?
+      padding: rem(10.7px) rem(13.3px) rem(10.7px);
       border: rem(10.7px) solid transparent;
       border-radius: 2px;
       font-weight: 700;
@@ -842,10 +897,16 @@ $fake-shadow-dark: linear-gradient(to bottom, rgba(0, 0, 0, 0.20),
 paned.titlebar.horizontal {
   headerbar {
     button.flat.toggle.popup:not(.image-button) { // left-pane header button
+      min-height: $icon_size;
+      padding-top: rem(($widget_size - $icon_size - 4px) / 2);
+      padding-bottom: rem(($widget_size - $icon_size - 1.3px) / 2);
       border-radius: 2px;
       -gtk-outline-radius: 2px;
 
-      box > .title { color: $inverted_secondary_fg_color; }
+      box > .title {
+        margin-bottom: 0; // reset bottom-margin
+        color: $inverted_secondary_fg_color;
+      }
 
       &:hover,
       &:active,
@@ -1075,13 +1136,16 @@ perspectiveswitcher {
     box-shadow: none;
 
     image { opacity: 0.55; }
+
     &:hover {
       background: none;
+
       image { opacity: 0.75; }
     }
     &:active,
     &:checked {
       background: none;
+
       image { opacity: 1.0; }
     }
   }
@@ -1149,9 +1213,13 @@ layouttab > box {
     &:disabled { @include button(flat-insensitive); }
   }
 
-  > button:last-child image { opacity: 0.55; }
-  > button:last-child:hover image { opacity: 0.75; }
-  > button:last-child:active image { opacity: 1.0; }
+  > button:last-child {
+    image { opacity: 0.55; }
+
+    &:hover image { opacity: 0.75; }
+
+    &:active image { opacity: 1.0; }
+  }
 }
 
 layout {
@@ -1564,7 +1632,7 @@ window > box.vertical > box.vertical > widget > grid.vertical {
 
 terminal-window {
   &.background,
-  vte-terminal { // set the same background with Mutter
+  vte-terminal { // set the same background with decorations
     background-color: $inverted_dark_color;
     color: $inverted_fg_color;
   }
@@ -1712,9 +1780,9 @@ window headerbar > box.horizontal:not(.linked) {
     &:not(.toggle):not(.popup):not(.color):not(.titlebutton) {
       &:not(.destructive-action):not(.suggested-action) {
         // 'list/grid' view changer
-        min-width: $icon_size;
-        min-width: $icon_size;
-        padding: rem(($widget_size - $icon_size) / 2);
+        min-width: $icon_size * 1.5;
+        min-width: $icon_size * 1.5;
+        padding: rem(($widget_size - $icon_size * 1.5) / 2);
       }
     }
   }
@@ -1724,7 +1792,7 @@ window headerbar > box.horizontal:not(.linked) {
       // force using square-button
       min-width: $icon_size + 8px;
       min-height: $icon_size;
-      padding: rem(($widget_size - $icon_size) / 2);
+      padding: rem(($widget_size - $icon_size - 2.7px) / 2);
       border-radius: 2px;
       -gtk-outline-radius: 2px;
     }
@@ -1781,7 +1849,8 @@ window > popover > stack > grid > button {
  * Gnome-Disks *
  ***************/
 
-.background.csd > box.vertical > paned.horizontal > scrolledwindow {
+.background.csd > box.vertical > paned.horizontal > scrolledwindow,
+.background.solid-csd > box.vertical > paned.horizontal > scrolledwindow {
   // side-bar styling
   background-color: if($variant == 'light', rgba(12, 18, 0, 0.01),
                                             rgba(18, 22, 0, 0.04));
@@ -1876,7 +1945,7 @@ window.background > grid.horizontal.titlebar {
  ***************/
 
 // override semi-transparent window node
-// FIXME: any colours will turn black, caused their cairo codes?
+// FIXME: any colours will turn black, caused by their cairo codes?
 #MainWindow.csd {
   &,
   &.background,
@@ -1955,7 +2024,9 @@ window.background > box.horizontal > notebook.frame > stack {
     margin: -13px 0 0;
     border-style: none;
 
-    > treeview.view > header > button > box > widget > label { padding: 3px 0; }
+    > treeview.view > header > button > box > widget > label {
+      padding: 3px 0;
+    }
 
     > undershoot,
     > overshoot {

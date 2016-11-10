@@ -256,21 +256,6 @@ $full_orientation: ((top, bottom),
 
 // main menu styling
 .budgie-panel BudgieMenuApplet {
-  GtkImage.primary-control {
-    // this is backward-compat for legacy
-    // override stock icon with specific one
-    border-width: 3px 0; // add spaces with fake-borders
-    border-style: solid;
-    border-color: transparent;
-    background-image: url("assets/show-apps.svg");
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: contain;
-    color: transparent;
-  }
-}
-
-.budgie-panel BudgieMenuApplet {
   .button.flat.budgie-menu-launcher {
     padding: 3px 0;
     border-radius: 0;
@@ -657,6 +642,12 @@ $full_orientation: ((top, bottom),
       &:hover,
       &:active { color: $fg_color; }
     }
+
+    .image-button.primary-control { // close button in MPRIS
+      padding: 0.5em;
+      border-radius: 100px;
+      outline-radius: 100px;
+    }
   }
 
   .linked.stack-switcher > .button.text-button { // switcher buttons
@@ -817,6 +808,12 @@ $full_orientation: ((top, bottom),
       font-weight: 700;
     }
   }
+}
+
+// keyboard indicator applet
+.keyboard-label > .label {
+  // tweak base-line
+  padding-bottom: 0.1em;
 }
 
 // notifications
@@ -1511,7 +1508,8 @@ CcShellCategoryView { // stop using $base_color
   text-shadow: none;
 }
 
-.xfce4-panel {
+.xfce4-panel,
+.xfce4-panel.background {
   background-color: $panel_bg_color;
   color: $inverted_fg_color;
   font-weight: 700;

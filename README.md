@@ -1,42 +1,73 @@
 <img src=".github/img/logo_thumb.png" alt="Logo" align="left" /> Adapta-gtk-theme
 ======
 
-
 An adaptive Gtk+ theme based on Material Design Guidelines.
 
-<img src=".github/img/sunlight.png" alt="Day" align="left" /> **Adapta**:
- * Light/Dark variant Gtk+ 3.22/3.20/3.18 theme
- * Light/Dark variant Budgie-Desktop theme
- * Light variant Gtk+ 2.0 theme
- * Light variant Gnome-Shell theme
- * Light variant Cinnamon theme
+Before using Adapta
+-------------------
 
-<img src=".github/img/moon.png" alt="Night" align="left" /> **Adapta-Nokto**:
- * Light/Dark variant Gtk+ 3.22/3.20/3.18 theme
- * Light/Dark variant Budgie-Desktop theme
- * Dark variant Gtk+ 2.0 theme
- * Dark variant Gnome-Shell theme
- * Dark variant Cinnamon theme
+Adapta strongly depends on results of the Material Design, especially **fonts** are very important stuffs.
 
-> **Note:**
->
->   Both also includes common GNOME-Flashback, Unity7, XFce4, Mate and LXDE theming.
+####Typography
+ 1. [**Noto Sans**](https://fonts.google.com/specimen/Noto+Sans)
+   - Noto (NO TOfu) sans-serif truetype/opentype font covers a lot of languages.
+   - Developed by Google and Adobe.
+   - Weight used in Adapta: 400, (500), 700
 
-<img src=".github/img/sunlight-eta.png" alt="Day" align="left" /> **Adapta-Eta**:
- * Light/Dark variant Gtk+ 3.22/3.20 theme
- * Light/Dark variant Budgie-Desktop theme
-
-<img src=".github/img/moon-eta.png" alt="Night" align="left" /> **Adapta-Nokto-Eta**:
- * Light/Dark variant Gtk+ 3.22/3.20 theme
- * Light/Dark variant Budgie-Desktop theme
+ 2. [**Roboto**](https://fonts.google.com/specimen/Roboto)
+   - Very famous as the default truetype font in Android (English ver.).
+   - Multilingual support is not good.
+   - Weight used in Adapta: 400, 500, 700
 
 > **Note:**
 >
->   Eta is tiny Gtk+ 3.2x widget variant for space-saving (Gtk+ 3.22.x/3.20.x only).
->   Others are the same as Adapta/Adapta-Nokto.
+> * Roboto is very nice with Adapta, but in some locales, it causes Tofu.
+> * NotoSans may work well in vairous locales, but NotoSans lacks 500 (Medium) weight. So elements defined with 500 will be drawn with 400 automatically.
+> * NotoSans CJK supports 500 weight.
+
+Adapta uses **NotoSans** as the primary font-family in Gnome-Shell (Cantarell is for fallback).
+In some distributions, users may need to install `fonts-noto-hinted`.
+
+Adapta is designed with nominal **13px (or 14px)** Roboto font.
+In Gnome, "window-scaling-factor = 1.0" means `-gtk-dpi = 96`, it also means:
+  ```
+  13 [px] x 72 [pt/inch] / 96 [px/inch] = 9.75 [pt]
+  14 [px] x 72 [pt/inch] / 96 [px/inch] = 10.5 [pt]
+  ```
+That's the reason why `13.33px = 10pt` is used for rem/px conversion in Gtk+ 3.2x theming (In Gtk+ 3.18.x theming, em unit is directly used).
+
+> **Note:**
 >
->   For example, 
->   * If your LCDs resolution is lower than FHD (1080p), I can suggest you should use Eta variants.
+> NotoSans CJK (ChineseJapaneseKorean) opentype fonts are actually **0.1em taller than Roboto fonts**, so if 10pt Roboto was suitable on your LCDs, set 9pt for NotoSans CJK families.
+
+####Verify the fonts are rendered correctly via font-viewer tools like Gnome-Font-Viewer.
+
+Variant Matrix
+--------------
+
+| |<img src=".github/img/sunlight.png" align="left"/> Adapta|<img src=".github/img/moon.png" align="left"/> Adapta-Nokto|<img src=".github/img/sunlight-eta.png" align="left"/> Adapta-Eta|<img src=".github/img/moon-eta.png" align="left"/> Adapta-Nokto-Eta|
+|:-----:|:-----:|:-----:|:-----:|:-----:|
+|Gtk+ 3.18.x |<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-off.png" align="center" />|<img src=".github/img/check-off.png" align="center" />|
+|Gtk+ 3.20.x |<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-on.png" align="center" />|
+|Gtk+ 3.22.x |<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-on.png" align="center" />|
+|Gtk+ 2.24.x |<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-on.png" align="center" />|
+|Mutter      |<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-on.png" align="center" />|
+|Metacity    |<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-off.png" align="center" />|<img src=".github/img/check-off.png" align="center" />|
+|Muffin      |<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-off.png" align="center" />|<img src=".github/img/check-off.png" align="center" />|
+|Compiz      |<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-off.png" align="center" />|<img src=".github/img/check-off.png" align="center" />|
+|XFwm4       |<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-off.png" align="center" />|<img src=".github/img/check-off.png" align="center" />|
+|Marco       |<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-off.png" align="center" />|<img src=".github/img/check-off.png" align="center" />|
+|Opnebox-3   |<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-off.png" align="center" />|<img src=".github/img/check-off.png" align="center" />|
+
+> **Note:**
+>
+>   **Nokto** is a dark variant.
+>
+>   **Eta** is a tiny Gtk+ 2.x/3.2x Gtk+ widget variant for saving space.
+>
+>   * To enable global dark theme, you use proper tools like Gnome-Tweak-Tool and/or edit `$HOME/.config/gtk-3.0/settings.ini`.
+>   * I suggest you use the Eta variants if your LCD resolution is lower than FHD (1080p). Eta draws widgets around -20% to -30% spacing.
+>   * Metacity can enable Eta variants ( > 3.20.x or 3.22.x).
 
 Elements
 --------
@@ -60,7 +91,7 @@ Supported Desktop Environments
  * GNOME-Shell     >= 3.22.0 (or 3.20.1 or 3.18.3)
  * GNOME-Flashback >= 3.22.0 (or 3.20.1 or 3.18.2)
  * Budgie-Desktop  >= 10.2.5
- * Cinnamon        >= 3.0.1 (or 2.8.6)
+ * Cinnamon        >= 3.2.0 (or 3.0.1 or 2.8.6)
  * Unity7          >= 7.4.0
  * XFce4           >= 4.12.2
  * Mate            >= 1.14.0 (Gtk+ 3.2x only)
@@ -69,7 +100,7 @@ Supported Desktop Environments
 
  > **Note:**
  >
- >   * Mate-Desktop support is under W.I.P.
+ >   * Mate-Desktop support is a W.I.P.
 
 Unsupported Gtk+ Based Desktops
 -------------------------------
@@ -89,7 +120,7 @@ Installation from Package(s)
 
 Installation from Git Source
 ----------------------------
-1. If previous version was installed/existed, remove them at first.
+1. If previous versions were installed/existed, remove them first.
 
  ```
  sudo rm -rf /usr/share/themes/{Adapta,Adapta-Eta,Adapta-Nokto,Adapta-Nokto-Eta}
@@ -99,7 +130,7 @@ Installation from Git Source
 
 2. Check build-requirements:
  Today Adapta bundles neither pre-generated stylesheets nor PNG images.
- So users and/or contirbutors should generate proper CSSs and PNGs at build-time.
+ So users and/or contributors should generate proper CSSs and PNGs at build-time.
 
  ```
  * autoconf
@@ -131,11 +162,11 @@ Installation from Git Source
  >   * Default prefix is `/usr`.
  >   * `Adapta-Nokto` dark variant is installed as default.
  >   * `make` generates proper CSSs and PNGs to be installed.
- >     And it will take about 5min to 15min to build,
- >     for example, Ubuntu's build-server actually does 10min...
- >   * `sudo make install` installs multiple versioned theme and Gtk+ automatically selects proper versioned one when running.
+ >     It will take about 5min to 15min to build.
+ >     For example, Ubuntu's build-server takes 10min.
+ >   * `sudo make install` installs multiple versioned theme and Gtk+ automatically selects the properly versioned one when running.
 
-4. If users want to speed up with concurrency-build, please pass this specific options to `autogen.sh`:
+4. To speed up by using concurrency-build, pass this specific option to `autogen.sh`:
 
  ```
  --enable-parallel       enable parallel-build support (type: bool)
@@ -145,11 +176,11 @@ Installation from Git Source
  >
  >   * This feature requires GNU `parallel`, so please add `parallel` to build-requirements.
  >     Parallel can execute multiple scripts and binaries to be suitable for multi-threading.
- >     Especially it could shorten the rendering-time via Inkscape and generation-time via sass.
- >   * `-jN` option to be passed to GNU `make` is surely usable though, but Adapta employs `parallel` meanwhile...
+ >     It could especially shorten the rendering-time via Inkscape and generation-time via sass.
+ >   * `-jN` option to be passed to GNU `make` is surely usable, but Adapta currently employs `parallel.
  >   * This feature should not be applied when packaging on remote/shared build-servers.
 
-5. If users want to disable some DE supports, please pass these specific options to `autogen.sh`:
+5. To disable some DE supports, pass these specific options to `autogen.sh`:
 
  ```
  --disable-cinnamon      disable cinnamon support (type: bool)
@@ -162,16 +193,16 @@ Installation from Git Source
 
  > **Note:**
  >
- >   * Installer installs GNOME/Budgie-Desktop support even if all of options above were applied.
+ >   * The installer installs GNOME/Budgie-Desktop support even if all of options above were applied.
  >   * Cinnamon/Unity/Mate support hooks `metacity-1` directory even if GNOME-Flashback support was disabled.
 
-6. If users want to enable next Gtk+ release support, please pass this option:
+6. To enable next Gtk+ release support, pass this option:
 
  ```
  --enable-gtk_next      enable Gtk+ 4.0 support (type: bool)
  ```
 
-7. If users want to change default 5 **Key-Colors**, please pass these options:
+7. To change the default 5 **Key-Colors**, pass these options:
 
  ```
  --with-selection_color        Primary color for 'selected-items' (Default: #00BCD4 = Cyan500, type: int)
@@ -184,21 +215,21 @@ Installation from Git Source
  > **Note:**
  >
  >   * Color-codes are defined as `#` + 6`HEX`s (Standard RGB definitions in HTML codes).
- >     And uppercases are strongly recommended in Adapta code-base.
- >   * Material Desing Color Palette is here: [External Link](https://www.google.com/design/spec/style/color.html#color-color-palette)
- >   * Example) If you would like to use 'Teal500' as selection_color, try this:
+ >     Uppercases are strongly recommended in Adapta code-base.
+ >   * The Material Design Color Palette can be found [here](https://www.google.com/design/spec/style/color.html#color-color-palette).
+ >   * Example: If you would like to use 'Teal500' as selection_color, use this:
  >
  >     ```./autogen.sh --with-selection_color=#009688 --with-second_selection_color=#4DB6AC```
  >
- >     This can switch to almost-Teal key colors.
- >   * Basically `selection_color` and `suggestion_color` should be with `500` colors,
- >     and `second_selection_color` and `accent_color` should be with `300` colors.
+ >     This switchese the theme to almost Teal key colors.
+ >   * Basically `selection_color` and `suggestion_color` should use `500` colors,
+ >     and `second_selection_color` and `accent_color` should use `300` colors.
  >   * While doing `make`, Adapta changes those 5 colors in all stylesheets and images,
  >     and `make clean` cleans up all generated files from source directories.
 
 Extra Browser Support
 ---------------------
- If users want to try experimental browser specific theming, please pass this option:
+ To try experimental browser specific theming, pass this option:
 
  ```
  --enable-chrome         enable Chrome(ium) support (type: bool)
@@ -208,7 +239,7 @@ Extra Browser Support
 
  > **Note:**
  >
- >   * Today Chrome(ium) theming is supported only.
+ >   * Currently only Chrome(ium) theming is supported.
  >
  >   * Vivaldi can make custom themes via settings like these:
  >     ```
@@ -224,7 +255,7 @@ Extra Browser Support
 
 Extra Dock Support
 ------------------
- If users want to try "Plank" theming, please pass this option:
+ To try "Plank" theming, pass this option:
 
  ```
  --enable-plank         enable Plank support (type: bool)
@@ -234,18 +265,18 @@ Extra Dock Support
 
  > **Note:**
  >
- >   * Both Adapta and Adapta-Nokto shares same theming.
- >   * Don't expect too much. Plank is NOT themeable widget for me!
+ >   * Both Adapta and Adapta-Nokto shares the same theming.
+ >   * Don't expect too much. Plank is NOT a themeable widget for me!
 
 Extra Compositor Support
 ------------------------
- Compton is the famous stand-alone compositor worked well with Openbox window-manager. Installer installs recommended configuration file `compton.conf` into `Adapta/openbox-3` directory if Openbox support was enabled.
+ Compton is the famous stand-alone compositor that works well with the Openbox window-manager. The installer installs recommended configuration file `compton.conf` into `Adapta/openbox-3` directory if Openbox support is enabled.
 
- Then copy that file into `~/.config/` and restart compton to read settings.  Still that compositor had some limitations in its features for Adapta though...
+ Next, copy that file into `~/.config/` and restart compton to read the settings.  That compositor still has some limitations in its features for Adapta, however.
 
 Work in Progress
 ----------------
-* Conversion to Gtk+ 3.23
+* Conversion to Gtk+ 4.0
 * Add Mate 1.14 integration
 
 TODO

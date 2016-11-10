@@ -11,7 +11,7 @@ $asset_suffix: if($variant == 'dark', '-dark', '');
 
 $icon_size: 16px;
 $widget_size: 37.3px;
-$attention: rem(5.3px) rem(5.3px);
+$attention: rem(6.7px, $sw: 1.0) rem(6.7px, $sw: 1.0);
 $scale: 80%;
 $separator_narrow: 1px 1px;
 $separator_wide: 1px 1px, 1px 1px;
@@ -454,9 +454,12 @@ entry {
     }
   }
 
-  grid & { // set limit
+  grid &,
+  spinbutton:not(.vertical) > & { // special case
     padding-top: rem(9.3px - 2.7px);
     padding-bottom: rem(10.7px - 2.7px);
+
+    > progress { margin: rem(-9.3px + 2.7px) 0 rem(-10.7px + 2.7px); }
   }
 
   .osd & {
@@ -474,14 +477,14 @@ entry {
     background-image: -gtk-gradient(radial,
                                     center center, 0,
                                     center center, 0.001,
-                                    to($selected_bg_color),
+                                    to($accent_color),
                                     to(transparent));
   }
   to {
     background-image: -gtk-gradient(radial,
                                     center center, 0,
                                     center center, 0.5,
-                                    to($selected_bg_color),
+                                    to($accent_color),
                                     to(transparent));
   }
 }
@@ -608,8 +611,7 @@ button {
     // to have the image-button padding, while the text side the text-button
     // one, so we're adding the missing padding to the label depending on
     // its position inside the button
-    padding-left: rem(13.3px);
-    padding-right: rem(13.3px);
+    padding: rem(9.3px) rem(13.3px) rem(10.7px);
     border-radius: 2px;
     -gtk-outline-radius: 2px;
 
@@ -626,6 +628,20 @@ button {
     &:drop(active) {
       color: $drop_target_color;
       background-color: $drop_target_fill_color;
+    }
+  }
+
+  &.circular {
+    &,
+    &-button.image-button,
+    &.radio.text-button {
+      min-height: $icon_size * 1.5;
+      min-width: $icon_size * 1.5;
+      padding: rem(($widget_size - $icon_size * 1.5) / 2);
+      border-radius: 9999px;
+      -gtk-outline-radius: 9999px;
+
+      label { padding: 0; }
     }
   }
 
@@ -918,7 +934,7 @@ button {
       color: $insensitive_fg_color;
       background-color: $track_color;
       &:dir(ltr) { box-shadow: inset 2px 0 gtkopacity($selected_bg_color, 0.2); }
-      &:dir(ltr) { box-shadow: inset -2px 0 gtkopacity($selected_bg_color, 0.2); }
+      &:dir(rtl) { box-shadow: inset -2px 0 gtkopacity($selected_bg_color, 0.2); }
       > label { color: inherit; }
     }
   }
@@ -938,10 +954,10 @@ button {
 
 %needs_attention {
   background-repeat: no-repeat;
-  background-position: right rem(3px);
+  background-position: right rem(3px, $sw: 1.0);
   background-size: $attention;
   animation: needs_attention 0.3s $slope_slow forwards;
-  &:dir(rtl) { background-position: left rem(3px); }
+  &:dir(rtl) { background-position: left rem(3px, $sw: 1.0); }
 }
 
 // all the following is for the +|- buttons on inline toolbars, that way
@@ -1857,43 +1873,56 @@ headerbar {
 
   // adjust spacing for finer aspect-ratio
   button.text-button,
-  button:not(.image-button):not(.text-button) {
+  button:not(.image-button):not(.text-button):not(.title-button):not(.titlebutton) {
     &,
     &.lock,
     &.toggle {
       min-height: $icon_size;
       padding-top: rem(($widget_size - $icon_size - 4px) / 2);
       padding-bottom: rem(($widget_size - $icon_size - 1.3px) / 2);
+
+      // prepare for tall and dense fonts
+      label { margin: rem(-2px) 0; }
     }
   }
 
   button:not(.text-button),
-  button.image-button:not(.text-button) {
-    min-width: $icon_size;
-    min-height: $icon_size;
-    padding: rem(($widget_size - $icon_size) / 2);
+  button.image-button:not(.text-button),
+  button.title-button:not(.text-button) {
+    min-width: $icon_size * 1.5;
+    min-height: $icon_size * 1.5;
+    padding: if($ref_weight < 1.0,
+             rem(($widget_size - $icon_size * 1.5 - 2px) / 2),
+             rem(($widget_size - $icon_size * 1.5) / 2));
   }
 
   .linked > button {
     &.image-button:not(.text-button) {
       min-width: $icon_size * 1.5;
       min-height: $icon_size * 1.5;
-      padding: if($ref_weight < 1.0, rem(($widget_size - $icon_size * 1.5 - 3.3px) / 2),
-                                     rem(($widget_size - $icon_size * 1.5 - 2px) / 2));
+      padding: if($ref_weight < 1.0,
+               rem(($widget_size - $icon_size * 1.5 - 2px) / 2),
+               rem(($widget_size - $icon_size * 1.5) / 2));
     }
   }
 
-  button.toggle:not(.text-button) {
-    min-width: $icon_size;
+  button.toggle:not(.text-button),
+  button.toggle.title-button {
+    min-width: $icon_size * 1.5;
+    min-height: $icon_size * 1.5;
+    padding: if($ref_weight < 1.0,
+             rem(($widget_size - $icon_size * 1.5 - 2px) / 2),
+             rem(($widget_size - $icon_size * 1.5) / 2));
+  }
+
+  stackswitcher button:not(.image-button),
+  .stack-switcher > button:not(.image-button) {
     min-height: $icon_size;
-    padding: rem(($widget_size - $icon_size) / 2)
-             rem(($widget_size - $icon_size + 1px) / 2);
+    padding-top: rem(($widget_size - $icon_size - 5.3px) / 2);
+    padding-bottom: rem(($widget_size - $icon_size - 2.7px) / 2);
 
-    // label { padding: rem(9.3px) rem(8px) rem(10.7px); }
-
-    // menu menuitem { // reset padding
-    //   label { padding: 0; }
-    // }
+    // prepare for tall and dense fonts
+    label { margin: rem(-2px) 0; }
   }
 
   button,
@@ -2192,13 +2221,8 @@ headerbar {
 
   .solid-csd & {
     &:dir(rtl), &:dir(ltr) { // specificity bump
-      margin: -1px 0 0;
-      box-shadow: inset 0 1px $highlight_color;
+      border-radius: 0;
     }
-  }
-
-  .solid-csd.maximized & {
-    &:dir(rtl), &:dir(ltr) { box-shadow: none; }
   }
 }
 
@@ -2243,8 +2267,10 @@ headerbar {
     .title { margin-bottom: rem(5.3px - 1.3px); }
 
     > box.vertical {
-        > .title,
-        > .subtitle { margin: rem(-2.7px) 0; }
+      > .title,
+      > .subtitle {
+        margin: if($ref_weight < 1.0, rem(-4px) 0, rem(-2.7px) 0);
+      }
     }
 
     .tiled &  { @extend %tiled_integration; }
@@ -2357,30 +2383,32 @@ headerbar.selection-mode { // selection-mode specific
   }
 }
 
-headerbar,
-.titlebar { // set rounded corners
-  border-top-left-radius: 2px;
-  border-top-right-radius: 2px;
+.background:not(.maximized):not(.tiled):not(.solid-csd) {
+  headerbar,
+  .titlebar { // set rounded corners
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
 
-  box &:not(:last-child):not(.titlebar) {
-    &:dir(ltr) {
-      border-top-left-radius: 2px;
-      border-top-right-radius: 0;
+    box &:not(:last-child):not(.titlebar) {
+      &:dir(ltr) {
+        border-top-left-radius: 2px;
+        border-top-right-radius: 0;
+      }
+      &:dir(rtl) {
+        border-top-left-radius: 0;
+        border-top-right-radius: 2px;
+      }
     }
-    &:dir(rtl) {
-      border-top-left-radius: 0;
-      border-top-right-radius: 2px;
-    }
-  }
 
-  box &:last-child:not(.titlebar) {
-    &:dir(ltr) { border-top-left-radius: 0; }
-    &:dir(rtl) { border-top-right-radius: 0; }
+    box &:last-child:not(.titlebar) {
+      &:dir(ltr) { border-top-left-radius: 0; }
+      &:dir(rtl) { border-top-right-radius: 0; }
+    }
   }
 }
 
 // force using rounded corners in case of paned titlebars
-window:not(.maximized):not(.tiled) {
+window:not(.maximized):not(.tiled):not(.solid-csd) {
   paned.titlebar,
   grid.titlebar {
     border-top-left-radius: 2px;
@@ -2894,6 +2922,8 @@ popover.background {
   separator { margin: rem(3px) 0; }
 }
 
+popover.menu { padding: rem(5.3px) rem(8px) rem(6.7px); }
+
 
 /*************
  * Notebooks *
@@ -3070,7 +3100,8 @@ notebook {
       transition: none;
       min-height: rem($icon_size);
       min-width: rem($icon_size);
-      margin: 0 rem(6.7px);
+      margin: rem(-1.3px) rem(6.7px);
+      padding: 0;
       border-radius: 0;
       color: $tertiary_fg_color;
       &:hover,
@@ -3120,7 +3151,8 @@ notebook {
     }
 
     &.reorderable-page label { // reorderable-page tab text
-      padding: rem(5.3px) 0 rem(5.3px);
+      padding: if($ref_weight < 1.0, rem(5.3px - 2.7px) 0 rem(5.3px - 2.7px),
+                                     rem(5.3px - 1.3px) 0 rem(5.3px - 1.3px));
     }
 
     button { // tab close button
@@ -3136,7 +3168,7 @@ notebook {
       &:active { @include button(flat-active); }
       &:disabled { @include button(flat-insensitive); }
       & > image { // this is a hack which makes tabs grow
-        padding: rem(6.7px);
+        padding: rem(5.3px + 2.7px, $sw: 1.0);
       }
     }
     &:hover button,
@@ -3155,13 +3187,13 @@ notebook {
       min-height: rem($icon_size);
       padding: 0;
       // weird wdiget gets in our way
-      & > widget > box > image { padding: rem(6.7px); }
+      & > widget > box > image { padding: rem(5.3px + 2.7px, $sw: 1.0); }
     }
 
     spinner {
       min-height: rem($icon_size);
       min-width: $icon_size;
-      padding: rem(6.7px) 0 rem(6.7px);
+      padding: rem(6.7px, $sw: 1.0) 0 rem(6.7px, $sw: 1.0);
     }
   }
 
@@ -4147,18 +4179,11 @@ progressbar {
 }
 
 %entry_progressbar { // progress inside entry
-  margin: rem(-10px) rem(-8px);
-  border-style: none none solid;
-  border-width: 2px;
-  border-image: -gtk-gradient(radial,
-                              center bottom, 0,
-                              center bottom, 0.5,
-                              to($warning_color),
-                              to(transparent))
-                              0 0 2 / 0 0 2px;
+  margin: rem(-9.3px) 0 rem(-10.7px); // same values with entry node padding
+  padding: 0;
+  border: none;
   border-radius: 0;
-  box-shadow: none;
-  background-color: transparent;
+  background-color: gtkopacity($selected_bg_color, 0.2);
   background-image: none;
 }
 
@@ -5423,7 +5448,7 @@ decoration {
   }
 
   .solid-csd & {
-    margin: -1px 0 1px;
+    margin: 0 0 1px;
     border-radius: 0;
     border: none;
     background-color: $bg_color;
@@ -5901,20 +5926,6 @@ popover.touch-selection {
   }
 }
 
-button.circular {
-  &,
-  &-button.image-button,
-  &.radio.text-button {
-    min-height: $icon_size;
-    min-width: $icon_size;
-    padding: rem(10.7px);
-    border-radius: 9999px;
-    -gtk-outline-radius: 9999px;
-
-    label { padding: 0; }
-  }
-}
-
 // shortcut window keys
 .keycap {
   min-width: rem(20px);
@@ -5952,14 +5963,6 @@ button.circular {
     box-shadow: inset 0 0 0 1px $drop_target_color;
     caret-color: $drop_target_color;
   }
-}
-
-// FIXME: aggregate with buttons
-stackswitcher button.circular,
-stackswitcher button.text-button.circular {
-  min-width: $icon_size;
-  min-height: $icon_size;
-  padding: rem(($widget_size - $icon_size) / 2);
 }
 
 // undershoot for speciic-cases
