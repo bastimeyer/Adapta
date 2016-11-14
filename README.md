@@ -1,4 +1,4 @@
-<img src=".github/img/logo_thumb.png" alt="Logo" align="left" /> Adapta-gtk-theme
+<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/logo_thumb.png" alt="Logo" align="left" /> Adapta-gtk-theme
 ======
 
 An adaptive Gtk+ theme based on Material Design Guidelines.
@@ -6,7 +6,7 @@ An adaptive Gtk+ theme based on Material Design Guidelines.
 Before using Adapta
 -------------------
 
-Adapta strongly depends on results of the Material Design, especially **fonts** are very important stuffs.
+Adapta strongly depends on Material Design resources, especially its **fonts**.
 
 ####Typography
  1. [**Noto Sans**](https://fonts.google.com/specimen/Noto+Sans)
@@ -40,24 +40,24 @@ That's the reason why `13.33px = 10pt` is used for rem/px conversion in Gtk+ 3.2
 >
 > NotoSans CJK (ChineseJapaneseKorean) opentype fonts are actually **0.1em taller than Roboto fonts**, so if 10pt Roboto was suitable on your LCDs, set 9pt for NotoSans CJK families.
 
-####Verify the fonts are rendered correctly via font-viewer tools like Gnome-Font-Viewer.
+**Verify the fonts are rendered correctly via font-viewer tools like Gnome-Font-Viewer.**
 
 Variant Matrix
 --------------
 
-| |<img src=".github/img/sunlight.png" align="left"/> Adapta|<img src=".github/img/moon.png" align="left"/> Adapta-Nokto|<img src=".github/img/sunlight-eta.png" align="left"/> Adapta-Eta|<img src=".github/img/moon-eta.png" align="left"/> Adapta-Nokto-Eta|
+| |<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/sunlight.png" align="left"/> Adapta|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/moon.png" align="left"/> Adapta-Nokto|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/sunlight-eta.png" align="left"/> Adapta-Eta|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/moon-eta.png" align="left"/> Adapta-Nokto-Eta|
 |:-----:|:-----:|:-----:|:-----:|:-----:|
-|Gtk+ 3.18.x |<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-off.png" align="center" />|<img src=".github/img/check-off.png" align="center" />|
-|Gtk+ 3.20.x |<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-on.png" align="center" />|
-|Gtk+ 3.22.x |<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-on.png" align="center" />|
-|Gtk+ 2.24.x |<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-on.png" align="center" />|
-|Mutter      |<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-on.png" align="center" />|
-|Metacity    |<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-off.png" align="center" />|<img src=".github/img/check-off.png" align="center" />|
-|Muffin      |<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-off.png" align="center" />|<img src=".github/img/check-off.png" align="center" />|
-|Compiz      |<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-off.png" align="center" />|<img src=".github/img/check-off.png" align="center" />|
-|XFwm4       |<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-off.png" align="center" />|<img src=".github/img/check-off.png" align="center" />|
-|Marco       |<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-off.png" align="center" />|<img src=".github/img/check-off.png" align="center" />|
-|Opnebox-3   |<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-on.png" align="center" />|<img src=".github/img/check-off.png" align="center" />|<img src=".github/img/check-off.png" align="center" />|
+|Gtk+ 3.18.x |<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-off.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-off.png" align="center" />|
+|Gtk+ 3.20.x |<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|
+|Gtk+ 3.22.x |<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|
+|Gtk+ 2.24.x |<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|
+|Mutter      |<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|
+|Metacity    |<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-off.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-off.png" align="center" />|
+|Muffin      |<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-off.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-off.png" align="center" />|
+|Compiz      |<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-off.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-off.png" align="center" />|
+|XFwm4       |<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-off.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-off.png" align="center" />|
+|Marco       |<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-off.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-off.png" align="center" />|
+|Opnebox-3   |<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-off.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-off.png" align="center" />|
 
 > **Note:**
 >
@@ -67,11 +67,11 @@ Variant Matrix
 >
 >   * To enable global dark theme, you use proper tools like Gnome-Tweak-Tool and/or edit `$HOME/.config/gtk-3.0/settings.ini`.
 >   * I suggest you use the Eta variants if your LCD resolution is lower than FHD (1080p). Eta draws widgets around -20% to -30% spacing.
->   * Metacity can enable Eta variants ( > 3.20.x or 3.22.x).
+>   * Metacity supports Eta variants (>= 3.20.x or 3.22.x).
 
 Elements
 --------
-![Materials](.github/img/Materials.png)
+![Materials](https://github.com/adapta-project/adapta-github-resources/blob/master/images/Materials.png)
 
 Required Components
 -------------------
@@ -177,7 +177,7 @@ Installation from Git Source
  >   * This feature requires GNU `parallel`, so please add `parallel` to build-requirements.
  >     Parallel can execute multiple scripts and binaries to be suitable for multi-threading.
  >     It could especially shorten the rendering-time via Inkscape and generation-time via sass.
- >   * `-jN` option to be passed to GNU `make` is surely usable, but Adapta currently employs `parallel.
+ >   * `-jN` option to be passed to GNU `make` is surely usable, but Adapta currently employs `parallel`.
  >   * This feature should not be applied when packaging on remote/shared build-servers.
 
 5. To disable some DE supports, pass these specific options to `autogen.sh`:

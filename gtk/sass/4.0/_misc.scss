@@ -115,11 +115,13 @@ sn-button { padding: rem(4px); }
 .tweak-categories {
   background-color: $secondary_dark_color;
   color: $secondary_fg_color;
-  &:dir(ltr) { box-shadow: if($variant == 'light', $sidebar-light-ltr,
-                                                   $sidebar-dark-ltr);
+  &:dir(ltr) {
+    box-shadow: if($variant == 'light', $sidebar-light-ltr,
+                                        $sidebar-dark-ltr);
   }
-  &:dir(rtl) { box-shadow: if($variant == 'light', $sidebar-light-rtl,
-                                                   $sidebar-dark-rtl);
+  &:dir(rtl) {
+    box-shadow: if($variant == 'light', $sidebar-light-rtl,
+                                        $sidebar-dark-rtl);
   }
 
   separator,
@@ -437,13 +439,31 @@ dialog.background.csd > box.dialog-vbox > grid.horizontal {
                rem(($widget_size - $icon_size * 1.5) / 2));
     }
 
-    // should be .text-button
+    // 'archive' button
     &:not(.image-button):not(.text-button):not(.suggested-action) {
       min-height: $icon_size;
+      margin: if($ref_weight < 1.0, rem(5.3px + 2.7px) 0,
+                                    rem(5.3px) 0);
       padding-top: rem(($widget_size - $icon_size - 2.7px) / 2);
       padding-bottom: rem(($widget_size - $icon_size - 2.7px) / 2);
 
-      label { margin: rem(-2px) 0; }
+      label {
+        margin: rem(-2px) 0;
+        font-weight: 700;
+      }
+    }
+  }
+
+  > button.suggested-action { // 'send' button
+    min-height: $icon_size;
+    margin: if($ref_weight < 1.0, rem(5.3px + 2.7px) 0,
+                                  rem(5.3px) 0);
+    padding-top: rem(($widget_size - $icon_size - 2.7px) / 2);
+    padding-bottom: rem(($widget_size - $icon_size - 2.7px) / 2);
+
+    label {
+      margin: rem(-2px) 0;
+      font-weight: 700;
     }
   }
 
@@ -476,11 +496,13 @@ dialog.background.csd > box.dialog-vbox > grid.horizontal {
   .folder-frame > scrolledwindow {
     background-color: $secondary_dark_color;
 
-    &:dir(ltr) { box-shadow: if($variant == 'light', $sidebar-light-ltr,
-                                                     $sidebar-dark-ltr);
+    &:dir(ltr) {
+      box-shadow: if($variant == 'light', $sidebar-light-ltr,
+                                          $sidebar-dark-ltr);
     }
-    &:dir(rtl) { box-shadow: if($variant == 'light', $sidebar-light-rtl,
-                                                     $sidebar-dark-rtl);
+    &:dir(rtl) {
+      box-shadow: if($variant == 'light', $sidebar-light-rtl,
+                                          $sidebar-dark-rtl);
     }
   }
 }
@@ -512,9 +534,6 @@ EphyWindow {
     .subtitle { // move subtitlebox to center
       margin-top: rem(-17.3px, $sw: 1.0);
       font-size: 100%;
-
-      &:dir(ltr) { margin-left: rem(-($widget_size - 8px) * 3); }
-      &:dir(rtl) { margin-right: rem(-($widget_size - 8px) * 3); }
     }
   }
 }
@@ -640,11 +659,13 @@ box > headerbar > label.polari-titlebar-separator {
 // tweak sidebar styling
 .sidebar-paned {
   scrolledwindow {
-    &:dir(ltr) { box-shadow: if($variant == 'light', $sidebar-light-ltr,
-                                                     $sidebar-dark-ltr);
+    &:dir(ltr) {
+      box-shadow: if($variant == 'light', $sidebar-light-ltr,
+                                          $sidebar-dark-ltr);
     }
-    &:dir(rtl) { box-shadow: if($variant == 'light', $sidebar-light-rtl,
-                                                     $sidebar-dark-rtl);
+    &:dir(rtl) {
+      box-shadow: if($variant == 'light', $sidebar-light-rtl,
+                                          $sidebar-dark-rtl);
     }
   }
 
@@ -969,11 +990,13 @@ notebook grid.horizontal > widget > box.horizontal > scrolledwindow {
     background-image: if($variant == 'light', $fake-shadow-light,
                                               $fake-shadow-dark);
 
-    &:dir(ltr) { box-shadow: if($variant == 'light', $sidebar-light-ltr,
-                                                     $sidebar-dark-ltr);
+    &:dir(ltr) {
+      box-shadow: if($variant == 'light', $sidebar-light-ltr,
+                                          $sidebar-dark-ltr);
     }
-    &:dir(rtl) { box-shadow: if($variant == 'light', $sidebar-light-rtl,
-                                                     $sidebar-dark-rtl);
+    &:dir(rtl) {
+      box-shadow: if($variant == 'light', $sidebar-light-rtl,
+                                          $sidebar-dark-rtl);
     }
 
     > box.horizontal {  // header-part
@@ -1009,11 +1032,13 @@ notebook grid.horizontal > widget > box.horizontal > scrolledwindow {
   background-image: if($variant == 'light', $fake-shadow-light,
                                             $fake-shadow-dark);
 
-  &:dir(ltr) { box-shadow: if($variant == 'light', $sidebar-light-ltr,
-                                                   $sidebar-dark-ltr);
+  &:dir(ltr) {
+    box-shadow: if($variant == 'light', $sidebar-light-ltr,
+                                        $sidebar-dark-ltr);
   }
-  &:dir(rtl) { box-shadow: if($variant == 'light', $sidebar-light-rtl,
-                                                   $sidebar-dark-rtl);
+  &:dir(rtl) {
+    box-shadow: if($variant == 'light', $sidebar-light-rtl,
+                                        $sidebar-dark-rtl);
   }
 
   row.activatable {
@@ -1489,11 +1514,13 @@ window overlay > grid > frame > grid {
 
   // side-bar styling
   list {
-    &:dir(ltr) { box-shadow: if($variant == 'light', $sidebar-light-ltr,
-                                                     $sidebar-dark-ltr);
+    &:dir(ltr) {
+      box-shadow: if($variant == 'light', $sidebar-light-ltr,
+                                          $sidebar-dark-ltr);
     }
-    &:dir(rtl) { box-shadow: if($variant == 'light', $sidebar-light-rtl,
-                                                     $sidebar-dark-rtl);
+    &:dir(rtl) {
+      box-shadow: if($variant == 'light', $sidebar-light-rtl,
+                                          $sidebar-dark-rtl);
     }
 
     row {
@@ -1608,11 +1635,13 @@ headerbar > button.flat.popup.title-menu-button.toggle {
     background-color: $secondary_dark_color;
     color: $secondary_fg_color;
 
-    &:dir(ltr) { box-shadow: if($variant == 'light', $sidebar-light-ltr,
-                                                     $sidebar-dark-ltr);
+    &:dir(ltr) {
+      box-shadow: if($variant == 'light', $sidebar-light-ltr,
+                                          $sidebar-dark-ltr);
     }
-    &:dir(rtl) { box-shadow: if($variant == 'light', $sidebar-light-rtl,
-                                                     $sidebar-dark-rtl);
+    &:dir(rtl) {
+      box-shadow: if($variant == 'light', $sidebar-light-rtl,
+                                          $sidebar-dark-rtl);
     }
 
     row.activatable.category { // use side-bar styling
@@ -1840,11 +1869,13 @@ window > popover > stack > grid > button {
   background-color: if($variant == 'light', rgba(12, 18, 0, 0.01),
                                             rgba(18, 22, 0, 0.04));
 
-  &:dir(ltr) { box-shadow: if($variant == 'light', $sidebar-light-ltr,
-                                                   $sidebar-dark-ltr);
+  &:dir(ltr) {
+    box-shadow: if($variant == 'light', $sidebar-light-ltr,
+                                        $sidebar-dark-ltr);
   }
-  &:dir(rtl) { box-shadow: if($variant == 'light', $sidebar-light-rtl,
-                                                   $sidebar-dark-rtl);
+  &:dir(rtl) {
+    box-shadow: if($variant == 'light', $sidebar-light-rtl,
+                                        $sidebar-dark-rtl);
   }
 
   treeview.view {
@@ -1874,11 +1905,13 @@ window > popover > stack > grid > button {
   background-color: if($variant == 'light', rgba(12, 18, 0, 0.01),
                                             rgba(18, 22, 0, 0.04));
 
-  &:dir(ltr) { box-shadow: if($variant == 'light', $sidebar-light-ltr,
-                                                   $sidebar-dark-ltr);
+  &:dir(ltr) {
+    box-shadow: if($variant == 'light', $sidebar-light-ltr,
+                                        $sidebar-dark-ltr);
   }
-  &:dir(rtl) { box-shadow: if($variant == 'light', $sidebar-light-rtl,
-                                                   $sidebar-dark-rtl);
+  &:dir(rtl) {
+    box-shadow: if($variant == 'light', $sidebar-light-rtl,
+                                        $sidebar-dark-rtl);
   }
 
   treeview.view {
@@ -1949,13 +1982,6 @@ viewport.frame > list > row.activatable {
   }
 }
 
-window.csd > headerbar.titlebar > box.horizontal > stack {
-  // back to square button in 'Users -> Unlock'
-  button.lock:not(.text-button):not(.image-button) {
-    border-radius: 2px;
-    -gtk-outline-radius: 2px;
-  }
-}
 
 /*************
  * Evolution *
@@ -2072,61 +2098,43 @@ window.background > grid.horizontal.titlebar {
 }
 
 
-/***********************
- * Gnome-Character-Map *
- ***********************/
+/********************
+ * Gnome-Characters *
+ ********************/
 
-window.background > grid.horizontal {
-  > paned.horizontal {
-    > scrolledwindow.frame {
-      border-width: 1px 0 1px;
-
-      // prevent unwanted shrinking
-      > treeview.view > header > button {
-        min-width: rem(133.3px, $sw: 1.0);
-      }
+// side-pane styling
+window.background > grid.vertical > box.horizontal > grid.vertical {
+  > scrolledwindow > viewport.frame > list.categories {
+    background-color: $secondary_dark_color;
+    &:dir(ltr) {
+      box-shadow: if($variant == 'light', $sidebar-light-ltr,
+                                          $sidebar-dark-ltr);
+    }
+    &:dir(rtl) {
+      box-shadow: if($variant == 'light', $sidebar-light-rtl,
+                                          $sidebar-dark-rtl);
     }
 
-    > notebook.frame {
-      border-style: none none solid;
+    > row.category.activatable {
+      font-weight: 500;
+      &:selected {
+        background-color: transparent;
+        color: $selected_bg_color;
 
-      // FIXME: it doesn't work
-      > stack > scrolledwindow > widget {
-        &, &:backdrop {
-          border-color: $borders_color;
-          color: $secondary_fg_color;
-          &:hover {
-            color: $fg_color;
-            background-color: $track_color;
-          }
-          &:selected,
-          &:checked {
-            color: $selected_fg_color;
-            background-color: $selected_bg_color;
-          }
+        > box.horizontal {
+          > .category-icon,
+          > .category-label { color: $selected_bg_color; }
         }
       }
     }
   }
-
-  > statusbar {
-    margin: -8px -10px;
-    border-top: 1px solid $borders_color;
-    background-color: $secondary_dark_color;
-
-    > frame {
-      background: none;
-      box-shadow: if($variant == 'light', $inline-shadow-light,
-                                          $inline-shadow-dark);
-
-      > box > label {
-        margin: rem(-5.3px) rem(8px);
-        color: $tertiary_fg_color;
-        font-weight: 700;
-      }
-    }
-  }
 }
+
+// right-pane styling
+// scrolledwindow > viewport.frame > widget.charactrt-list {
+//   background-color: $base_color;
+//   color: $fg_color;
+// }
 
 
 /***********************
@@ -2215,11 +2223,13 @@ window.background > box.vertical > stack > widget > box.horizontal {
   > scrolledwindow.category-sidebar.frame > viewport.frame > list {
     margin-top: -4px; // hide weird header-gap
     background-color: $secondary_dark_color;
-    &:dir(ltr) { box-shadow: if($variant == 'light', $sidebar-light-ltr,
-                                                     $sidebar-dark-ltr);
+    &:dir(ltr) {
+      box-shadow: if($variant == 'light', $sidebar-light-ltr,
+                                          $sidebar-dark-ltr);
     }
-    &:dir(rtl) { box-shadow: if($variant == 'light', $sidebar-light-rtl,
-                                                     $sidebar-dark-rtl);
+    &:dir(rtl) {
+      box-shadow: if($variant == 'light', $sidebar-light-rtl,
+                                          $sidebar-dark-rtl);
     }
 
     > row.activatable {

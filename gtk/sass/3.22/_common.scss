@@ -696,14 +696,18 @@ button {
       padding-right: rem(8px);
     }
 
-    &.needs-attention > label,
-    &.needs-attention > image { @extend %needs_attention; }
-    &.needs-attention:active > label,
-    &.needs-attention:active > image,
-    &.needs-attention:checked > label,
-    &.needs-attention:checked > image {
-      animation: none;
-      background-image: none;
+    &.needs-attention {
+      > label,
+      > image { @extend %needs_attention; }
+
+      &:active,
+      &:checked {
+        > label,
+        > image {
+          animation: none;
+          background-image: none;
+        }
+      }
     }
   }
 
@@ -954,10 +958,10 @@ button {
 
 %needs_attention {
   background-repeat: no-repeat;
-  background-position: right rem(3px, $sw: 1.0);
+  background-position: right top;
   background-size: $attention;
   animation: needs_attention 0.3s $slope_slow forwards;
-  &:dir(rtl) { background-position: left rem(3px, $sw: 1.0); }
+  &:dir(rtl) { background-position: left top; }
 }
 
 // all the following is for the +|- buttons on inline toolbars, that way
@@ -1772,6 +1776,13 @@ headerbar {
   background-color: $inverted_dark_color;
   background-clip: border-box;
 
+  // hide all outlines
+  * {
+    outline-style: none;
+    outline-width: 0;
+    outline-color: transparent;
+  }
+
   // text colours
   color: $inverted_secondary_fg_color;
 
@@ -1869,13 +1880,18 @@ headerbar {
         -gtk-outline-radius: 2px;
       }
     }
+
+    &.lock {
+      border-radius: 2px;
+      -gtk-outline-radius: 2px;
+      font-weight: 700;
+    }
   }
 
   // adjust spacing for finer aspect-ratio
   button.text-button,
   button:not(.image-button):not(.text-button):not(.title-button):not(.titlebutton) {
     &,
-    &.lock,
     &.toggle {
       min-height: $icon_size;
       padding-top: rem(($widget_size - $icon_size - 4px) / 2);
@@ -1884,6 +1900,22 @@ headerbar {
       // prepare for tall and dense fonts
       label { margin: rem(-2px) 0; }
     }
+
+    &.lock {
+      min-height: $icon_size;
+      padding-top: rem(($widget_size - $icon_size - 2.7px) / 2);
+      padding-bottom: rem(($widget_size - $icon_size - 2.7px) / 2);
+
+      label { margin: rem(-2px) 0; }
+    }
+  }
+
+  button.text-button.image-button {
+    min-height: $icon_size;
+    padding-top: rem(($widget_size - $icon_size - 2.7px) / 2);
+    padding-bottom: rem(($widget_size - $icon_size - 2.7px) / 2);
+
+    label { margin: rem(-2px) 0; }
   }
 
   button:not(.text-button),
@@ -1921,7 +1953,6 @@ headerbar {
     padding-top: rem(($widget_size - $icon_size - 5.3px) / 2);
     padding-bottom: rem(($widget_size - $icon_size - 2.7px) / 2);
 
-    // prepare for tall and dense fonts
     label { margin: rem(-2px) 0; }
   }
 
@@ -2459,7 +2490,7 @@ headerbar.titlebar.default-decoration {
   &, &:not(:last-child) {
     padding: rem(5.3px);
     border-radius: 0;
-    border-top-color: transparent;
+    border-top: 0 none transparent;
     box-shadow: $menubar-shadow;
   }
 }
@@ -4447,13 +4478,62 @@ row {
  * App Notifications *
  *********************/
 
-.app-notification,
-.app-notification.frame {
-  @extend %osd;
-  @extend toolbar.osd;
-  button {
+.app-notification {
+  &, &.frame { // concern WMs w/o compositor
+    @extend %osd;
+    @extend toolbar.osd;
+    border-radius: 2px;
+    border: 1px solid $inverted_dark_color;
+    color: $inverted_fg_color;
+    background-color: $inverted_dark_color;
+    box-shadow: none;
+
+    box.vertical {
+      > label {
+        &#summary {
+          color: $inverted_fg_color;
+          font-weight: 700;
+        }
+
+        &#body { color: $inverted_secondary_fg_color; }
+      }
+    }
+
+    button {
+      @extend %button_flat_normal;
+      background-color: transparent;
+      &:not(:active):not(:disabled):not(hover) {
+        background-color: transparent;
+        color: $inverted_secondary_accent_label_color;
+      }
+      &:hover {
+        @extend %button_flat_hover;
+        background-color: transparent;
+        color: $inverted_accent_label_color;
+      }
+      &:active {
+        @extend %button_flat_active;
+        border-image: none;
+        background-color: transparent;
+        color: $inverted_accent_label_color;
+        box-shadow: none;
+      }
+      &:checked {
+        @extend %button_flat_checked;
+        border-image: none;
+        background-color: transparent;
+        color: $inverted_accent_label_color;
+        box-shadow: none;
+      }
+      &:disabled {
+        @extend %button_flat_disabled;
+        background-color: transparent;
+        color: gtkopacity($inverted_accent_label_color, 0.4);
+      }
+    }
+
+    border { border: none; }
   }
-  border { border: none; }
 }
 
 
@@ -4699,11 +4779,13 @@ filechooserbutton:drop(active) {
   color: $secondary_fg_color;
 
   &, list { // draw shadows
-     &:dir(ltr) { box-shadow: if($variant == 'light', $sidebar-light-ltr,
-                                                      $sidebar-dark-ltr);
+    &:dir(ltr) {
+      box-shadow: if($variant == 'light', $sidebar-light-ltr,
+                                          $sidebar-dark-ltr);
     }
-    &:dir(rtl) { box-shadow: if($variant == 'light', $sidebar-light-rtl,
-                                                     $sidebar-dark-rtl);
+    &:dir(rtl) {
+      box-shadow: if($variant == 'light', $sidebar-light-rtl,
+                                          $sidebar-dark-rtl);
     }
   }
 
@@ -4746,7 +4828,7 @@ filechooserbutton:drop(active) {
 stacksidebar {
   row,
   row.activatable {
-    padding: rem(2.7px) rem(8px) rem(4px);
+    padding: rem(5.3px) rem(8px) rem(6.7px);
 
     > label {
       padding-left: rem(5.3px);
@@ -5934,7 +6016,8 @@ popover.touch-selection {
   border: none;
   border-radius: 2px;
   color: $inverted_fg_color;
-  background-color: $inverted_base_color;
+  background-color: if($variant == 'light', $inverted_base_color,
+                                            $inverted_dark_color);
   box-shadow: $z-depth-1,
               inset 0 1px $highlight_color;;
   font-size: 90%;
