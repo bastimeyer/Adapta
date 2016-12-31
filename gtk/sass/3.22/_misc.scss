@@ -1,6 +1,6 @@
-/***************
- * Gnome-Panel *
- ***************/
+// /***************
+//  * Gnome-Panel *
+//  ***************/
 
 panel-toplevel.background { background-color: $panel_bg_color; }
 
@@ -26,7 +26,8 @@ panel-applet > menubar,
 panel-applet menubar {
   box-shadow: none;
 
-  & menuitem {
+  > menuitem,
+  > .gnome-panel-menu-item {
     color: $inverted_secondary_fg_color;
     background-color: transparent;
     &:hover {
@@ -34,25 +35,9 @@ panel-applet menubar {
       box-shadow: inset 0 -2px $selected_bg_color;
     }
   }
-
-  & menu {
-    font-weight: 400;
-    font-size: 100%;
-
-    & menuitem {
-      color: $secondary_fg_color;
-      background-color: $base_color;
-      &:hover {
-        color: $fg_color;
-        background-color: gtkalpha(currentColor, 0.1);
-	box-shadow: none;
-      }
-    }
-
-    separator { color: $borders_color; }
-  }
 }
 
+wnck-tasklist > button.toggle,
 #tasklist-button,
 #clock-applet-button,
 #showdesktop-button {
@@ -78,7 +63,8 @@ panel-applet menubar {
 
 wnck-tasklist > button.toggle,
 #tasklist-button {
-  &, & label { font-weight: 400; }
+  &,
+  label { font-weight: 400; }
 }
 
 wnck-pager {
@@ -107,9 +93,9 @@ gp-arrow-button {
 sn-button { padding: rem(4px); }
 
 
-/********************
- * Gnome-Tweak-Tool *
- ********************/
+// /********************
+//  * Gnome-Tweak-Tool *
+//  ********************/
 
 // sidebar
 .tweak-categories {
@@ -211,9 +197,9 @@ sn-button { padding: rem(4px); }
 }
 
 
-/*******************
- * Gnome-Flashback *
- *******************/
+// /*******************
+//  * Gnome-Flashback *
+//  *******************/
 
 // use message-dialog style for popup osd windows
 
@@ -296,7 +282,13 @@ sn-button { padding: rem(4px); }
     &,
     &:first-child,
     &:last-child {
-      @extend button.flat;
+      @include button(flat-normal);
+      &:hover { @include button(flat-hover); }
+      &:active { @include button(flat-active); }
+      &:disabled { @include button(flat-insensitive); }
+      &:checked { @include button(flat-checked); }
+      &:checked:disabled { @include button(flat-checked-insensitive); }
+
       border-radius: 0;
       border: none;
       background-color: transparent;
@@ -307,14 +299,14 @@ sn-button { padding: rem(4px); }
 }
 
 
-/************
- * Nautilus *
- ************/
+// /************
+//  * Nautilus *
+//  ************/
 
-.nautilus-desktop-window,
-.nautilus-desktop-window notebook,
-.nautilus-desktop-window notebook > stack {
-  background: transparent;
+.nautilus-desktop-window {
+  &,
+  notebook,
+  notebook > stack { background: transparent; }
 }
 
 .nautilus-desktop.nautilus-canvas-item {
@@ -323,19 +315,29 @@ sn-button { padding: rem(4px); }
   &:selected { text-shadow: none; }
 }
 
-.background.nautilus-window {
+.background.nautilus-window:not(.nautilus-desktop-window) {
   // main content pane
-  notebook > stack overlay > scrolledwindow > widget.view {
-    // some extends pull background-image for ripple-effects,
-    // but notebook node does not need that.
-    // FIXME: that caused fading colours of background
-    // even if that was completely transparent.
-    background-image: none;
+  notebook {
+    // cover up top-edge 1px line
+    box-shadow: inset 0 1px $base_color;
+
+    > stack overlay > scrolledwindow > widget.view {
+      // some extends pull background-image for ripple-effects,
+      // but notebook node does not need that.
+      // FIXME: that caused fading colours of background
+      // even if that was completely transparent.
+      background-image: none;
+    }
   }
 }
 
-.nautilus-canvas-item {
-  border-radius: 2px;
+.nautilus { // hide outlines
+  &-canvas-item {
+    border-radius: 2px;
+    outline-width: 0;
+  }
+
+  &-list-view treeview.view { outline-width: 0; }
 }
 
 .nautilus-circular-button {
@@ -413,9 +415,9 @@ dialog.background.csd > box.dialog-vbox > grid.horizontal {
 }
 
 
-/*********
- * Geary *
- *********/
+// /*********
+//  * Geary *
+//  *********/
 
 // Geary is the most ugly app for theming.
 .geary-titlebar-left {
@@ -432,8 +434,7 @@ dialog.background.csd > box.dialog-vbox > grid.horizontal {
     &.image-button:not(.text-button) {
       min-height: $icon_size * 1.5;
       min-width: $icon_size * 1.5;
-      margin: if($ref_weight < 1.0, rem(5.3px + 2.7px) 0,
-                                    rem(5.3px) 0);
+      margin: rem(5.3px) 0;
       padding: if($ref_weight < 1.0,
                rem(($widget_size - $icon_size * 1.5 - 2px) / 2),
                rem(($widget_size - $icon_size * 1.5) / 2));
@@ -442,10 +443,11 @@ dialog.background.csd > box.dialog-vbox > grid.horizontal {
     // 'archive' button
     &:not(.image-button):not(.text-button):not(.suggested-action) {
       min-height: $icon_size;
-      margin: if($ref_weight < 1.0, rem(5.3px + 2.7px) 0,
-                                    rem(5.3px) 0);
+      margin: rem(5.3px) 0;
       padding-top: rem(($widget_size - $icon_size - 2.7px) / 2);
       padding-bottom: rem(($widget_size - $icon_size - 2.7px) / 2);
+      border-radius: 2px;
+      -gtk-outline-radius: 2px;
 
       label {
         margin: rem(-2px) 0;
@@ -456,8 +458,7 @@ dialog.background.csd > box.dialog-vbox > grid.horizontal {
 
   > button.suggested-action { // 'send' button
     min-height: $icon_size;
-    margin: if($ref_weight < 1.0, rem(5.3px + 2.7px) 0,
-                                  rem(5.3px) 0);
+    margin: rem(5.3px) 0;
     padding-top: rem(($widget_size - $icon_size - 2.7px) / 2);
     padding-bottom: rem(($widget_size - $icon_size - 2.7px) / 2);
 
@@ -469,8 +470,7 @@ dialog.background.csd > box.dialog-vbox > grid.horizontal {
 
   box.horizontal:not(.linked):not(.right) {
     button.image-button:not(.text-button):not(.titlebutton) {
-      margin: if($ref_weight < 1.0, rem(5.3px + 2.7px) 0,
-                                    rem(5.3px) 0);
+      margin: rem(5.3px) 0;
       padding: if($ref_weight < 1.0,
                rem(($widget_size - $icon_size * 1.5 - 2px) / 2),
                rem(($widget_size - $icon_size * 1.5) / 2));
@@ -483,6 +483,13 @@ dialog.background.csd > box.dialog-vbox > grid.horizontal {
     padding-bottom: rem(($widget_size - $icon_size - 2.7px) / 2);
 
     label { margin: rem(-2px) 0; }
+  }
+
+  button.image-button.popup.toggle { // 'gear' button
+    margin: rem(5.3px) 0;
+    padding: if($ref_weight < 1.0,
+             rem(($widget_size - $icon_size * 1.5 - 2px) / 2),
+             rem(($widget_size - $icon_size * 1.5) / 2));
   }
 }
 
@@ -507,6 +514,10 @@ dialog.background.csd > box.dialog-vbox > grid.horizontal {
   }
 }
 
+headerbar.geary-titlebar-left.titlebar > box.vertical {
+  > .title { font-size: 90%; }
+}
+
 window box > paned > overlay > scrolledwindow {
   undershoot { // remove undershoot
     &.top,
@@ -516,25 +527,45 @@ window box > paned > overlay > scrolledwindow {
   }
 }
 
+paned.vertical > overlay > scrolledwindow > overlay {
+  > widget > widget > box > widget > headerbar { // in-line headerbars
+    > .linked.raised > button.image-button { // 'trash/save' button
+      border-radius: 100px;
+      -gtk-outline-radius: 100px;
+    }
 
-/************
- * Epiphany *
- ************/
+    > button.flat:not(.image-button) { // 'Reply to' text-button
+      border-radius: 2px;
+      -gtk-outline-radius: 2px;
+    }
+  }
+}
+
+
+// /************
+//  * Epiphany *
+//  ************/
 
 // reset inverted foreground colour
 EphyWindow {
   .nautilus-window .floating-bar { color: $secondary_fg_color; }
 }
 
-// hide double-title remained in GtkHeaderBar when SSDs
-.background:not(.csd) > box.vertical > headerbar > stack {
-  > box.vertical { // title-box
+.background:not(.csd) > box.vertical > headerbar {
+  // hide double-title remained in GtkHeaderBar running under SSD-mode
+  > stack > box.vertical { // title-box
     .title { color: transparent; }
 
-    .subtitle { // move subtitlebox to center
+    .subtitle { // centering vertically
       margin-top: rem(-17.3px, $sw: 1.0);
       font-size: 100%;
     }
+  }
+
+  // conflicts with .primary-toolbar styling?
+  .linked > button.image-button { // = 'back/forward' button
+    border-radius: 100px;
+    -gtk-outline-radius: 100px;
   }
 }
 
@@ -551,9 +582,9 @@ window.background.csd > headerbar.titlebar > stack > box.vertical {
 }
 
 
-/************
- * Seahorse *
- ************/
+// /************
+//  * Seahorse *
+//  ************/
 
 window.background box.vertical > paned.horizontal > box.vertical {
   // remove drop-shadow
@@ -564,9 +595,9 @@ window.background box.vertical > paned.horizontal > box.vertical {
 }
 
 
-/**********
- * Polari *
- **********/
+// /**********
+//  * Polari *
+//  **********/
 
 .polari-room-list { // override labels
   row {
@@ -613,9 +644,9 @@ box > headerbar > label.polari-titlebar-separator {
 }
 
 
-/*************
- * RhythmBox *
- *************/
+// /*************
+//  * RhythmBox *
+//  *************/
 
 // add top-border to inline-toolbar
 .sidebar-paned .inline-toolbar.horizontal.sidebar-toolbar {
@@ -784,14 +815,20 @@ dialog.background > box.dialog-vbox.vertical > box.vertical {
 }
 
 
-/********************
- * Gnome-Calculator *
- ********************/
+// /********************
+//  * Gnome-Calculator *
+//  ********************/
 
 window {
   > grid.vertical > box.vertical > widget {
     button {
-      @extend button.flat;
+      @include button(flat-normal);
+      &:hover { @include button(flat-hover); }
+      &:active { @include button(flat-active); }
+      &:disabled { @include button(flat-insensitive); }
+      &:checked { @include button(flat-checked); }
+      &:checked:disabled { @include button(flat-checked-insensitive); }
+
       min-width: rem(13.3px);
       min-height: rem(13.3px);
       // FIXME: broken in 12pt fonts?
@@ -829,9 +866,9 @@ window {
 }
 
 
-/*********
- * Gedit *
- *********/
+// /*********
+//  * Gedit *
+//  *********/
 
 $fake-shadow-light: linear-gradient(to bottom, rgba(0, 0, 0, 0.36),
                                                rgba(0, 0, 0, 0.15) 2px,
@@ -872,9 +909,9 @@ $fake-shadow-dark: linear-gradient(to bottom, rgba(0, 0, 0, 0.20),
 
     button,
     .linked > button {
-      min-width: $icon_size;
-      min-height: $icon_size;
-      padding: rem(6.7px) rem(4px);
+      min-width: rem($widget_size, $sw: 1.0);
+      min-height: rem($widget_size, $sw: 1.0);
+      padding: 0;
     }
   }
 
@@ -1102,9 +1139,9 @@ notebook grid.horizontal > widget > box.horizontal > scrolledwindow {
 }
 
 
-/*****************
- * Gnome-Builder *
- *****************/
+// /*****************
+//  * Gnome-Builder *
+//  *****************/
 
 //
 // do not use box-shadows. it's too problematic!
@@ -1206,7 +1243,13 @@ layouttabbar {
   }
 
   button {
-    @extend button.flat;
+    @include button(flat-normal);
+    &:hover { @include button(flat-hover); }
+    &:active { @include button(flat-active); }
+    &:disabled { @include button(flat-insensitive); }
+    &:checked { @include button(flat-checked); }
+    &:checked:disabled { @include button(flat-checked-insensitive); }
+
     padding: rem(4px) rem(5.3px) rem(5.3px);
     margin: rem(2.7px);
     border-radius: 2px;
@@ -1228,7 +1271,13 @@ layouttab {
   }
 
   button {
-    @extend button.flat;
+    @include button(flat-normal);
+    &:hover { @include button(flat-hover); }
+    &:active { @include button(flat-active); }
+    &:disabled { @include button(flat-insensitive); }
+    &:checked { @include button(flat-checked); }
+    &:checked:disabled { @include button(flat-checked-insensitive); }
+
     margin: rem(2.7px);
     border-radius: 2px;
     padding-left: rem(5.3px);
@@ -1338,9 +1387,9 @@ greeter > box.vertical > stack > box.vertical > stack {
 }
 
 
-/***************
- * Gnome-Music *
- ***************/
+// /***************
+//  * Gnome-Music *
+//  ***************/
 
 // side-bar styling
 // FIXME: it doesn't work properly
@@ -1352,7 +1401,7 @@ GdMainView,
   .view {
     background-color: $secondary_dark_color;
     box-shadow: none;
-    &, & row.activatable {
+    &, row.activatable {
       padding: 0;
       background-color: transparent;
       color: $secondary_fg_color;
@@ -1427,9 +1476,9 @@ actionbar {
 }
 
 
-/******************
- * Gnome-Contacts *
- ******************/
+// /******************
+//  * Gnome-Contacts *
+//  ******************/
 
 .contacts-left-header-bar {
   &:dir(ltr) {
@@ -1531,7 +1580,7 @@ window overlay > grid > frame > grid {
       &:hover { color: $fg_color; }
       &:selected,
       &:selected.activatable {
-        &, & label { color: $selected_bg_color; }
+        &, label { color: $selected_bg_color; }
         background-color: if($variant == 'light', rgba(12, 18, 0, 0.01),
                                                   rgba(18, 22, 0, 0.04));
       }
@@ -1557,9 +1606,9 @@ window overlay > grid > frame > grid {
 }
 
 
-/**********
- * Baobab *
- **********/
+// /**********
+//  * Baobab *
+//  **********/
 
 window > box.vertical > grid.vertical > stack {
   stack > spinner { // shrink spinner
@@ -1570,9 +1619,9 @@ window > box.vertical > grid.vertical > stack {
 }
 
 
-/**********
- * Evince *
- **********/
+// /**********
+//  * Evince *
+//  **********/
 
 window.background {
   > box.vertical > box.horizontal {
@@ -1606,9 +1655,9 @@ window.background > box.vertical > paned.horizontal > box.vertical {
 }
 
 
-/**************
- * Gnome-Logs *
- **************/
+// /**************
+//  * Gnome-Logs *
+//  **************/
 
 // titles inside the button!?
 headerbar > button.flat.popup.title-menu-button.toggle {
@@ -1629,7 +1678,7 @@ headerbar > button.flat.popup.title-menu-button.toggle {
   }
 }
 
-.background.csd > box.vertical > stack > box.horizontal {
+window.background > box.vertical > stack > box.horizontal {
   list.categories { // side-pane
     border: none;
     background-color: $secondary_dark_color;
@@ -1664,12 +1713,17 @@ headerbar > button.flat.popup.title-menu-button.toggle {
       }
     }
   }
+
+  > box.vertical > scrolledwindow > viewport.frame > list { // right-pane
+    // hide single-line separators
+    > separator { background-color: transparent; }
+  }
 }
 
 
-/************
- * Deja-dup *
- ************/
+// /************
+//  * Deja-dup *
+//  ************/
 
 window > box.vertical > box.vertical > widget > grid.vertical {
   > expander > scrolledwindow {
@@ -1688,9 +1742,9 @@ window > box.vertical > box.vertical > widget > grid.vertical {
 }
 
 
-/******************
- * Gnome-Terminal *
- ******************/
+// /******************
+//  * Gnome-Terminal *
+//  ******************/
 
 terminal-window {
   &.background,
@@ -1761,9 +1815,9 @@ terminal-window {
 }
 
 
-/*****************
- * Gnome-Weather *
- *****************/
+// /*****************
+//  * Gnome-Weather *
+//  *****************/
 
 window stack > frame > frame > grid.horizontal > grid.horizontal {
   .linked.osd.stack-switcher {
@@ -1813,9 +1867,9 @@ window stack > frame > frame > grid.horizontal {
 }
 
 
-/**************
- * Gnome-Todo *
- **************/
+// /**************
+//  * Gnome-Todo *
+//  **************/
 
 window headerbar > box.horizontal:not(.linked) {
   > button.toggle.popup { // 'new-list' text-button
@@ -1860,9 +1914,9 @@ window > popover > stack > grid > button {
 }
 
 
-/************
- * Gtk-Demo *
- ************/
+// /************
+//  * Gtk-Demo *
+//  ************/
 
 .background.csd > box.horizontal > frame > scrolledwindow {
   // side-bar styling
@@ -1895,9 +1949,9 @@ window > popover > stack > grid > button {
 }
 
 
-/***************
- * Gnome-Disks *
- ***************/
+// /***************
+//  * Gnome-Disks *
+//  ***************/
 
 .background.csd > box.vertical > paned.horizontal > scrolledwindow,
 .background.solid-csd > box.vertical > paned.horizontal > scrolledwindow {
@@ -1932,9 +1986,9 @@ window > popover > stack > grid > button {
 }
 
 
-/************************
- * Gnome-Control-Center *
- ************************/
+// /************************
+//  * Gnome-Control-Center *
+//  ************************/
 
 // network settings
 .background.csd > box.vertical > stack > box.vertical > widget {
@@ -1983,9 +2037,9 @@ viewport.frame > list > row.activatable {
 }
 
 
-/*************
- * Evolution *
- *************/
+// /*************
+//  * Evolution *
+//  *************/
 
 window.background > box.vertical {
   > box.horizontal #main-toolbar { // main toolbar styling
@@ -2017,9 +2071,9 @@ window.background > box.vertical {
 }
 
 
-/****************
- * Dconf-Editor *
- ****************/
+// /****************
+//  * Dconf-Editor *
+//  ****************/
 
 .dconf-editor > headerbar.titlebar {
   > box.pathbar {
@@ -2063,18 +2117,10 @@ window.background > box.vertical {
   }
 }
 
-.dconf-editor {
-  list.properties-list > row > grid.horizontal {
-    .greyed-label { // left-side labels
-      &, &:backdrop { color: $insensitive_fg_color; }
-    }
-  }
-}
 
-
-/*******************
- * Gnome-Documents *
- *******************/
+// /*******************
+//  * Gnome-Documents *
+//  *******************/
 
 window.background > grid.horizontal.titlebar {
   // search-bar revealer
@@ -2085,22 +2131,9 @@ window.background > grid.horizontal.titlebar {
 }
 
 
-/***************
- * Gnome-Sushi *
- ***************/
-
-// override semi-transparent window node
-// FIXME: any colours will turn black, caused by their cairo codes?
-#MainWindow.csd {
-  &,
-  &.background,
-  .titlebar { background-color: $panel_bg_color; }
-}
-
-
-/********************
- * Gnome-Characters *
- ********************/
+// /********************
+//  * Gnome-Characters *
+//  ********************/
 
 // side-pane styling
 window.background > grid.vertical > box.horizontal > grid.vertical {
@@ -2137,9 +2170,9 @@ window.background > grid.vertical > box.horizontal > grid.vertical {
 // }
 
 
-/***********************
- * Gnome-Power-Manager *
- ***********************/
+// /***********************
+//  * Gnome-Power-Manager *
+//  ***********************/
 
 window.background > box.horizontal > notebook.frame > stack {
   margin: 0 -1px 0;
@@ -2165,9 +2198,9 @@ window.background > box.horizontal > notebook.frame > stack {
 }
 
 
-/******************
- * Gnome-Software *
- ******************/
+// /******************
+//  * Gnome-Software *
+//  ******************/
 
 // get more uniformity for all 'All', 'Installed', 'Updates' buttons
 headerbar > box.horizontal > buttonbox.linked {
@@ -2243,6 +2276,19 @@ window.background > box.vertical > stack > widget > box.horizontal {
         > label { color: $selected_bg_color; }
       }
     }
+  }
+}
+
+
+// /****************
+//  * Gnome-Photos *
+//  ****************/
+
+window.background.csd > box.vertical > overlay > revealer,
+window.background.solid-csd > box.vertical > overlay > revealer {
+  > spinner { // allocation: 128 x 128
+    min-height: $icon_size;
+    padding: 56px 0;
   }
 }
 

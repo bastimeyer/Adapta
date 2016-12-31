@@ -1,6 +1,6 @@
-/******************
- * Budgie-Desktop *
- ******************/
+// /******************
+//  * Budgie-Desktop *
+//  ******************/
 
 // specific ripple-effect for IconTaskList
 @keyframes budgie_ripple_effect {
@@ -58,7 +58,7 @@ $budgie_transition: opacity 0.2s $slope_medium,
   // panel shadow styling
   .#{$along_side} .shadow-block {
     background-color: transparent;
-    background-image: linear-gradient(to $opp_side,
+    background-image: linear-gradient(to #{$opp_side},
                                       gtkalpha(#000000, 0.23),
                                       gtkalpha(#000000, 0.08),
                                       transparent);
@@ -67,55 +67,58 @@ $budgie_transition: opacity 0.2s $slope_medium,
 
 // wnck tasklist styling
 .budgie-panel #tasklist-button {
-  &, &:backdrop {
-    button {
-      border: none;
-      background: none;
-      opacity: 0.5;
-      &:hover,
-      &:active,
-      &:checked { opacity: 1.0; }
-    }
+  button {
+    border: none;
+    background: none;
+    opacity: 0.5;
+    &:hover,
+    &:active,
+    &:checked { opacity: 1.0; }
   }
 }
 
 // icon tasklist styling
+box.horizontal.pinned { // drop-target
+  &:drop(active) {
+    border-color: transparent;
+    border-radius: 0;
+    background-color: gtkopacity($drop_target_color, 0.2);
+    box-shadow: inset 0 0 0 2px $drop_target_color;
+  }
+}
+
 .budgie-panel {
   button.flat.launcher {
-    &, &:backdrop {
-      min-width: $icon_size + 8px;
-      min-height: $icon_size + 8px;
-      padding: 0;
-      border: 2px solid transparent;
-      background-image: radial-gradient(circle farthest-corner at center,
-                                        gtkalpha($inverted_fg_color, 0) 100%,
-                                        transparent 0%),
-                        image(gtkalpha($inverted_fg_color, 0));
-      background-position: center center;
-      opacity: 0.5;
-      transition: $budgie_transition;
-      &:hover {
-        opacity: 0.75;
-        -gtk-icon-effect: highlight;
-      }
-      &:active {
-        opacity: 1.0;
-        transition: $budgie_transition,
-                    background-image 0;
-        animation: budgie_ripple_effect 0.3s $slope_slow forwards;
-      }
-      &:checked {
-        background-color: transparent;
-        opacity: 1.0;
-        &:hover { -gtk-icon-effect: highlight; }
-      }
+    min-width: $icon_size + 8px;
+    min-height: $icon_size + 8px;
+    padding: 0;
+    border: 2px solid transparent;
+    background-image: radial-gradient(circle farthest-corner at center,
+                                      gtkalpha($inverted_fg_color, 0) 100%,
+                                      transparent 0%),
+                      image(gtkalpha($inverted_fg_color, 0));
+    background-position: center center;
+    opacity: 0.5;
+    transition: $budgie_transition;
+    &:hover {
+      opacity: 0.75;
+      -gtk-icon-effect: highlight;
+    }
+    &:active {
+      opacity: 1.0;
+      transition: $budgie_transition,
+                  background-image 0;
+      animation: budgie_ripple_effect 0.3s $slope_slow forwards;
+    }
+    &:checked {
+      background-color: transparent;
+      opacity: 1.0;
+      &:hover { -gtk-icon-effect: highlight; }
     }
   }
 
   .unpinned button.flat.launcher,
-  .unpinned button.flat.launcher:backdrop,
-  .pinned button.flat.launcher.running,
-  .pinned button.flat.launcher.running:backdrop {
+  .pinned button.flat.launcher.running {
     opacity: 1.0;
     &:hover { -gtk-icon-effect: highlight; }
   }
@@ -124,8 +127,7 @@ $budgie_transition: opacity 0.2s $slope_medium,
 // draw underscores
 @each $along_side, $opp_side in $orientation {
   .#{$along_side} .budgie-panel {
-    #tasklist-button button,
-    #tasklist-button button:backdrop {
+    #tasklist-button button {
       border: 2px solid transparent;
       &:hover {
         border-#{$along_side}: 2px solid gtkalpha($inverted_fg_color, 0.4);
@@ -136,8 +138,7 @@ $budgie_transition: opacity 0.2s $slope_medium,
       }
     }
 
-    button.flat.launcher,
-    button.flat.launcher:backdrop {
+    button.flat.launcher {
       border: 2px solid transparent;
       &:hover {
         border-#{$along_side}: 2px solid gtkalpha($inverted_fg_color, 0.4);
@@ -155,9 +156,7 @@ $budgie_transition: opacity 0.2s $slope_medium,
                             (bottom, bottom) {
   .#{$along_side} .budgie-panel {
     .unpinned button.flat.launcher,
-    .unpinned button.flat.launcher:backdrop,
-    .pinned button.flat.launcher.running,
-    .pinned button.flat.launcher.running:backdrop {
+    .pinned button.flat.launcher.running {
       border: 2px solid transparent;
       // FIXME: Upstream deformed aspect-ratio to 1:1.1
       border-image: -gtk-scaled(url("assets/running-dot-#{$_dot}.png"),
@@ -174,19 +173,6 @@ $budgie_transition: opacity 0.2s $slope_medium,
 }
 
 .budgie-panel .end-region {
-  // limit minimum lateral spacing for symbolic icons
-  // FIXME: Paper icon-pack has thin 'battery' and 'bluetooth' symbolic icon
-  > widget > widget > box.horizontal {
-    // battery
-    widget > widget > box > image { min-width: 20px; }
-    // bluetooth
-    widget:nth-child(3) > widget > image {
-      min-width: 18px;
-      &:dir(ltr) { margin: 0 0 0 -2px; }
-      &:dir(rtl) { margin: 0 -2px 0 0; }
-    }
-  }
-
   // dim symbolic icons to get better uniformity same as NaTray icons
   * > image { opacity: 0.9; }
 }
@@ -231,20 +217,17 @@ $budgie_transition: opacity 0.2s $slope_medium,
     box-shadow: none;
   }
 
-  row { // reset background
-    &, &.activatable {
-      background-image: none;
-      background-color: $secondary_base_color;
-      color: $secondary_fg_color;
-      transition: none;
+  row.activatable { // reset background
+    background-image: none;
+    background-color: $secondary_base_color;
+    color: $secondary_fg_color;
+    transition: none;
 
-      // FIXME: enlarge vertical spacing with icon's padding
-      image { padding: rem(5.3px) 0 rem(6.7px); }
-    }
+    // FIXME: enlarge vertical spacing with padding of icons
+    image { padding: rem(5.3px) 0 rem(6.7px); }
+
     &:hover,
-    &.activatable:hover,
-    &:selected,
-    &.activatable:selected {
+    &:selected {
       background-image: none;
       background-color: $secondary_base_color;
       // child button node has hover state already
@@ -253,22 +236,27 @@ $budgie_transition: opacity 0.2s $slope_medium,
     }
   }
 
-  .categories .category-button { // left-paned elements of GtkPopover
-    &:checked {
-      background-image: none;
-      background-color: transparent;
-      color: $selected_bg_color;
-      &:hover { background-color: gtkopacity($selected_bg_color, 0.1); }
-      &:disabled {
-        color: gtkopacity($selected_bg_color, 0.4);
+  .categories { // left-paned elements of GtkPopover
+    &:dir(ltr) { border-right: 1px solid $borders_color; }
+    &:dir(rtl) { border-left: 1px solid $borders_color; }
 
-        label { color: inherit; }
+    .category-button {
+      &:checked {
+        background-image: none;
+        background-color: transparent;
+        color: $selected_bg_color;
+        &:hover { background-color: gtkopacity($selected_bg_color, 0.1); }
+        &:disabled {
+          color: gtkopacity($selected_bg_color, 0.4);
+
+          label { color: inherit; }
+        }
       }
-    }
 
-    label { // tweak vertical spacing and font weight
-      padding: rem(6.7px) 0 rem(8px);
-      font-weight: 500;
+      label { // tweak vertical spacing and font weight
+        padding: rem(4px, $sw: 1.0) 0 rem(5.3px, $sw: 1.0);
+        font-weight: 500;
+      }
     }
   }
 
@@ -295,7 +283,7 @@ $budgie_transition: opacity 0.2s $slope_medium,
   row {
     // stop weird and unhandled ripple-effect
     &.activatable {
-      &, & .indicator-item {
+      &, .indicator-item {
         &:active,
         &:selected { animation: none; }
       }
@@ -307,13 +295,22 @@ $budgie_transition: opacity 0.2s $slope_medium,
       color: $secondary_fg_color;
       transition: none;
 
-      &, & .indicator-item {
+      .indicator-item {
         label,
         image { color: $secondary_fg_color; }
       }
 
-      // FIXME: enlarge vertical spacing with icons' paddding
+      // FIXME: enlarge vertical spacing with padding of icons
       image { padding: rem(5.3px) 0 rem(6.7px); }
+
+      // use asymmetrical separators
+      separator.horizontal {
+        min-width: 1px;
+        min-height: 1px;
+
+        &:dir(ltr) { border-left: $icon_size * 2 solid transparent; }
+        &:dir(rtl) { border-right: $icon_size * 2 solid transparent; }
+      }
     }
     &.activatable:hover,
     &.activatable:selected {
@@ -375,7 +372,7 @@ $budgie_transition: opacity 0.2s $slope_medium,
           color: $inverted_secondary_fg_color;
 
           &:first-child { // avatar image
-            min-width: 20px;
+            min-width: 24px;
             min-height: 20px;
             padding-top: rem(6.7px);
             opacity: 0.9;
@@ -399,21 +396,6 @@ $budgie_transition: opacity 0.2s $slope_medium,
         }
 
         label { font-weight: 700; }
-      }
-    }
-
-    @at-root .user-menu > box.vertical row.activatable:nth-child(3) {
-      // separator's row should not have outlines
-      outline-offset: 0;
-      outline-width: 0;
-
-      // use asymmetrical separators
-      separator.horizontal {
-        min-width: 1px;
-        min-height: 1px;
-
-        &:dir(ltr) { border-left: $icon_size * 2 solid transparent; }
-        &:dir(rtl) { border-right: $icon_size * 2 solid transparent; }
       }
     }
   }
@@ -521,14 +503,13 @@ $budgie_transition: opacity 0.2s $slope_medium,
     font-size: 90%;
   }
 
-  scrolledwindow { background: transparent; }
+  scrolledwindow,
+  list { background: transparent; }
 
-  list,
-  row,
   row.activatable {
     background-color: transparent;
-    &:not(.list):hover { color: $fg_color; }
-    &:not(.list):selected {
+    &:hover { color: $fg_color; }
+    &:selected {
       &, label {
         color: $selected_bg_color;
       }
@@ -672,14 +653,10 @@ $budgie_transition: opacity 0.2s $slope_medium,
 
 // clock-applet styling
 .budgie-panel {
-  .start-region,
-  .center-region,
-  .end-region {
-    // shrink label
-    widget > widget > label {
-      font-size: 80%;
-      padding-bottom: rem(1.3px, $sw: 1.0);
-    }
+  // shrink label
+  > box widget > widget > label {
+    font-size: 80%;
+    padding-bottom: rem(1.3px, $sw: 1.0);
   }
 }
 
@@ -697,33 +674,24 @@ $budgie_transition: opacity 0.2s $slope_medium,
 .budgie-container.top,
 .budgie-container.bottom {
   > popover.background > box.vertical > button.flat.image-button {
-    margin: 0 2px;
+    min-width: rem($widget_size, $sw: 1.0);
+    min-height: rem($widget_size, $sw: 1.0);
+    margin: rem(2.7px, $sw: 1.0) 0;
+    padding: 0;
 
     &:first-child { // '+' button
       &:hover {
-        @extend %button_flat_hover;
         background: none;
         color: $success_color;
         animation: volume_hover 0.2s linear forwards;
-      }
-      &:disabled {
-        @extend %button_flat_disabled;
-        background: none;
-        color: gtkalpha($success_color, 0.4);
       }
     }
 
     &:last-child { // '-' button
       &:hover {
-        @extend %button_flat_hover;
         background: none;
         color: $error_color;
         animation: volume_hover 0.2s linear forwards;
-      }
-      &:disabled {
-        @extend %button_flat_disabled;
-        background: none;
-        color: gtkalpha($error_color, 0.4);
       }
     }
   }
@@ -827,6 +795,25 @@ widget.keyboard-label > label {
   padding-bottom: rem(1.3px, $sw: 1.0);
 }
 
+// separator applet
+.budgie-panel > box > widget > separator {
+  // borders_color -> track_color
+  background-color: gtkopacity($inverted_fg_color, 0.2);
+}
+
+// workspace-switcher applet
+wnck-pager {
+  .top & {
+    &:hover { box-shadow: inset 0 2px gtkalpha($inverted_fg_color, 0.4); }
+    &:selected { box-shadow: inset 0 2px $selected_bg_color; }
+  }
+
+  .bottom & {
+    &:hover { box-shadow: inset 0 -2px gtkalpha($inverted_fg_color, 0.4); }
+    &:selected { box-shadow: inset 0 -2px $selected_bg_color; }
+  }
+}
+
 // notifications
 .budgie-notification-window,
 .budgie-osd-window {
@@ -856,8 +843,7 @@ widget.keyboard-label > label {
   }
 
   button,
-  buttonbox button,
-  buttonbox .linked > button { // OSD-style buttons
+  .linked > button { // OSD-style buttons
     border-image: none; // hide underlines
     color: $inverted_secondary_accent_label_color;
     &:hover,
@@ -889,16 +875,9 @@ widget.keyboard-label > label {
 
 // run-dialog styling
 .background.csd.budgie-run-dialog {
+  border-radius: 2px;
   border: none;
-  background-color: transparent;
-
-  decoration {
-    border-radius: 2px; // hard-coded 6px is ugly...
-    border: none;
-    background-color: gtkopacity($inverted_dark_color, 0.9);
-
-    headerbar { border-radius: 2px; }
-  }
+  background-color: gtkopacity($inverted_dark_color, 0.9);
 
   scrolledwindow {
     border-image: none; // remove underline indicator
@@ -907,7 +886,6 @@ widget.keyboard-label > label {
     list {
       background-color: transparent;
 
-      row,
       row.activatable {
         background-color: transparent;
         color: $inverted_secondary_fg_color;
@@ -936,13 +914,6 @@ widget.keyboard-label > label {
       &.left,
       &.right { background-image: none; }
     }
-  }
-
-  // hide weird separator
-  box > box > separator {
-    border: 0 none transparent;
-    color: transparent;
-    background-color: transparent;
   }
 
   box > box {
@@ -975,15 +946,6 @@ widget.keyboard-label > label {
       &:active { background-color: $inverted_fg_color; }
       &:disabled { opacity: 0.4; }
     }
-  }
-
-  // 'close' button
-  button.image-button {
-    color: $inverted_secondary_accent_label_color;
-    &:hover,
-    &:active,
-    &:checked { color: $inverted_accent_label_color; }
-    &:disabled { color: gtkopacity($inverted_accent_label_color, 0.4); }
   }
 }
 
@@ -1048,49 +1010,15 @@ widget.keyboard-label > label {
       border-left-width: 0;
     }
   }
+}
 
-  @each $s,$as in ('','-unchecked'),
-                  (':hover', '-unchecked-active'),
-                  (':active', '-unchecked-active'),
-                  (':disabled','-unchecked-insensitive'),
-                  (':indeterminate', '-mixed'),
-                  (':indeterminate:hover', '-mixed-active'),
-                  (':indeterminate:active', '-mixed-active'),
-                  (':indeterminate:disabled', '-mixed-insensitive'),
-                  (':checked', '-checked'),
-                  (':checked:hover', '-checked-active'),
-                  (':checked:active', '-checked-active'),
-                  (':checked:disabled','-checked-insensitive') {
-    check#{$s} { // always use dark variant
-      -gtk-icon-source: -gtk-scaled(url("assets/checkbox#{$as}-dark.png"),
-                                    url("assets/checkbox#{$as}-dark@2.png"));
-    }
+// polkit-dialog specific styling
+.budgie-polkit-dialog {
+  .message { color: $inverted_secondary_fg_color; }
 
-    radio#{$s} {
-      -gtk-icon-source: -gtk-scaled(url("assets/radio#{$as}-dark.png"),
-                                    url("assets/radio#{$as}-dark@2.png"));
-    }
-  }
-
-  checkbutton.text-button,
-  radiobutton.text-button {
-    color: $inverted_secondary_fg_color;
-    &:hover,
-    &:active,
-    &:checked { color: $inverted_fg_color; }
-    &:disabled,
-    &:disabled:active,
-    &:disabled:indeterminate { color: $insensitive_inverted_fg_color; }
-  }
-
-  // polkit-dialog specific styling
-  &:not(.budgie-session-dialog) {
-    .message { color: $inverted_secondary_fg_color; }
-
-    .failure {
-      color: $error_color;
-      font-weight: 700;
-    }
+  .failure {
+    color: $error_color;
+    font-weight: 700;
   }
 }
 
@@ -1131,9 +1059,9 @@ widget.keyboard-label > label {
 }
 
 
-/*****************
- * Unity-Desktop *
- *****************/
+// /*****************
+//  * Unity-Desktop *
+//  *****************/
 
 // window decorations
 UnityDecoration {
@@ -1141,11 +1069,11 @@ UnityDecoration {
   -UnityDecoration-input-extents: 8px;
 
   -UnityDecoration-shadow-offset-x: 0;
-  -UnityDecoration-shadow-offset-y: 6px;
-  -UnityDecoration-active-shadow-color: rgba(0, 0, 0, 0.34);
-  -UnityDecoration-active-shadow-radius: 18px;
-  -UnityDecoration-inactive-shadow-color: rgba(0, 0, 0, 0.12);
-  -UnityDecoration-inactive-shadow-radius: 10px;
+  -UnityDecoration-shadow-offset-y: 3.5px;
+  -UnityDecoration-active-shadow-color: rgba(0, 0, 0, 0.73);
+  -UnityDecoration-active-shadow-radius: 17px;
+  -UnityDecoration-inactive-shadow-color: rgba(0, 0, 0, 0.25);
+  -UnityDecoration-inactive-shadow-radius: 11px;
 
   -UnityDecoration-glow-size: 10px;
   -UnityDecoration-glow-color: $selected_bg_color;
@@ -1155,9 +1083,7 @@ UnityDecoration {
   -UnityDecoration-title-alignment: 0.0;
 
   .top {
-    border-width: 1px 0 0;
-    border-style: solid none none;
-    border-color: $borders_color;
+    border: 0 none transparent;
     border-radius: 2px 2px 0 0;
     padding: 1px 6px 0 6px;
 
@@ -1167,6 +1093,11 @@ UnityDecoration {
     box-shadow: inset 0 1px $highlight_color;
 
     &:backdrop { color: $insensitive_inverted_fg_color; }
+
+    &:hover { // for L.I.M's selected menuitem
+      color: $selected_fg_color;
+      box-shadow: inset 0 -2px $selected_bg_color;
+    }
   }
 
   .left,
@@ -1202,7 +1133,7 @@ UnityPanelWidget,
   box-shadow: none;
 
   &.menuitem,
-  & .menuitem * {
+  .menuitem * {
     padding: 0 6px;
     border-radius: 0;
     border-bottom: none;
@@ -1216,9 +1147,27 @@ UnityPanelWidget,
 }
 
 
-/***********************
- * Lightdm-Gtk-Greeter *
- ***********************/
+// /************************
+//  * Unity-Control-Center *
+//  ************************/
+
+.background:not(.csd):not(.solid-csd) > box.vertical > notebook.frame {
+  // hide unwanted frames
+  border: 0 none transparent;
+
+  > stack > scrolledwindow > viewport > box.vertical > frame > box.vertical {
+    // reset $base_color;
+    iconview.view {
+      background-color: transparent;
+      &:selected { background-color: $selected_bg_color; }
+    }
+  }
+}
+
+
+// /***********************
+//  * Lightdm-Gtk-Greeter *
+//  ***********************/
 
 .lightdm-gtk-greeter {
   // top-panel styling
@@ -1230,7 +1179,7 @@ UnityPanelWidget,
     box-shadow: inset 0 2px $panel_bg_color;
 
     &, &.background,
-    & > * > * { background-color: transparent; } // FIXME: ugly wildcard
+    > * > * { background-color: transparent; } // FIXME: ugly wildcard
 
     menubar {
       @extend .gnome-panel-menu-bar;
@@ -1265,7 +1214,7 @@ UnityPanelWidget,
           text-shadow: none;
 
           // override above hacks
-          &, & label { color: $secondary_fg_color; }
+          &, label { color: $secondary_fg_color; }
           &:hover,
           &:hover label { color: $fg_color; }
           &:disabled,
@@ -1366,9 +1315,9 @@ UnityPanelWidget,
 }
 
 
-/************
- * Corebird *
- ************/
+// /************
+//  * Corebird *
+//  ************/
 
 // use normal foreground colour
 stack button.profile-button {
@@ -1419,10 +1368,16 @@ headerbar.titlebar box {
   }
 }
 
+scrolledwindow > viewport.frame > list.stream > stack {
+  > box.vertical > button.text-button { // 'Retry' button
+    margin-bottom: rem(13.3px, $sw: 1.0);
+  }
+}
 
-/********
- * Nemo *
- ********/
+
+// /********
+//  * Nemo *
+//  ********/
 
 .nemo-desktop.nemo-canvas-item {
   @extend .nautilus-desktop.nautilus-canvas-item;
@@ -1441,6 +1396,13 @@ headerbar.titlebar box {
     }
   }
 
+  infobar.error { // Administrative privileges
+    label {
+      font-size: 110%;
+      font-weight: 700;
+    }
+  }
+
   // main tool-bar styling
   grid > box > box > toolbar.primary-toolbar {
     // draw bottom border and shadows
@@ -1449,7 +1411,7 @@ headerbar.titlebar box {
                                         $toolbar-shadow-dark);
 
     > button.flat.toggle { // 'back/forward'?
-      &, & image {
+      &, image {
         min-height: $icon_size * 2.2;
         min-width: $icon_size * 2.2;
         padding: 0;
@@ -1471,7 +1433,7 @@ headerbar.titlebar box {
       // general circle buttons
       &.image-button,
       &.image-button.toggle {
-        &, & image {
+        &, image {
           min-height: $icon_size * 2.2;
           min-width: $icon_size * 2.2;
           padding: 0;
@@ -1482,7 +1444,7 @@ headerbar.titlebar box {
     // optional buttons
     .raised:not(.linked) > button {
       &:not(.text-button):not(.toggle) {
-        &, & image {
+        &, image {
           min-height: $icon_size * 2.2;
           min-width: $icon_size * 2.2;
           padding: 0;
@@ -1575,9 +1537,9 @@ headerbar.titlebar box {
 }
 
 
-/************
- * Lollypop *
- ************/
+// /************
+//  * Lollypop *
+//  ************/
 
 window > headerbar > widget > box.horizontal {
   > grid.horizontal > button.toggle.image-button {
@@ -1622,10 +1584,27 @@ window.background > grid.vertical > stack > paned.horizontal > widget {
   }
 }
 
+// playlists styling
+window.background > grid.vertical > stack > paned.horizontal {
+  > paned.horizontal > grid grid > grid {
+    button.flat.image-button { // back to square button
+      &, &.toggle {
+        border-radius: 2px;
+        -gtk-outline-radius: 2px;
+      }
+    }
+  }
 
-/***************************
- * Cinnamon-Control-Center *
- ***************************/
+  .track-menu-button { // back to square button
+    border-radius: 2px;
+    -gtk-outline-radius: 2px;
+  }
+}
+
+
+// /***************************
+//  * Cinnamon-Control-Center *
+//  ***************************/
 
 .background:not(.csd) > box.vertical > stack > scrolledwindow {
   // stop using $base_color
@@ -1649,9 +1628,167 @@ window.background > grid.vertical > stack > paned.horizontal > widget {
 }
 
 
-/*********
- * XFce4 *
- *********/
+// /************************
+//  * Cinnamon-Screensaver *
+//  ************************/
+
+.csstage {
+  .unlockbox {
+    color: $inverted_fg_color;
+    font-size: 110%;
+    font-weight: 400;
+  }
+
+  .clock {
+    color: $inverted_fg_color;
+    font-size: rem(112px, $sw: 1.0);
+    font-weight: 300;
+  }
+
+  .toppanel {
+    border: none;
+    color: $inverted_fg_color;
+    background-color: transparent;
+  }
+
+  .audiopanel,
+  .infopanel { // OSDs placed at top-left/right corners
+    border: none;
+    background-color: gtkopacity($inverted_dark_color, 0.9);
+    box-shadow: $z-depth-1;
+
+    &:not(.infopanel) { border-radius: 0 0 2px 0; }
+    &:not(.audiopanel) { border-radius: 0 0 0 2px; }
+  }
+
+  .notificationwidget,
+  .powerwidget {
+    padding: 6px;
+    color: $inverted_fg_color;
+    background-color: transparent;
+    font-size: 100%;
+    font-weight: 500;
+  }
+
+  .auth-message {
+    color: $error_color;
+    font-size: 90%;
+    font-weight: 700;
+  }
+
+  .caps-message {
+    color: $warning_color;
+    font-size: 90%;
+    font-weight: 700;
+  }
+
+  .framedimage { // avatar?
+    min-height: 150px;
+    border-radius: 2px;
+    border: none;
+    background-color: gtkopacity($inverted_fg_color, 0.1);
+  }
+
+  .passwordentry {
+    @include entry(flat-normal);
+    border-radius: 0;
+    color: $inverted_secondary_fg_color;
+    caret-color: $inverted_secondary_fg_color;
+    &:focus {
+      @include entry(flat-focus);
+      color: $inverted_fg_color;
+      caret-color: $inverted_fg_color;
+    }
+    &:disabled {
+      @include entry(flat-insensitive);
+      color: $insensitive_inverted_fg_color;
+    }
+
+    &.image.left {
+      margin-right: 8px;
+      color: inherit;
+    }
+  }
+
+  .transparentbutton { // = 'unlock'/'switch-user' button
+    @extend %button_flat_normal;
+    background-color: transparent;
+    &:not(:active):not(:disabled):not(hover) {
+      background-color: transparent;
+      color: $secondary_accent_color;
+    }
+    &:hover {
+      @extend %button_flat_hover;
+      background-color: transparent;
+      color: $accent_color;
+    }
+    &:active {
+      @extend %button_flat_active;
+      border-image: none;
+      background-color: transparent;
+      color: $accent_color;
+      box-shadow: none;
+    }
+    &:checked {
+      @extend %button_flat_checked;
+      border-image: none;
+      background-color: transparent;
+      color: $accent_color;
+      box-shadow: none;
+    }
+    &:disabled {
+      @extend %button_flat_disabled;
+      background-color: gtkopacity($inverted_secondary_fg_color, 0.1);
+      color: gtkopacity($inverted_secondary_fg_color, 0.4);
+
+      label,
+      image { color: inherit; }
+    }
+  }
+
+  .volumeslider {
+    min-height: 24px;
+    min-width: 100px;
+    padding: 3px 0px;
+    background-color: gtkopacity($inverted_fg_color, 0.2);
+    color: $success_color;
+    &:disabled { background-color: gtkopacity($success_color, 0.2); }
+
+    // slider { // FIXME: what's this?
+    //   min-height: 24px;
+    //   min-width: 4px;
+    //   margin: -9px;
+    // }
+  }
+
+  .trackname {
+    font-size: 90%;
+    color: $inverted_secondary_fg_color;
+    background-image: none;
+    background-color: transparent;
+  }
+
+  .albumartist {
+    font-size: 80%;
+    color: $insensitive_inverted_fg_color;
+    background-image: none;
+    background-color: transparent;
+  }
+
+  viewport {
+    &,
+    &.frame {
+      border-style: none;
+      background-color: transparent;
+      background-image: none;
+    }
+  }
+}
+
+
+// /*********
+//  * XFce4 *
+//  *********/
 
 .XfceHeading { // FIXME: I'm not sure what's this
   margin: 0;
@@ -1723,9 +1860,9 @@ TopMenuAppMenuBar {
 }
 
 
-/**************
- * FeedReader *
- **************/
+// /**************
+//  * FeedReader *
+//  **************/
 
 window.background > paned.titlebar > headerbar.titlebar {
   button.flat {
@@ -1755,9 +1892,9 @@ overlay.article-list > stack > box.horizontal {
 }
 
 
-/************
- * Synaptic *
- ************/
+// /************
+//  * Synaptic *
+//  ************/
 
 window > box.vertical > box.horizontal {
   > toolbar {
@@ -1781,9 +1918,9 @@ window > box.vertical > box.horizontal {
 }
 
 
-/**********************
- * Eclipse/SWT (neon) *
- **********************/
+// /**********************
+//  * Eclipse/SWT (neon) *
+//  **********************/
 
 window.background > box.vertical {
   > menubar { // force setting foreground colour
@@ -1796,9 +1933,9 @@ window.background > box.vertical {
 }
 
 
-/*************
- * Gnome-Mpv *
- *************/
+// /*************
+//  * Gnome-Mpv *
+//  *************/
 
 // control-bar styling
 .background.csd > box.vertical > box.background.horizontal,
@@ -1826,7 +1963,7 @@ window.background > box.vertical {
   scale contents > trough > slider {
     min-height: rem(20px, $sw: 1.0);
     min-width: rem(20px, $sw: 1.0);
-    margin: rem(-9px, $sw: 1.0);
+    margin: rem(-9px - 0.5px, $sw: 1.0);
     background-repeat: no-repeat;
     background-position: center;
     &:not(:hover):not(:active) { background-size: $scale; }
@@ -1835,13 +1972,13 @@ window.background > box.vertical {
       background-image: -gtk-scaled(url('assets/slider.png'),
                                     url('assets/slider@2.png'));
       &:hover {
-        margin: rem(-9px, $sw: 1.0);
+        margin: rem(-9px - 0.5px, $sw: 1.0);
         background-image: -gtk-scaled(url('assets/slider.png'),
                                       url('assets/slider@2.png'));
         background-size: 100%;
       }
       &:active {
-        margin: rem(-9px, $sw: 1.0);
+        margin: rem(-9px - 0.5px, $sw: 1.0);
         background-image: -gtk-scaled(url('assets/slider-active.png'),
                                       url('assets/slider-active@2.png'));
       }
@@ -1855,13 +1992,13 @@ window.background > box.vertical {
       background-image: -gtk-scaled(url('assets/slider-dark.png'),
                                     url('assets/slider-dark@2.png'));
       &:hover {
-        margin: rem(-9px, $sw: 1.0);
+        margin: rem(-9px - 0.5px, $sw: 1.0);
         background-image: -gtk-scaled(url('assets/slider-dark.png'),
                                       url('assets/slider-dark@2.png'));
         background-size: 100%;
       }
       &:active {
-        margin: rem(-9px, $sw: 1.0);
+        margin: rem(-9px - 0.5px, $sw: 1.0);
         background-image: -gtk-scaled(url('assets/slider-active-dark.png'),
                                       url('assets/slider-active-dark@2.png'));
       }
@@ -1874,9 +2011,9 @@ window.background > box.vertical {
 }
 
 
-/***********
- * Firefox *
- ***********/
+// /***********
+//  * Firefox *
+//  ***********/
 
 // FIXME: Gtk+3 firefox needs this!
 window.background {
@@ -1899,9 +2036,9 @@ window.background {
 }
 
 
-/*************
- * Wireshark *
- *************/
+// /*************
+//  * Wireshark *
+//  *************/
 
 window.background {
   > box.vertical > toolbar:not(.primary-toolbar).horizontal {
@@ -1918,9 +2055,9 @@ window.background {
 }
 
 
-/**************
- * Mate-Panel *
- **************/
+// /**************
+//  * Mate-Panel *
+//  **************/
 
 // Most parts are themed in Gnome-panel section
 #PanelWidget,
@@ -1945,9 +2082,9 @@ PanelSeparator {
 }
 
 
-/*****************
- * Mate-Terminal *
- *****************/
+// /*****************
+//  * Mate-Terminal *
+//  *****************/
 
 .mate-terminal {
   // &.background,
@@ -1988,13 +2125,13 @@ PanelSeparator {
 
       button {
         &,
-        & image { color: $inverted_tertiary_fg_color; }
+        image { color: $inverted_tertiary_fg_color; }
       }
 
       &:hover button,    // hover tab close button
       &:checked button { // active tab close button
         &,
-        & image { color: $inverted_fg_color; }
+        image { color: $inverted_fg_color; }
       }
     }
 
@@ -2020,9 +2157,9 @@ PanelSeparator {
 }
 
 
-/********
- * Caja *
- ********/
+// /********
+//  * Caja *
+//  ********/
 
 widget.caja-desktop.view { // desktop icon-grid styling
   @extend .nautilus-desktop.nautilus-canvas-item;
@@ -2107,16 +2244,36 @@ widget.caja-desktop.view { // desktop icon-grid styling
       }
 
       &, &.slider-button { // use linked-array button styling
-        @extend button.flat;
+        @include button(flat-normal);
         @extend %button_array;
+        &:hover {
+          @include button(flat-hover);
+          @extend %button_array:hover;
+        }
+        &:active {
+          @include button(flat-active);
+          @extend %button_array:active;
+        }
+        &:disabled {
+          @include button(flat-insensitive);
+          @extend %button_array:disabled;
+        }
+        &:checked {
+          @include button(flat-checked);
+          @extend %button_array:checked;
+        }
       }
     }
   }
 
   button.image-button.toggle { // most-left toggle button in path-bar pane
-    @extend button.flat;
+    @include button(flat-normal);
     @extend %image_button;
+    &:hover { @include button(flat-hover); }
+    &:active { @include button(flat-active); }
+    &:disabled { @include button(flat-insensitive); }
     &:checked { // use underline-indicator
+      @include button(flat-checked);
       border-radius: 0;
       -gtk-outline-radius: 0;
       background-image: none;
@@ -2126,7 +2283,7 @@ widget.caja-desktop.view { // desktop icon-grid styling
   }
 
   .caja-notebook { // remove lateral borders
-    &, & .frame {
+    &, .frame {
       border-width: 1px 0 1px;
     }
 
@@ -2167,9 +2324,9 @@ widget.caja-desktop.view { // desktop icon-grid styling
 }
 
 
-/********************
- * Mate-Screensaver *
- ********************/
+// /********************
+//  * Mate-Screensaver *
+//  ********************/
 
 .lock-dialog {
   @extend messagedialog;
@@ -2188,9 +2345,9 @@ widget.caja-desktop.view { // desktop icon-grid styling
 }
 
 
-/**************
- * Mate-Tweak *
- **************/
+// /**************
+//  * Mate-Tweak *
+//  **************/
 
 .background:not(.csd) > box.horizontal {
   > notebook { // right-pane
@@ -2201,9 +2358,9 @@ widget.caja-desktop.view { // desktop icon-grid styling
 }
 
 
-/*******
- * Eom *
- *******/
+// /*******
+//  * Eom *
+//  *******/
 
 .eom-window {
   statusbar { // always use dark-variant
@@ -2231,9 +2388,9 @@ widget.caja-desktop.view { // desktop icon-grid styling
 }
 
 
-/*********
- * Pluma *
- *********/
+// /*********
+//  * Pluma *
+//  *********/
 
 .pluma-window {
   paned.horizontal notebook {
@@ -2282,9 +2439,37 @@ widget.caja-desktop.view { // desktop icon-grid styling
 }
 
 
-/*************************
- * Mate-MediaControl-OSD *
- *************************/
+// /*****************
+//  * Atril/Xreader *
+//  *****************/
+
+.atril-window,
+.xreader-window {
+  scrolledwindow.frame {
+    border-style: solid none none;
+
+    > .view { // = evview?
+      transition: none;
+      &:selected,
+      &:active {
+        background-color: $selected_bg_color;
+        color: $selected_fg_color;
+      }
+    }
+
+    undershoot { // remove undershoot
+      &.top,
+      &.bottom,
+      &.left,
+      &.right { background-image: none; }
+    }
+  }
+}
+
+
+// /*************************
+//  * Mate-MediaControl-OSD *
+//  *************************/
 
 // OSDs are much blurred?
 MsdOsdWindow {
@@ -2312,9 +2497,9 @@ MsdOsdWindow {
 }
 
 
-/****************
- * Libre-Office *
- ****************/
+// /****************
+//  * Libre-Office *
+//  ****************/
 
 // FIXME: ignored box-shadow and wrong pseudo-class for toggled-state
 .libreoffice-toolbar {
@@ -2325,9 +2510,9 @@ MsdOsdWindow {
 }
 
 
-/************
- * Inkscape *
- ************/
+// /************
+//  * Inkscape *
+//  ************/
 
 // 2nd-row toolbars
 #SelectToolbar,
@@ -2361,11 +2546,57 @@ MsdOsdWindow {
 }
 
 // misc
-spinbutton#ZoomStatus {
+spinbutton#ZoomStatus,
+box#SelectedStyle spinbutton { // spinbuttons inside the status-bar
   > button {
     min-width: rem($widget_size, $sw: 1.0);
     min-height: rem($widget_size, $sw: 1.0);
     padding: 0;
+  }
+}
+
+#InkscapePanel spinbutton > entry {
+  // workaround for truncated labels in GimpSpinScale
+  // FIXME: need to override weird inner-padding?
+  margin: if($ref_weight < 1.0, rem(-2.7px) 0,
+                                rem(-4px) 0);
+
+  // re-fit to the parent entry node spacing
+  > progress {
+    margin: if($ref_weight < 1.0, rem(-2.7px) 0,
+                                  rem(-4px) 0);
+  }
+}
+
+
+// /**************
+//  * Emacs24/25 *
+//  **************/
+
+window#Emacs24,
+window#Emacs {
+  background-color: $bg_color;
+  transition: none;
+
+  > box#pane {
+    background-color: $bg_color;
+
+    > widget > toolbar#emacs-toolbar {
+      background-color: $bg_color;
+      transition: none;
+    }
+
+    > box > widget#emacs,
+    > box > widget#emacs24,
+    > box > widget#emacs25 {
+     transition: none;
+
+      > widget > scrollbar,
+      > widget > scrollbar trough {
+        background-color: $bg_color;
+        transition: none;
+      }
+    }
   }
 }
 

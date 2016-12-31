@@ -368,11 +368,12 @@ unity_file = \
 	$(unitydir)/unmaximize_unfocused.svg
 
 xfcedir   = $(srcdir)/xfce-notify-4.0
-xfce_file = \
+xfce_image_file = \
 	$(xfcedir)/flat-button-active.svg \
 	$(xfcedir)/flat-button-hover.svg \
 	$(xfcedir)/flat-button-insensitive.svg \
-	$(xfcedir)/flat-button.svg \
+	$(xfcedir)/flat-button.svg
+xfce_rc_file = \
 	$(xfcedir)/gtkrc
 
 # ****************************
@@ -380,30 +381,6 @@ xfce_file = \
 # ****************************
 
 all:
-# check concurrency-build mode
-if ENABLE_PARALLEL
-	cd $(srcdir)/sass && \
-	$(PARALLEL) --no-notice --line-buffer -j0 \
-	$(BUNDLE) exec $(SASS) --update --force --sourcemap=none --style=compact ::: \
-		gnome-shell/gnome-shell.scss:../gnome-shell/gnome-shell.css \
-		gnome-shell/gnome-shell-dark.scss:../gnome-shell-nokto/gnome-shell.css \
-		gnome-shell/gnome-shell-eta.scss:../gnome-shell-eta/gnome-shell.css \
-		gnome-shell/gnome-shell-dark-eta.scss:../gnome-shell-nokto-eta/gnome-shell.css \
-		gnome-shell/stylesheet.scss:../gnome-shell/extensions/window-list/stylesheet.css \
-		gnome-shell/classic.scss:../gnome-shell/extensions/window-list/classic.css \
-		gnome-shell/workspaces-to-dock.scss:../gnome-shell/extensions/workspaces-to-dock/workspaces-to-dock.css
-else
-	cd $(srcdir)/sass && \
-	$(BUNDLE) exec $(SASS) --update --force --sourcemap=none --style=compact \
-		gnome-shell/gnome-shell.scss:../gnome-shell/gnome-shell.css \
-		gnome-shell/gnome-shell-dark.scss:../gnome-shell-nokto/gnome-shell.css \
-		gnome-shell/gnome-shell-eta.scss:../gnome-shell-eta/gnome-shell.css \
-		gnome-shell/gnome-shell-dark-eta.scss:../gnome-shell-nokto-eta/gnome-shell.css \
-		gnome-shell/stylesheet.scss:../gnome-shell/extensions/window-list/stylesheet.css \
-		gnome-shell/classic.scss:../gnome-shell/extensions/window-list/classic.css \
-		gnome-shell/workspaces-to-dock.scss:../gnome-shell/extensions/workspaces-to-dock/workspaces-to-dock.css
-endif
-
 	$(MKDIR_P) $(srcdir)/gnome-shell/assets
 	$(MKDIR_P) $(srcdir)/gnome-shell/assets/dot
 	$(MKDIR_P) $(srcdir)/gnome-shell/extensions/workspaces-to-dock/assets
@@ -414,6 +391,22 @@ endif
 	$(MKDIR_P) $(srcdir)/gnome-shell-eta/extensions/workspaces-to-dock/assets
 	$(MKDIR_P) $(srcdir)/gnome-shell-nokto-eta/assets
 	$(MKDIR_P) $(srcdir)/gnome-shell-nokto-eta/assets/dot
+
+	cd $(srcdir)/sass && $(SASSC) -t compact \
+		gnome-shell/gnome-shell.scss ../gnome-shell/gnome-shell.css
+	cd $(srcdir)/sass && $(SASSC) -t compact \
+		gnome-shell/gnome-shell-dark.scss ../gnome-shell-nokto/gnome-shell.css
+	cd $(srcdir)/sass && $(SASSC) -t compact \
+		gnome-shell/gnome-shell-eta.scss ../gnome-shell-eta/gnome-shell.css
+	cd $(srcdir)/sass && $(SASSC) -t compact \
+		gnome-shell/gnome-shell-dark-eta.scss ../gnome-shell-nokto-eta/gnome-shell.css
+	cd $(srcdir)/sass && $(SASSC) -t compact \
+		gnome-shell/stylesheet.scss ../gnome-shell/extensions/window-list/stylesheet.css
+	cd $(srcdir)/sass && $(SASSC) -t compact \
+		gnome-shell/classic.scss ../gnome-shell/extensions/window-list/classic.css
+	cd $(srcdir)/sass && $(SASSC) -t compact \
+		gnome-shell/workspaces-to-dock.scss ../gnome-shell/extensions/workspaces-to-dock/workspaces-to-dock.css
+
 	cd $(srcdir)/asset && ./clone-assets-gnome-shell.sh
 
 	$(GLIB_COMPILE_RESOURCES) --sourcedir=$(shelldir) \
@@ -426,18 +419,13 @@ endif
 		$(shellnoktoetadir)/gnome-shell-theme.gresource.xml
 
 if ENABLE_CINNAMON
-if ENABLE_PARALLEL
-	cd $(srcdir)/sass && \
-	$(PARALLEL) --no-notice --line-buffer -j0 \
-	$(BUNDLE) exec $(SASS) --update --force --sourcemap=none --style=compact ::: \
-		cinnamon/cinnamon.scss:../cinnamon/cinnamon.css \
-		cinnamon/cinnamon-dark.scss:../cinnamon-nokto/cinnamon.css
-else
-	cd $(srcdir)/sass && \
-	$(BUNDLE) exec $(SASS) --update --force --sourcemap=none --style=compact \
-		cinnamon/cinnamon.scss:../cinnamon/cinnamon.css \
-		cinnamon/cinnamon-dark.scss:../cinnamon-nokto/cinnamon.css
-endif
+	$(MKDIR_P) $(srcdir)/cinnamon
+	$(MKDIR_P) $(srcdir)/cinnamon-nokto
+
+	cd $(srcdir)/sass && $(SASSC) -t compact \
+		cinnamon/cinnamon.scss ../cinnamon/cinnamon.css
+	cd $(srcdir)/sass && $(SASSC) -t compact \
+		cinnamon/cinnamon-dark.scss ../cinnamon-nokto/cinnamon.css
 
 	$(MKDIR_P) $(srcdir)/cinnamon/assets
 	$(MKDIR_P) $(srcdir)/cinnamon/assets/checkbox
@@ -596,7 +584,16 @@ endif
 
 if ENABLE_XFCE
 	$(MKDIR_P) $(adaptadir)/xfce-notify-4.0
-	cp -Rv $(xfce_file) $(adaptadir)/xfce-notify-4.0
+	$(MKDIR_P) $(adaptadir)/gtk-2.0/Xfce
+	$(MKDIR_P) $(noktodir)/gtk-2.0/Xfce
+	$(MKDIR_P) $(adaptaetadir)/gtk-2.0/Xfce
+	$(MKDIR_P) $(noktoetadir)/gtk-2.0/Xfce
+	cp -Rv $(xfce_image_file) $(adaptadir)/xfce-notify-4.0
+	cp -Rv $(xfce_rc_file) $(adaptadir)/xfce-notify-4.0
+	cp -Rv $(xfce_image_file) $(adaptadir)/gtk-2.0/Xfce
+	cp -Rv $(xfce_image_file) $(noktodir)/gtk-2.0/Xfce
+	cp -Rv $(xfce_image_file) $(adaptaetadir)/gtk-2.0/Xfce
+	cp -Rv $(xfce_image_file) $(noktoetadir)/gtk-2.0/Xfce
 endif
 
 # *******************
@@ -622,14 +619,16 @@ if ENABLE_UNITY
 endif
 
 if ENABLE_XFCE
-	test -e $(noktodir)/xfce-notify-4.0 && \
-		rm -rfv $(noktodir)/xfce-notify-4.0
 	test -e $(adaptadir)/xfce-notify-4.0 && \
 		rm -rfv $(adaptadir)/xfce-notify-4.0
-	test -e $(noktoetadir)/xfce-notify-4.0 && \
-		rm -rfv $(noktoetadir)/xfce-notify-4.0
-	test -e $(adaptaetadir)/xfce-notify-4.0 && \
-		rm -rfv $(adaptaetadir)/xfce-notify-4.0
+	test -e $(adaptadir)/gtk-2.0/Xfce && \
+		rm -rfv $(adaptadir)/gtk-2.0/Xfce
+	test -e $(noktodir)/gtk-2.0/Xfce && \
+		rm -rfv $(noktodir)/gtk-2.0/Xfce
+	test -e $(adaptaetadir)/gtk-2.0/Xfce && \
+		rm -rfv $(adaptaetadir)/gtk-2.0/Xfce
+	test -e $(noktoetadir)/gtk-2.0/Xfce && \
+		rm -rfv $(noktoetadir)/gtk-2.0/Xfce
 endif
 
 # ****************************
@@ -666,7 +665,6 @@ CLEANFILES = \
 	$(srcdir)/gnome-shell-nokto-eta/*.png \
 	$(srcdir)/gnome-shell-nokto-eta/assets/*.svg \
 	$(srcdir)/gnome-shell-nokto-eta/assets/dot/*.svg \
-	$(srcdir)/sass/common/_key_colors.scss \
 	$(srcdir)/asset/assets-gnome-shell/common/toggle-on-hover.svg \
 	$(srcdir)/asset/assets-gnome-shell/common/toggle-on.svg \
 	$(srcdir)/asset/assets-gnome-shell/common/checkbox-hover.svg \

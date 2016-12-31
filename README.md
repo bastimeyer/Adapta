@@ -25,7 +25,7 @@ Adapta strongly depends on Material Design resources, especially its **fonts**.
 > * NotoSans may work well in vairous locales, but NotoSans lacks 500 (Medium) weight. So elements defined with 500 will be drawn with 400 automatically.
 > * NotoSans CJK supports 500 weight.
 
-Adapta uses **NotoSans** as the primary font-family in Gnome-Shell (Cantarell is for fallback).
+Adapta uses **NotoSans** as the primary font-family in Gnome-Shell and Cinnamon (Cantarell is for fallback).
 In some distributions, users may need to install `fonts-noto-hinted`.
 
 Adapta is designed with nominal **13px (or 14px)** Roboto font.
@@ -52,12 +52,12 @@ Variant Matrix
 |Gtk+ 3.22.x |<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|
 |Gtk+ 2.24.x |<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|
 |Mutter      |<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|
-|Metacity    |<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-off.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-off.png" align="center" />|
+|Metacity    |<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|
 |Muffin      |<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-off.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-off.png" align="center" />|
 |Compiz      |<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-off.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-off.png" align="center" />|
 |XFwm4       |<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-off.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-off.png" align="center" />|
 |Marco       |<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-off.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-off.png" align="center" />|
-|Opnebox-3   |<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-off.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-off.png" align="center" />|
+|Openbox-3   |<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-off.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-off.png" align="center" />|
 
 > **Note:**
 >
@@ -65,9 +65,13 @@ Variant Matrix
 >
 >   **Eta** is a tiny Gtk+ 2.x/3.2x Gtk+ widget variant for saving space.
 >
->   * To enable global dark theme, you use proper tools like Gnome-Tweak-Tool and/or edit `$HOME/.config/gtk-3.0/settings.ini`.
+>   * To enable global dark theme, you use proper tools like Gnome-Tweak-Tool.
+>     Or add this porperty to `[settings]` section of `$HOME/.config/gtk-3.0/settings.ini`:
+>     ```
+>     gtk-application-prefer-dark-theme=1
+>     ```
 >   * I suggest you use the Eta variants if your LCD resolution is lower than FHD (1080p). Eta draws widgets around -20% to -30% spacing.
->   * Metacity supports Eta variants (>= 3.20.x or 3.22.x).
+>   * Metacity theming supports Eta variants (>= 3.20.x or 3.22.x).
 
 Elements
 --------
@@ -90,7 +94,7 @@ Supported Desktop Environments
  ```
  * GNOME-Shell     >= 3.22.0 (or 3.20.1 or 3.18.3)
  * GNOME-Flashback >= 3.22.0 (or 3.20.1 or 3.18.2)
- * Budgie-Desktop  >= 10.2.5
+ * Budgie-Desktop  >= 10.2.7
  * Cinnamon        >= 3.2.0 (or 3.0.1 or 2.8.6)
  * Unity7          >= 7.4.0
  * XFce4           >= 4.12.2
@@ -108,9 +112,11 @@ Unsupported Gtk+ Based Desktops
 
 Installation from Package(s)
 ----------------------------
- * AUR: https://aur.archlinux.org/packages/adapta-gtk-theme/ and some others
+ * AUR: https://aur.archlinux.org/packages/adapta-gtk-theme/
 
  * Copr: https://copr.fedorainfracloud.org/coprs/heikoada/gtk-themes/
+
+ * OBS (openSUSE Tumbleweed): https://build.opensuse.org/package/show/home:Ronis_BR/adapta-gtk-theme
 
  * PPA: https://launchpad.net/~tista/+archive/ubuntu/adapta
 
@@ -129,25 +135,35 @@ Installation from Git Source
  ```
 
 2. Check build-requirements:
- Today Adapta bundles neither pre-generated stylesheets nor PNG images.
- So users and/or contributors should generate proper CSSs and PNGs at build-time.
+ Currently Adapta bundles neither pre-generated stylesheets nor PNG images.
+ So users and/or contributors should generate proper CSSs, PNGs and gresources at build-time.
 
  ```
  * autoconf
  * automake
  * inkscape
- * libglib2.0-dev (glib2)          >= 2.48.0
+ * libgdk-pixbuf2.0-dev (gdk-pixbuf2-devel)  >= 2.32.2
+ * libglib2.0-dev (glib2-devel)              >= 2.48.0
+ * librsvg2-dev (librsvg2-devel)             >= 2.40.13
+ * libsass0 (libsass)                        >= 3.3.6
  * libxml2-utils (libxml2)
  * pkg-config (pkgconfig)
- * ruby-bundler (rubygem-bundler)  >= 1.11
- * ruby-sass (rubygem-sass)        >= 3.4.21
+ * sassc                                     >= 3.3.2
  ```
 
  > **Note:**
  >
- >   * Adapta employs **Gem** generator for SASS/SCSS via `bundle` and `sass`.
+ >   * In OpenSUSE, add 3 extra dependencies:
+ >
+ >     ```
+ >     gdk-pixbuf-devel        >= 2.32.2
+ >     gdk-pixbuf-loader-rsvg  >= 2.40.13
+ >     librsvg-devel           >= 2.40.13
+ >     ```
+ >
+ >   * Adapta employs **SassC** wrapper of `libsass` to generate CSS stylesheets.
  >   * Adapta uses `inkscape` to generate installable PNG files.
- >   * Adapta uses `glib-compile-resources` to compile gresource file for Gnome-Shell.
+ >   * Adapta uses `glib-compile-resources` to compile the gresource files for Gtk+ and Gnome-Shell.
 
 3. Build and install system-wide:
 
@@ -160,7 +176,7 @@ Installation from Git Source
  > **Note:**
  >
  >   * Default prefix is `/usr`.
- >   * `Adapta-Nokto` dark variant is installed as default.
+ >   * All 4 variants are installed by default.
  >   * `make` generates proper CSSs and PNGs to be installed.
  >     It will take about 5min to 15min to build.
  >     For example, Ubuntu's build-server takes 10min.
@@ -176,7 +192,7 @@ Installation from Git Source
  >
  >   * This feature requires GNU `parallel`, so please add `parallel` to build-requirements.
  >     Parallel can execute multiple scripts and binaries to be suitable for multi-threading.
- >     It could especially shorten the rendering-time via Inkscape and generation-time via sass.
+ >     It could especially shorten the rendering-time via `inkscape`.
  >   * `-jN` option to be passed to GNU `make` is surely usable, but Adapta currently employs `parallel`.
  >   * This feature should not be applied when packaging on remote/shared build-servers.
 
@@ -277,10 +293,10 @@ Extra Compositor Support
 Work in Progress
 ----------------
 * Conversion to Gtk+ 4.0
-* Add Mate 1.14 integration
 
 TODO
 ----
+* Move Gtk+ 3.18.x theming to legacy (priority: Mid)
 * Prepare for Steam theming (priority: Low)
 * Add Firefox specific theming (priority: undecided)
 

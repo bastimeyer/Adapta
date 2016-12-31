@@ -19,7 +19,7 @@
 $ref_size: 13.33;
 
 @mixin fontscaling($size: $ref_size) {
-  font-size: round( $size * 72 / 96 * 100 ) / 100 + pt;
+  font-size: round( $size * 72 / 96 * 10 ) / 10 + pt;
 }
 
 
@@ -27,19 +27,13 @@ $ref_size: 13.33;
 // shadows
 //
 
-$z-depth-1: 0 1px 2px rgba(0, 0, 0, 0.22),
-            0 1px 1px rgba(0, 0, 0, 0.12);
-$z-depth-2: 0 3px 4px rgba(0, 0, 0, 0.32),
-            0 3px 2px rgba(0, 0, 0, 0.24);
-$z-depth-3: 0 9px 12px rgba(0, 0, 0, 0.40),
-            0 5px 5px rgba(0, 0, 0, 0.32),
-            0 3px 3px rgba(0, 0, 0, 0.26);
-$z-depth-4: 0 12px 16px rgba(0, 0, 0, 0.54),
-            0 8px 8px rgba(0, 0, 0, 0.44),
-            0 4px 4px rgba(0, 0, 0, 0.32);
-$z-depth-5: 0 16px 20px rgba(0, 0, 0, 0.72),
-            0 12px 12px rgba(0, 0, 0, 0.52),
-            0 5px 5px rgba(0, 0, 0, 0.40);
+// converted from gtk/sass/common/_drawing.scss
+// multi-lined parameters -> single-stop
+$z-depth-1: 0 1px 2px rgba(0, 0, 0, 0.22);
+$z-depth-2: 0 3px 4px rgba(0, 0, 0, 0.28);
+$z-depth-3: 0 5px 6px rgba(0, 0, 0, 0.30);
+$z-depth-4: 0 8px 10px rgba(0, 0, 0, 0.34);
+$z-depth-5: 0 11px 12px rgba(0, 0, 0, 0.41);
 
 
 //
@@ -54,26 +48,51 @@ $z-depth-5: 0 16px 20px rgba(0, 0, 0, 0.72),
 // $fc: focus color
 //
 // possible $t values:
-// normal, focus, insensitive
+// normal, focus, hover, insensitive,
+// osd-normal, osd-focus, osd-insensitive
 //
   @if $t==normal {
     border-color: transparent;
-    background-color: rgba(0, 0, 0, 0.01);
-    box-shadow: inset 0 -1px if($fc!=$selected_bg_color, $fc, $fill_color);
-
+    background-color: $hidden_fill_color;
+    box-shadow: inset 0 -1px if($fc!=$selected_bg_color, $fc,
+                                                         $fill_color);
   }
   @if $t==focus {
     border-color: transparent;
-    box-shadow: inset 0 -2px if($fc!=$selected_bg_color, $fc, $selected_bg_color);
+    box-shadow: inset 0 -2px if($fc!=$selected_bg_color, $fc,
+                                                         $selected_bg_color);
   }
   @if $t==hover {
     border-color: transparent;
-    box-shadow: inset 0 -2px if($fc!=$selected_bg_color, $fc, $fill_color);
+    box-shadow: inset 0 -2px if($fc!=$selected_bg_color, $fc,
+                                                         $fill_color);
   }
   @if $t==insensitive {
     border-color: transparent;
     color: $insensitive_fg_color;
-    box-shadow: inset 0 -1px if($fc!=$selected_bg_color, $fc, $insensitive_fill_color);
+    box-shadow: inset 0 -1px if($fc!=$selected_bg_color, $fc,
+                                                         $insensitive_fill_color);
+  }
+  @if $t==osd-normal {
+    border-color: transparent;
+    background-color: $hidden_fill_color;
+    box-shadow: inset 0 -1px if($fc!=$selected_bg_color, $fc,
+                                                         $osd_fill_color);
+  }
+  @if $t==osd-focus {
+    border-color: transparent;
+    background-color: $hidden_fill_color;
+    color: $selected_fg_color;
+    caret-color: $selected_fg_color;
+    box-shadow: inset 0 -2px if($fc!=$selected_bg_color, $fc,
+                                                         $selected_bg_color);
+  }
+  @if $t==osd-insensitive {
+    border-color: transparent;
+    background-color: $hidden_fill_color;
+    color: $insensitive_osd_fg_color;
+    box-shadow: inset 0 -1px if($fc!=$selected_bg_color, $fc,
+                                                         $insensitive_osd_fill_color);
   }
 }
 

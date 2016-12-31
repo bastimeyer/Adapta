@@ -17,7 +17,7 @@
 # Usage: ./parse-sass.sh [ -a ]
 #
 # Optional arguments:
-#    -a        generates CSSs for all of Gtk+ version
+#    -a        generates CSSs for all of Gtk+ versioned
 
 usage() {
     sed -rn '/^# Usage/,${/^#/!q;s/^# ?//;p}' "$0"
@@ -36,89 +36,89 @@ fi
 major="`pkg-config --modversion gtk+-3.0 | cut -d. -f1`"
 minor="`pkg-config --modversion gtk+-3.0 | cut -d. -f2`"
 if [ $(expr "$minor" % 2) -ne 0 ]; then
-  css_minor="$(expr $minor + 1)"
+    css_minor="$(expr $minor + 1)"
 else
-  css_minor="$minor"
+    css_minor="$minor"
 fi
 
 if [ ! -d ./"$major"."$css_minor" ]; then
-  echo version "$major"."$minor".x is not supported.
-  exit 1
+    echo version "$major"."$minor".x is not supported.
+    exit 1
 fi
 
 #################
 # Generate CSSs #
 #################
 
-PARALLEL="`command -v parallel`"
-THREADS="$(($(getconf _NPROCESSORS_ONLN) + 1))"
+SASSC="`command -v sassc` -t compact"
 
 case "$1" in
     -a)
-        if [ -f "$PARALLEL" ]; then
-            $PARALLEL --no-notice --line-buffer -j$THREADS \
-            bundle exec sass --update --sourcemap=none --watch --style=compact ::: \
-		3.18/gtk.scss:../gtk-3.18/gtk.css \
-		3.18/gtk-dark.scss:../gtk-3.18/gtk-dark.css \
-		3.20/gtk.scss:../gtk-3.20/gtk.css \
-		3.20/gtk-dark.scss:../gtk-3.20/gtk-dark.css \
-		3.20/gtk-eta.scss:../gtk-3.20-eta/gtk.css \
-		3.20/gtk-dark-eta.scss:../gtk-3.20-eta/gtk-dark.css \
-		3.22/gtk.scss:../gtk-3.22/gtk.css \
-		3.22/gtk-dark.scss:../gtk-3.22/gtk-dark.css \
-		3.22/gtk-eta.scss:../gtk-3.22-eta/gtk.css \
-		3.22/gtk-dark-eta.scss:../gtk-3.22-eta/gtk-dark.css \
-		4.0/gtk.scss:../gtk-4.0/gtk.css \
-		4.0/gtk-dark.scss:../gtk-4.0/gtk-dark.css \
-		4.0/gtk-eta.scss:../gtk-4.0-eta/gtk.css \
-		4.0/gtk-dark-eta.scss:../gtk-4.0-eta/gtk-dark.css \
-		common/xfce-notify-4.0.scss:../xfce-notify-4.0/gtk.css
-        else
-            bundle exec sass --update --sourcemap=none --watch --style=compact \
-		3.18/gtk.scss:../gtk-3.18/gtk.css \
-		3.18/gtk-dark.scss:../gtk-3.18/gtk-dark.css \
-		3.20/gtk.scss:../gtk-3.20/gtk.css \
-		3.20/gtk-dark.scss:../gtk-3.20/gtk-dark.css \
-		3.20/gtk-eta.scss:../gtk-3.20-eta/gtk.css \
-		3.20/gtk-dark-eta.scss:../gtk-3.20-eta/gtk-dark.css \
-		3.22/gtk.scss:../gtk-3.22/gtk.css \
-		3.22/gtk-dark.scss:../gtk-3.22/gtk-dark.css \
-		3.22/gtk-eta.scss:../gtk-3.22-eta/gtk.css \
-		3.22/gtk-dark-eta.scss:../gtk-3.22-eta/gtk-dark.css \
-		4.0/gtk.scss:../gtk-4.0/gtk.css \
-		4.0/gtk-dark.scss:../gtk-4.0/gtk-dark.css \
-		4.0/gtk-eta.scss:../gtk-4.0-eta/gtk.css \
-		4.0/gtk-dark-eta.scss:../gtk-4.0-eta/gtk-dark.css \
-		common/xfce-notify-4.0.scss:../xfce-notify-4.0/gtk.css
+        if [ ! -d ../gtk-3.18 ]; then
+            mkdir -p ../gtk-3.18
         fi
+        $SASSC 3.18/gtk.scss ../gtk-3.18/gtk-contained.css
+        $SASSC 3.18/gtk-dark.scss ../gtk-3.18/gtk-contained-dark.css
+
+        if [ ! -d ../gtk-3.20 ]; then
+            mkdir -p ../gtk-3.20 ../gtk-3.20-eta
+        fi
+        $SASSC 3.20/gtk.scss ../gtk-3.20/gtk-contained.css
+        $SASSC 3.20/gtk-dark.scss ../gtk-3.20/gtk-contained-dark.css
+        $SASSC 3.20/gtk-eta.scss ../gtk-3.20-eta/gtk-contained.css
+        $SASSC 3.20/gtk-dark-eta.scss ../gtk-3.20-eta/gtk-contained-dark.css
+
+        if [ ! -d ../gtk-3.22 ]; then
+            mkdir -p ../gtk-3.22 ../gtk-3.22-eta
+        fi
+        $SASSC 3.22/gtk.scss ../gtk-3.22/gtk-contained.css
+        $SASSC 3.22/gtk-dark.scss ../gtk-3.22/gtk-contained-dark.css
+        $SASSC 3.22/gtk-eta.scss ../gtk-3.22-eta/gtk-contained.css
+        $SASSC 3.22/gtk-dark-eta.scss ../gtk-3.22-eta/gtk-contained-dark.css
+
+        if [ ! -d ../gtk-4.0 ]; then
+            mkdir -p ../gtk-4.0 ../gtk-4.0-eta
+        fi
+        $SASSC 4.0/gtk.scss ../gtk-4.0/gtk-contained.css
+        $SASSC 4.0/gtk-dark.scss ../gtk-4.0/gtk-contained-dark.css
+        $SASSC 4.0/gtk-eta.scss ../gtk-4.0-eta/gtk-contained.css
+        $SASSC 4.0/gtk-dark-eta.scss ../gtk-4.0-eta/gtk-contained-dark.css
+
+        if [ ! -d ../xfce-notify-4.0 ]; then
+            mkdir -p ../xfce-notify-4.0
+        fi
+        $SASSC common/xfce-notify-4.0.scss ../xfce-notify-4.0/gtk.css
         ;;
     *)
-        if [ -f "$PARALLEL" ]; then
-            if [ "$major" = 3 ] && [ "$css_minor" = 18 ]; then
-                $PARALLEL --no-notice --line-buffer -j$THREADS \
-                bundle exec sass --update --sourcemap=none --watch --style=compact ::: \
-		    "$major"."$css_minor"/gtk.scss:../gtk-"$major"."$css_minor"/gtk.css \
-		    "$major"."$css_minor"/gtk-dark.scss:../gtk-"$major"."$css_minor"/gtk-dark.css
-            else
-                $PARALLEL --no-notice --line-buffer -j$THREADS \
-                bundle exec sass --update --sourcemap=none --watch --style=compact ::: \
-		    "$major"."$css_minor"/gtk.scss:../gtk-"$major"."$css_minor"/gtk.css \
-		    "$major"."$css_minor"/gtk-dark.scss:../gtk-"$major"."$css_minor"/gtk-dark.css \
-		    "$major"."$css_minor"/gtk-eta.scss:../gtk-"$major"."$css_minor"-eta/gtk.css \
-		    "$major"."$css_minor"/gtk-dark-eta.scss:../gtk-"$major"."$css_minor"-eta/gtk-dark.css
+        if [ "$major" = 3 ] && [ "$css_minor" = 18 ]; then
+            if [ ! -d ../gtk-"$major"."$css_minor" ]; then
+                mkdir -p ../gtk-"$major"."$css_minor"
             fi
+
+            $SASSC \
+                "$major"."$css_minor"/gtk.scss ../gtk-"$major"."$css_minor"/gtk-contained.css
+            echo Wrote ../gtk-"$major"."$css_minor"/gtk-contained.css
+            $SASSC \
+                "$major"."$css_minor"/gtk-dark.scss ../gtk-"$major"."$css_minor"/gtk-contained-dark.css
+            echo Wrote ../gtk-"$major"."$css_minor"/gtk-contained-dark.css
         else
-            if [ "$major" = 3 ] && [ "$css_minor" = 18 ]; then
-                bundle exec sass --update --sourcemap=none --watch --style=compact \
-		    "$major"."$css_minor"/gtk.scss:../gtk-"$major"."$css_minor"/gtk.css \
-		    "$major"."$css_minor"/gtk-dark.scss:../gtk-"$major"."$css_minor"/gtk-dark.css
-            else
-                bundle exec sass --update --sourcemap=none --watch --style=compact \
-		    "$major"."$css_minor"/gtk.scss:../gtk-"$major"."$css_minor"/gtk.css \
-		    "$major"."$css_minor"/gtk-dark.scss:../gtk-"$major"."$css_minor"/gtk-dark.css \
-		    "$major"."$css_minor"/gtk-eta.scss:../gtk-"$major"."$css_minor"-eta/gtk.css \
-		    "$major"."$css_minor"/gtk-dark-eta.scss:../gtk-"$major"."$css_minor"-eta/gtk-dark.css
+            if [ ! -d ../gtk-"$major"."$css_minor" ]; then
+                mkdir -p ../gtk-"$major"."$css_minor" \
+                         ../gtk-"$major"."$css_minor"-eta
             fi
+
+            $SASSC \
+                "$major"."$css_minor"/gtk.scss ../gtk-"$major"."$css_minor"/gtk-contained.css
+            echo Wrote ../gtk-"$major"."$css_minor"/gtk-contained.css
+            $SASSC \
+                "$major"."$css_minor"/gtk-dark.scss ../gtk-"$major"."$css_minor"/gtk-contained-dark.css
+            echo Wrote ../gtk-"$major"."$css_minor"/gtk-contained-dark.css
+            $SASSC \
+                "$major"."$css_minor"/gtk-eta.scss ../gtk-"$major"."$css_minor"-eta/gtk-contained.css
+            echo Wrote ../gtk-"$major"."$css_minor"-eta/gtk-contained.css
+            $SASSC \
+                "$major"."$css_minor"/gtk-dark-eta.scss ../gtk-"$major"."$css_minor"-eta/gtk-contained-dark.css
+            echo Wrote ../gtk-"$major"."$css_minor"-eta/gtk-contained-dark.css
         fi
         ;;
 esac
