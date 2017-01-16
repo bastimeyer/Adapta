@@ -1131,11 +1131,11 @@ UnityPanelWidget,
 .lightdm-gtk-greeter {
   // top-panel styling
   #panel_window {
+    background-image: linear-gradient(to bottom, $panel_bg_color);
     color: $inverted_fg_color;
     box-shadow: none;
     font-weight: 700;
     text-shadow: none;
-    box-shadow: inset 0 2px $panel_bg_color;
 
     &, &.background,
     > * > * { background-color: transparent; } // FIXME: ugly wildcard
@@ -1188,12 +1188,9 @@ UnityPanelWidget,
   #shutdown_dialog,
   #restart_dialog {
     @extend .message-dialog;
-    border: none;
-    border-radius: 0;
-    color: $inverted_fg_color;
+    border: 1px solid $borders_color;
+    border-radius: 2px;
     box-shadow: none;
-
-    &, &.background { background-color: transparent; }
 
     .button {
       padding: 0.7em 1em 0.8em;
@@ -1242,23 +1239,17 @@ UnityPanelWidget,
 
     .entry { // prevent junmping when showing CapsLock warning
       padding: 0.9em 1em 1em;
+      font-family: monospace;
     }
 
     GtkInfoBar.error { // notification revealer
       margin: 0 4px; // prevent unwanted overflow
       border: none;
       background-color: transparent;
-      // show notification icons at the left of label
-      background-image: -gtk-icontheme("dialog-error-symbolic");
-      background-position: left center;
-      background-size: 16px 16px;
-      background-repeat: no-repeat;
       color: $error_color;
       font-weight: 700;
       font-size: 110%;
       transition: none; // transition causes visual glitches
-
-      &:dir(rtl) { background-position: right center; }
     }
   }
 

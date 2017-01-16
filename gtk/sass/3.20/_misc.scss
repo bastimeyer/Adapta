@@ -115,7 +115,7 @@ sn-button { padding: rem(4px); }
 
 // sidebar
 .tweak-categories {
-  background-color: $secondary_dark_color;
+  background-image: image($secondary_dark_color);
   color: $secondary_fg_color;
   &:dir(ltr) {
     box-shadow: if($variant == 'light', $sidebar-light-ltr,
@@ -319,18 +319,20 @@ sn-button { padding: rem(4px); }
   &:selected { text-shadow: none; }
 }
 
-.background.nautilus-window:not(.nautilus-desktop-window) {
+.background.nautilus-window:not(.nautilus-desktop-window):not(.unity-csd) {
+  // enforce base-color backgrounds
+  background-color: $base_color;
+
   // main content pane
-  notebook {
+  > grid > paned > overlay > notebook {
     // cover up top-edge 1px line
     box-shadow: inset 0 1px $base_color;
 
-    > stack overlay > scrolledwindow > widget.view {
-      // some extends pull background-image for ripple-effects,
-      // but notebook node does not need that.
-      // FIXME: that caused fading colours of background
-      // even if that was completely transparent.
-      background-image: none;
+    > stack > box.vertical > grid > overlay > scrolledwindow {
+      > .view:not(.nautilus-desktop) {
+        // drop unneeded images
+        background-image: none;
+      }
     }
   }
 }
@@ -408,6 +410,31 @@ NautilusTrashBar {
     &:selected {
       &, &:focus { color: mix($selected_fg_color, $selected_bg_color, 50%); }
     }
+  }
+}
+
+// entry-tags for libgd apps
+.documents-entry-tag {
+  margin: 2px;
+  padding: 4px;
+  border-radius: 2px;
+  border: none;
+  background-image: image($suggested_color);
+  color: $secondary_selected_fg_color;
+  &:hover { color: $selected_fg_color; }
+
+  &.button {
+    &,
+    &:hover,
+    &:active { // unset styling
+      background-color: transparent;
+      background-image: none;
+      border-image: none;
+      border: none;
+      box-shadow: none;
+      animation: none;
+    }
+    &:hover { color: $selected_fg_color; }
   }
 }
 
@@ -515,12 +542,34 @@ headerbar.geary-titlebar-left.titlebar > box.vertical {
   > .title { font-size: 90%; }
 }
 
-window box > paned > overlay > scrolledwindow {
-  undershoot { // remove undershoot
-    &.top,
-    &.bottom,
-    &.left,
-    &.right { background-image: none; }
+window.background > box.vertical > paned.horizontal > frame {
+  // right-paned scrolledwindow
+  > box.vertical > paned.vertical > overlay > scrolledwindow {
+    > scrollbar { // always use light-variant
+      background-color: transparent;
+
+      slider {
+        background-color: gtkopacity($tertiary_fixed_fg_color, 0.55);
+        &:hover {
+          background-color: gtkopacity($secondary_fixed_fg_color, 0.55);
+        }
+        &:active { background-color: $fixed_fg_color; }
+        &:disabled { opacity: 0.4; }
+      }
+
+      &.overlay-indicator {
+        &:not(.dragging):not(.hovering) slider {
+          background-color: gtkopacity($tertiary_fixed_fg_color, 0.55);
+        }
+      }
+    }
+
+    undershoot { // remove undershoot
+      &.top,
+      &.bottom,
+      &.left,
+      &.right { background-image: none; }
+    }
   }
 }
 
@@ -1585,6 +1634,17 @@ window overlay > grid > frame > grid {
   }
 }
 
+// bottom-paned actionbar
+notebook > stack > grid.vertical > actionbar {
+  revealer > box.horizontal {
+    // 'New Detail' button
+    button.popup.toggle:not(.image-button):not(.text-button) {
+      border-radius: 2px;
+      -gtk-outline-radius: 2px;
+    }
+  }
+}
+
 
 // /**********
 //  * Baobab *
@@ -1697,6 +1757,42 @@ window.background > box.vertical > stack > box.horizontal {
   > box.vertical > scrolledwindow > viewport.frame > list { // right-pane
     // hide single-line separators
     > separator { background-color: transparent; }
+  }
+}
+
+// plugin mode in Ephy
+window.background > widget > window.background > box.vertical {
+  > toolbar.horizontal {
+    border-top: 1px solid $borders_color;
+    background-color: $secondary_dark_color;
+
+    .linked.raised > button.image-button { // reset image spacing
+      min-width: $icon_size;
+
+      image { padding: 0; }
+    }
+  }
+
+  > scrolledwindow {
+    scrollbar {
+      &,
+      &.overlay-indicator,
+      trough {
+        background-color: $bg_color;
+        transition: none;
+      }
+
+      slider { transition: none; }
+    }
+
+    evview.content-view.view { transition: none; }
+
+    undershoot {
+      &.top,
+      &.bottom,
+      &.left,
+      &.right { background-image: none; }
+    }
   }
 }
 
@@ -2132,6 +2228,9 @@ window.background > box.horizontal > notebook.frame > stack {
 // get more uniformity for all 'All', 'Installed', 'Updates' buttons
 headerbar > box.horizontal > buttonbox.linked {
   > button.toggle.toolbar-primary-buttons-software {
+    border-radius: 2px;
+    -gtk-outline-radius: 2px;
+
     > box.horizontal > label.text-button { font-weight: 700; }
 
     &:hover,

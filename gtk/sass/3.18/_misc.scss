@@ -129,7 +129,7 @@ NaTrayApplet {
 
 // sidebar
 .tweak-categories.list {
-  background-color: $secondary_dark_color;
+  background-image: linear-gradient(to bottom, $secondary_dark_color);
   color: $secondary_fg_color;
 
   &:dir(ltr) {
@@ -339,6 +339,31 @@ NautilusTrashBar {
   &.used { background-color: $selected_bg_color; }
 
   &.unknown { background-color: $warning_color; }
+}
+
+// entry-tags for libgd apps
+.documents-entry-tag {
+  margin: 2px;
+  padding: 4px;
+  border-radius: 2px;
+  border: none;
+  background-image: linear-gradient(to bottom, $suggested_color);
+  color: $secondary_selected_fg_color;
+  &:hover { color: $selected_fg_color; }
+
+  &.button {
+    &,
+    &:hover,
+    &:active { // unset styling
+      background-color: transparent;
+      background-image: none;
+      border-image: none;
+      border: none;
+      box-shadow: none;
+      animation: none;
+    }
+    &:hover { color: $selected_fg_color; }
+  }
 }
 
 

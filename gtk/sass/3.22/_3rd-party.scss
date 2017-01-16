@@ -659,7 +659,7 @@ box.horizontal.pinned { // drop-target
   // shrink label
   > box widget > widget > label {
     font-size: 80%;
-    padding-bottom: rem(1.3px, $sw: 1.0);
+    padding: 0 2px rem(1.3px, $sw: 1.0);
   }
 }
 
@@ -1179,11 +1179,11 @@ UnityPanelWidget,
 .lightdm-gtk-greeter {
   // top-panel styling
   #panel_window {
+    background-image: image($panel_bg_color);
     color: $inverted_fg_color;
     box-shadow: none;
     font-weight: 700;
     text-shadow: none;
-    box-shadow: inset 0 2px $panel_bg_color;
 
     &, &.background,
     > * > * { background-color: transparent; } // FIXME: ugly wildcard
@@ -1236,12 +1236,9 @@ UnityPanelWidget,
   #shutdown_dialog,
   #restart_dialog {
     @extend messagedialog;
-    border: none;
-    border-radius: 0;
-    color: $inverted_fg_color;
+    border: 1px solid $borders_color;
+    border-radius: 2px;
     box-shadow: none;
-
-    &, &.background { background-color: transparent; }
 
     button {
       padding: rem(9.3px, $sw: 1.0) rem(13.3px, $sw: 1.0) rem(10.7px, $sw: 1.0);
@@ -1291,23 +1288,17 @@ UnityPanelWidget,
     entry { // prevent junmping when showing CapsLock warning
       min-height: rem($widget_size);
       padding: 0 rem(8px);
+      font-family: monospace;
     }
 
     infobar.error { // notification revealer
       margin: 0 4px; // prevent unwanted overflow
       border: none;
       background-color: transparent;
-      // show notification icons at the left of label
-      background-image: -gtk-icontheme("dialog-error-symbolic");
-      background-position: left center;
-      background-size: 16px 16px;
-      background-repeat: no-repeat;
       color: $error_color;
       font-weight: 700;
       font-size: 110%;
       transition: none; // transition causes visual glitches
-
-      &:dir(rtl) { background-position: right center; }
     }
   }
 
@@ -1375,9 +1366,18 @@ headerbar.titlebar box {
   }
 }
 
-scrolledwindow > viewport.frame > list.stream > stack {
-  > box.vertical > button.text-button { // 'Retry' button
+scrolledwindow > viewport.frame > list {
+  > stack > box.vertical > button.text-button { // 'Retry' button
     margin-bottom: rem(13.3px, $sw: 1.0);
+  }
+}
+
+// top-right 'close' button on attached images
+window.background > grid.horizontal > widget,
+window.background > stack > grid.horizontal > widget {
+  > button.close-button.image-button {
+    // disabled box-shadow by hard-coded style.css
+    @extend button.destructive-action;
   }
 }
 
@@ -1701,6 +1701,7 @@ window.background > grid.vertical > stack > paned.horizontal {
     border-radius: 0;
     color: $inverted_secondary_fg_color;
     caret-color: $inverted_secondary_fg_color;
+    font-family: monospace;
     &:focus {
       @include entry(flat-focus);
       color: $inverted_fg_color;
@@ -1710,8 +1711,11 @@ window.background > grid.vertical > stack > paned.horizontal {
       @include entry(flat-insensitive);
       color: $insensitive_inverted_fg_color;
     }
+    &:backdrop { // for alt-text keyboard layout?
+      color: $selected_bg_color;
+    }
 
-    &.image.left {
+    image.left {
       margin-right: 8px;
       color: inherit;
     }
@@ -2592,5 +2596,54 @@ window#Emacs {
       }
     }
   }
+}
+
+
+// /************
+//  * Electron *
+//  ************/
+
+// workaround for the context-menus in Electron apps
+// do not use the alpha-blended colours
+.popup:not(.csd) {
+  menu {
+    background-color: $secondary_base_color;
+
+    menuitem {
+      background-color: $secondary_base_color;
+      color: mix($fg_color, $secondary_base_color, 75%);
+      &:hover {
+        background-color: mix($fg_color, $secondary_base_color, 10%);
+        color: $fg_color;
+      }
+      &:disabled { // popup frame pulls this fg colours?
+        background-color: $secondary_base_color;
+        color: mix($fixed_fg_color, $secondary_base_color, 30%);
+
+        label, // reset for generic non-composited Gtk+ apps
+        arrow { color: mix($fg_color, $secondary_base_color, 30%); }
+      }
+    }
+  }
+}
+
+
+// /********************
+//  * Transmission-Gtk *
+//  ********************/
+
+window.background:not(.csd):not(.solid-csd) > box.vertical > grid.horizontal {
+  > button.flat:not(.image-button),
+  > button.flat.image-button.toggle {
+    // set min-limits for rectangular images
+    > image,
+    > widget > box.horizontal > image {
+      min-width: 20px;
+      min-height: 20px;
+    }
+  }
+
+  // add spacing for 'Ratio' label
+  > label { padding: 0 rem(5.3px, $sw: 1.0) rem(1.3px, $sw: 1.0); }
 }
 

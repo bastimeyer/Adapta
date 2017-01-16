@@ -78,7 +78,7 @@ $titlebutton_small: if($ref_weight < 1.0, 20px, 28px);
 // or better, just don't.
 // Everytime a wildcard is used a kitten dies, painfully.
 
-*:disabled { -gtk-icon-effect: dim; }
+*:disabled { -gtk-icon-filter: opacity(0.5); }
 
 // for backdrop, tone down element surfaces with transparentize
 %fade_effect {
@@ -169,10 +169,7 @@ flowbox {
 label {
   caret-color: currentColor; // this shouldn't be needed.
 
-  &.separator {
-    @extend .dim-label;
-    color: transparent;
-  }
+  &.separator { color: $tertiary_fg_color; }
 
   &:selected,
   row:selected & { @extend %nobg_selected_items; }
@@ -3772,6 +3769,28 @@ check {
   }
 }
 
+// special 'customed' selection-mode in Gnome-Music
+flowbox > flowboxchild {
+  check {
+    &,
+    &:hover,
+    &:active,
+    &:checked,
+    &:disabled {
+      margin: 0; // remove unneeded spacing for animations
+      padding: 0;
+      outline-width: 0; // hide unneeded outlines
+      // transparency causes invisible 'unchecked' icons
+      // if cover-arts are replaced with blank images
+      background-image: image($base_color);
+      background-size: rem($icon_size - 2px, $sw: 1.0);
+      background-position: center;
+      background-repeat: no-repeat;
+      animation: none; // stop hover/active animations
+    }
+  }
+}
+
 // icon transformations
 radio:not(:indeterminate):not(:checked):active:not(:backdrop) {
   -gtk-icon-transform: scale(0);
@@ -4553,11 +4572,6 @@ expander {
     &:checked { -gtk-icon-source: -gtk-icontheme('pan-down-symbolic'); }
     &:not(:hover):not(:active) { color: gtkalpha(currentColor, 0.75); }
     &:selected { color: $selected_fg_color; }
-
-    &.horizontal { // spacer between arrow and label
-      &:dir(ltr) { margin-right: rem(4px, $sw: 1.0); }
-      &:dir(rtl) { margin-left: rem(4px,$sw: 1.0); }
-    }
   }
 
   label {
@@ -4565,6 +4579,12 @@ expander {
     &:hover,
     &:active { color: $fg_color; }
     &:selected { color: $selected_fg_color; }
+  }
+
+  > title > label {
+    // spacer between arrow and label
+    &:dir(ltr) { padding-left: rem(4px, $sw: 1.0); }
+    &:dir(rtl) { padding-right: rem(4px, $sw: 1.0); }
   }
 }
 
@@ -4679,12 +4699,14 @@ messagedialog { // Message Dialog styling
                   (':checked:hover', '-checked-active'),
                   (':checked:active', '-checked-active'),
                   (':checked:disabled','-checked-insensitive') {
-    check#{$s} { // always use dark variant
+    check#{$s},
+    &.csd check#{$s} { // always use dark variant
       -gtk-icon-source: -gtk-scaled(url("assets/checkbox#{$as}-dark.png"),
                                     url("assets/checkbox#{$as}-dark@2.png"));
     }
 
-    radio#{$s} {
+    radio#{$s},
+    &.csd radio#{$s} {
       -gtk-icon-source: -gtk-scaled(url("assets/radio#{$as}-dark.png"),
                                     url("assets/radio#{$as}-dark@2.png"));
     }
@@ -4699,6 +4721,14 @@ messagedialog { // Message Dialog styling
     &:disabled,
     &:disabled:active,
     &:disabled:indeterminate { color: $insensitive_inverted_fg_color; }
+  }
+
+  expander {
+    label {
+      color: $inverted_secondary_fg_color;
+      &:hover,
+      &:active { color: $inverted_fg_color; }
+    }
   }
 
   &.csd { // rounded bottom border styling for csd version
@@ -5326,7 +5356,7 @@ colorchooser .popover.osd {
 // content view (grid/list)
 .content-view {
   background-color: $bg_color;
-  // &:hover { -gtk-icon-effect: highlight; }
+  // &:hover { -gtk-icon-filter: brightness(1.2); }
   rubberband { @extend rubberband; }
 }
 
