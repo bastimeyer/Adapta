@@ -8,7 +8,7 @@ Before using Adapta
 
 Adapta strongly depends on Material Design resources, especially its **fonts**.
 
-####Typography
+#### Typography
  1. [**Noto Sans**](https://fonts.google.com/specimen/Noto+Sans)
    - Noto (NO TOfu) sans-serif truetype/opentype font covers a lot of languages.
    - Developed by Google and Adobe.
@@ -67,9 +67,11 @@ Variant Matrix
 >
 >   * To enable global dark theme, you use proper tools like Gnome-Tweak-Tool.
 >     Or add this porperty to `[settings]` section of `$HOME/.config/gtk-3.0/settings.ini`:
+>
 >     ```
 >     gtk-application-prefer-dark-theme=1
 >     ```
+>
 >   * I suggest you use the Eta variants if your LCD resolution is lower than FHD (1080p). Eta draws widgets around -20% to -30% spacing.
 >   * Metacity theming supports Eta variants (>= 3.20.x or 3.22.x).
 
@@ -230,7 +232,7 @@ Installation from Git Source
 
  > **Note:**
  >
- >   * Color-codes are defined as `#` + 6`HEX`s (Standard RGB definitions in HTML codes).
+ >   * Color-codes are defined as `#` + 6-digit `HEX`s (Standard RGB definitions in HTML codes).
  >     Uppercases are strongly recommended in Adapta code-base.
  >   * The Material Design Color Palette can be found [here](https://www.google.com/design/spec/style/color.html#color-color-palette).
  >   * Example: If you would like to use 'Teal500' as selection_color, use this:
@@ -242,6 +244,17 @@ Installation from Git Source
  >     and `second_selection_color` and `accent_color` should use `300` colors.
  >   * While doing `make`, Adapta changes those 5 colors in all stylesheets and images,
  >     and `make clean` cleans up all generated files from source directories.
+ >   * This feature unfortunately is not supported in `Openbox-3` and `Telegram 1.0` theming.
+
+GtkSourceView/Gedit Color Scheme Support
+---------------------------------------
+ A theme file `adapta.xml` is installed by default into `Adapta(-Nokto)/gedit` directory.
+ See details in [`README.md`](/extra/gedit/README.md).
+
+ > **Note:**
+ >
+ >   * The color-scheme can be used in Gnome-Builder and Gedit if installed to `gtksourceview-3.0/styles` directory.
+ >   * Currently only dark-variant is supported.
 
 Extra Browser Support
 ---------------------

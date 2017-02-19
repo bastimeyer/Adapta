@@ -45,7 +45,7 @@ panel-applet menubar {
       &:hover {
         color: $fg_color;
         background-color: gtkalpha(currentColor, 0.1);
-	box-shadow: none;
+        box-shadow: none;
       }
     }
 
@@ -172,7 +172,7 @@ sn-button { padding: rem(4px); }
 
         > grid {
           transition: none;
-          animation: list_ripple_effect 0.3s $slope_slow forwards;
+          animation: list_ripple_effect 0.2s $slope_slow forwards;
         }
       }
 
@@ -224,8 +224,9 @@ sn-button { padding: rem(4px); }
 #gf-bubble,
 #gf-osd-window,
 #gf-input-source-popup {
+  border-radius: 2px;
+
   &, &.solid {
-    border-radius: 2px;
     border: 1px solid $borders_color;
     background-color: gtkopacity($inverted_dark_color, 0.9);
     color: $inverted_fg_color;
@@ -234,6 +235,9 @@ sn-button { padding: rem(4px); }
       block:not(.empty) { background-color: $success_color; }
     }
   }
+
+  // for non-composited environments
+  &.solid { border-radius: 0; }
 }
 
 #gf-label-window {
@@ -257,12 +261,16 @@ sn-button { padding: rem(4px); }
 
 // popup for inpu-source candidates
 #gf-candidate-popup {
+  border-radius: 2px;
+
   &, &.solid {
-    border-radius: 2px;
     border: 1px solid $borders_color;
     background-color: gtkopacity($inverted_dark_color, 0.9);
     color: $inverted_fg_color;
   }
+
+  // for non-composited environments
+  &.solid { border-radius: 0; }
 
   gf-candidate-box {
     transition: none;
@@ -522,7 +530,12 @@ NautilusTrashBar {
   // remove unwanted frame
   .folder-frame > border { border-width: 0 0 1px; }
 
-  .conversation-frame > border { border: none; }
+  .conversation-frame {
+    > border { border: none; }
+
+    // reset weight
+    treeview.view { font-weight: 400; }
+  }
 
   .folder-frame > scrolledwindow {
     background-color: $secondary_dark_color;
@@ -538,14 +551,10 @@ NautilusTrashBar {
   }
 }
 
-headerbar.geary-titlebar-left.titlebar > box.vertical {
-  > .title { font-size: 90%; }
-}
-
 window.background > box.vertical > paned.horizontal > frame {
   // right-paned scrolledwindow
-  > box.vertical > paned.vertical > overlay > scrolledwindow {
-    > scrollbar { // always use light-variant
+  > box.vertical > paned.vertical > overlay {
+    > scrolledwindow > scrollbar { // always use light-variant
       background-color: transparent;
 
       slider {
@@ -564,11 +573,23 @@ window.background > box.vertical > paned.horizontal > frame {
       }
     }
 
-    undershoot { // remove undershoot
-      &.top,
-      &.bottom,
-      &.left,
-      &.right { background-image: none; }
+    > label.bottom { // mimic floating-bar styling
+      padding: rem(5.3px);
+      border-style: solid;
+      border-color: $borders_color;
+      color: $fg_color;
+      font-size: 90%;
+      transition: none;
+      opacity: 0.9;
+
+      &.left {
+        border-radius: 0 2px 0 0;
+        border-width: 1px 1px 0 0;
+      }
+      &.right {
+        border-radius: 2px 0 0 0;
+        border-width: 1px 0 0 1px;
+      }
     }
   }
 }
@@ -612,16 +633,10 @@ EphyWindow {
   }
 }
 
-window.background.csd > headerbar.titlebar > stack > box.vertical {
-  > box.subtitle {
-    // Keep minimum header-bar height in Eta variant
-    > label {
-      margin-top:if($ref_weight < 1.0, rem(-1.3px, $sw: 1.0), 0);
-      padding-bottom: if($ref_weight < 1.0, rem(1.3px, $sw: 1.0), 0);
-    }
-
-    > image { margin: if($ref_weight < 1.0, -1px 0, 0); }
-  }
+// popover for downloaded lists
+popover.background > box.vertical > scrolledwindow > viewport.frame {
+  // re-define background colours for GtkListBox
+  > list.background { background-color: $secondary_base_color; }
 }
 
 
@@ -869,8 +884,23 @@ dialog.background > box.dialog-vbox.vertical > box.vertical {
 //  * Gnome-Calculator *
 //  ********************/
 
-window {
-  > grid.vertical > box.vertical > widget {
+window.background {
+  > headerbar.titlebar { // mode-selector button
+    > button.flat.popup.toggle.text-button.title {
+      // .title class existed
+      margin: rem(5.3px) 0; // set standard margins
+
+      > grid > widget { // down arrow
+        padding-top: rem(2.7px, $sw: 1.0);
+        // add spacing between arrow and label
+        &:dir(ltr) { padding-left: rem(4px, $sw: 1.0); }
+        &:dir(rtl) { padding-right: rem(4px, $sw: 1.0); }
+      }
+    }
+  }
+
+  > grid.vertical > box.vertical > widget,
+  > grid.vertical > box.vertical > box.vertical > widget {
     button {
       @include button(flat-normal);
       &:hover { @include button(flat-hover); }
@@ -906,8 +936,8 @@ window {
             background-repeat: no-repeat;
             background-position: center;
             box-shadow: none;
-	    transition-duration: 0.2s;
-	    animation: none; // FIXME: animation breaks padding.
+            transition-duration: 0.2s;
+            animation: none; // FIXME: animation breaks padding.
           }
         }
       }
@@ -1049,15 +1079,6 @@ overlay > box.vertical > paned.horizontal > box.vertical {
   }
 }
 
-notebook grid.horizontal > widget > box.horizontal > scrolledwindow {
-  undershoot { // remove undershoot
-    &.top,
-    &.bottom,
-    &.left,
-    &.right { background-image: none; }
-  }
-}
-
 .gedit-side-panel-paned.horizontal {
   // gradient separator
   separator {
@@ -1094,8 +1115,8 @@ notebook grid.horizontal > widget > box.horizontal > scrolledwindow {
         min-width: $icon_size + 4px;
         min-height: $icon_size + 4px;
         padding: rem(5.3px);
-	border-radius: 2px;
-	-gtk-outline-radius: 2px;
+        border-radius: 2px;
+        -gtk-outline-radius: 2px;
       }
 
       .linked > .small-button { min-height: $icon_size + 4px; }
@@ -1359,7 +1380,28 @@ layouttab > box {
 }
 
 layout {
-  border: 1px solid $solid_light_borders_color;
+  // hide top/bottom pane-separator
+  border-width: 0 1px 0;
+  border-style: none solid none;
+  border-color: $solid_light_borders_color;
+  // draw vertically gradient pane-separators
+  @if $variant=='light' {
+    border-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.32),
+                                             rgba(0, 0, 0, 0.21) 2px,
+                                             rgba(0, 0, 0, 0.09) 4px,
+                                             rgba(0, 0, 0, 0.09))
+                  0 1 0 / 0 1px 0 stretch;
+  }
+  @if $variant=='dark' {
+    border-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.24),
+                                             rgba(0, 0, 0, 0.16) 2px,
+                                             rgba(0, 0, 0, 0.11) 4px,
+                                             rgba(0, 0, 0, 0.11))
+                  0 1 0 / 0 1px 0 stretch;
+  }
+  // revive top-edge border with box-shadow
+  box-shadow: inset 0 -1px $solid_light_borders_color;
+
   -PnlDockBin-handle-size: 1;
 }
 
@@ -1381,6 +1423,9 @@ tabstrip {
   background-image: if($variant == 'light', $fake-shadow-light,
                                             $fake-shadow-dark);
 
+  // remove fake-shadow from bottom tabstrip
+  layoutpane.bottom & { background-image: none; }
+
   docktab,
   tab {
     color: $tertiary_fg_color;
@@ -1393,17 +1438,6 @@ tabstrip {
     &:checked {
       color: $fg_color;
       box-shadow: inset 0 -2px $selected_bg_color;
-    }
-  }
-}
-
-layoutstack { // remove undershoot from main editor pane
-  widget scrolledwindow {
-    undershoot {
-      &.top,
-      &.bottom,
-      &.left,
-      &.right {background-image: none; }
     }
   }
 }
@@ -1625,13 +1659,6 @@ window overlay > grid > frame > grid {
       color: transparent;
     }
   }
-
-  scrolledwindow undershoot {
-    &.top { @include undershoot(top, $secondary_dark_color); }
-    &.bottom { @include undershoot(bottom, $secondary_dark_color); }
-    &.left { @include undershoot(left, $secondary_dark_color); }
-    &.right { @include undershoot(right, $secondary_dark_color); }
-  }
 }
 
 // bottom-paned actionbar
@@ -1665,32 +1692,39 @@ window > box.vertical > grid.vertical > stack {
 
 window.background {
   > box.vertical > box.horizontal {
-    > widget > label {
+    > widget > label { // annotation title
       color: $fixed_fg_color;
       font-weight: 700;
-    }
-
-    > button.flat:not(.image-button):not(.text-button):not(.toggle):not(.scale) {
-      min-width: $icon_size;
-      min-height: $icon_size;
-      padding: rem(10.7px);
-      border: none;
-      border-radius: 100px;
-      -gtk-outline-radius: 100px;
-      color: $fixed_fg_color;
     }
   }
 }
 
-window.background > box.vertical > paned.horizontal > box.vertical {
-  > overlay > scrolledwindow {
-    // remove undershoots from main view
-    undershoot {
-      &.top,
-      &.bottom,
-      &.left,
-      &.right { background-image: none; }
+// plugin mode in Ephy
+window.background > widget > window.background > box.vertical {
+  > toolbar.horizontal {
+    border-top: 1px solid $borders_color;
+    background-color: $secondary_dark_color;
+
+    .linked.raised > button.image-button { // reset image spacing
+      min-width: $icon_size;
+
+      image { padding: 0; }
     }
+  }
+
+  > scrolledwindow {
+    scrollbar {
+      &,
+      &.overlay-indicator,
+      trough {
+        background-color: $bg_color;
+        transition: none;
+      }
+
+      slider { transition: none; }
+    }
+
+    evview.content-view.view { transition: none; }
   }
 }
 
@@ -1786,13 +1820,6 @@ window.background > widget > window.background > box.vertical {
     }
 
     evview.content-view.view { transition: none; }
-
-    undershoot {
-      &.top,
-      &.bottom,
-      &.left,
-      &.right { background-image: none; }
-    }
   }
 }
 
@@ -1805,15 +1832,6 @@ window > box.vertical > box.vertical > widget > grid.vertical {
   > expander > scrolledwindow {
     min-height: rem(160.0px); // enlarge widget height
     border: 1px solid $borders_color; // draw borders
-
-    // remove undershoots from expanded-scrolling widget
-    // in progress window
-    undershoot {
-      &.top,
-      &.bottom,
-      &.left,
-      &.right { background-image: none; }
-    }
   }
 }
 
@@ -1937,15 +1955,6 @@ window stack > frame > frame > grid.horizontal > grid.horizontal {
     -gtk-outline-radius: 100px;
     background-color: gtkopacity($dark_color, 0.9);
   }
-
-  stack > scrolledwindow {
-    undershoot { // remove undershoot
-      &.top,
-      &.bottom,
-      &.left,
-      &.right { background-image: none; }
-    }
-  }
 }
 
 window stack > frame > frame > grid.horizontal {
@@ -1953,6 +1962,14 @@ window stack > frame > frame > grid.horizontal {
     background: transparent;
     background-image: linear-gradient(to bottom,
                                       gtkopacity($dark_color, 0.9));
+  }
+}
+
+window > grid.vertical > stack > stack > grid.vertical {
+  // allocated 128px x 128px?
+  > spinner {
+    min-height: $icon_size;
+    padding: 56px 0;
   }
 }
 
@@ -1974,7 +1991,9 @@ window headerbar > box.horizontal:not(.linked) {
         // 'list/grid' view changer
         min-width: $icon_size * 1.5;
         min-width: $icon_size * 1.5;
-        padding: rem(($widget_size - $icon_size * 1.5) / 2);
+        padding: if($ref_weight < 1.0,
+                 rem(($widget_size - $icon_size * 1.5 - 2px) / 2),
+                 rem(($widget_size - $icon_size * 1.5) / 2));
       }
     }
   }
@@ -1987,6 +2006,12 @@ window headerbar > box.horizontal:not(.linked) {
       padding: rem(($widget_size - $icon_size - 2.7px) / 2);
       border-radius: 2px;
       -gtk-outline-radius: 2px;
+
+      // draw rectangular without roundness
+      > colorswatch.activatable {
+        border-radius: 0;
+        -gtk-outline-radius: 0;
+      }
     }
   }
 }
@@ -2029,13 +2054,6 @@ window > popover > stack > grid > button {
       color: $selected_fg_color;
     }
   }
-
-  undershoot {
-    &.top { @include undershoot(top, $secondary_dark_color); }
-    &.bottom { @include undershoot(bottom, $secondary_dark_color); }
-    &.left { @include undershoot(left, $secondary_dark_color); }
-    &.right { @include undershoot(right, $secondary_dark_color); }
-  }
 }
 
 
@@ -2065,13 +2083,6 @@ window > popover > stack > grid > button {
       background-color: $selected_bg_color;
       color: $selected_fg_color;
     }
-  }
-
-  undershoot {
-    &.top { @include undershoot(top, $secondary_dark_color); }
-    &.bottom { @include undershoot(bottom, $secondary_dark_color); }
-    &.left { @include undershoot(left, $secondary_dark_color); }
-    &.right { @include undershoot(right, $secondary_dark_color); }
   }
 }
 
@@ -2110,13 +2121,6 @@ window.background > box.vertical {
           background-color: $selected_bg_color;
           color: $selected_fg_color;
         }
-      }
-
-      undershoot {
-        &.top { @include undershoot(top, $secondary_dark_color); }
-        &.bottom { @include undershoot(bottom, $secondary_dark_color); }
-        &.left { @include undershoot(left, $secondary_dark_color); }
-        &.right { @include undershoot(right, $secondary_dark_color); }
       }
     }
   }
@@ -2305,6 +2309,15 @@ window.background > box.vertical > stack > widget > box.horizontal {
   }
 }
 
+viewport.frame > box.vertical > revealer > box.horizontal {
+  > button.round-button { // categories expander button
+    // hard-coded crazy 16px roundness
+    min-height: 32px;
+    min-width: 32px;
+    padding: 0;
+  }
+}
+
 
 // /****************
 //  * Gnome-Photos *
@@ -2315,6 +2328,56 @@ window.background.solid-csd > box.vertical > overlay > revealer {
   > spinner { // allocation: 128 x 128
     min-height: $icon_size;
     padding: 56px 0;
+  }
+}
+
+
+// /**************
+//  * Gnome-Maps *
+//  **************/
+
+window.background {
+  > grid.horizontal > stack > spinner {
+    // allocation: 768 x 600!?
+    min-height: $icon_size;
+    padding: (600px - $icon_size * 2) / 2 (768px - $icon_size * 20) / 2;
+  }
+
+  > popover > grid.vertical > grid.horizontal > stack > spinner {
+    // allocation: 96 x 48
+    min-height: $icon_size;
+    padding: (48px - $icon_size) / 2 (96px - $icon_size * 4) / 2;
+  }
+}
+
+
+// /******************
+//  * Gnome-Calendar *
+//  ******************/
+
+dialog.background {
+  > headerbar.titlebar > button.flat.sources-button.popup.toggle {
+    box.vertical { // optimize label spacing like gnome-logs
+      > .title {
+        margin: rem(-2.7px) 0;
+        padding: rem(1.3px) rem(13.3px) 0;
+        font-size: if($ref_weight < 1.0, 90%, 100%);
+      }
+
+      > .subtitle {
+        margin: rem(-2.7px) 0;
+        padding: 0 rem(13.3px) rem(1.3px);
+        font-size: if($ref_weight < 1.0, 80%, 90%);
+      }
+    }
+  }
+
+  > box.dialog-vbox.vertical > grid.horizontal > revealer > box > box {
+    // GcalTimeSelector buttons
+    > button.popup.toggle {
+      // prevent truncated drop-shadows
+      margin: rem(4px) rem(5.3px) rem(10.7px);
+    }
   }
 }
 

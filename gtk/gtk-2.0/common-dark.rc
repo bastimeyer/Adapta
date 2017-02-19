@@ -11,8 +11,8 @@ style "default" {
   #
   # Style Properties
   #
-  GtkWidget::link-color = "#03A9F4"
-  GtkWidget::visited-link-color = "#9C27B0"
+  GtkWidget::link-color = @link_color
+  GtkWidget::visited-link-color = @visited_link_color
   GtkWidget::focus-line-width = 1
   GtkWidget::focus-padding = 1
   GtkMenuBar::window-dragging = 1
@@ -1665,7 +1665,7 @@ style "menubar" {
   xthickness = 0
   ythickness = 0
 
-  bg[NORMAL] = "#2A373E"
+  bg[NORMAL] = @inverted_dark_color
   fg[NORMAL] = mix(0.8, @selected_fg_color, shade(0.96, @bg_color))
   fg[PRELIGHT] = @selected_fg_color
   fg[INSENSITIVE] = mix(0.4, @selected_fg_color, @bg_color)
@@ -1685,8 +1685,8 @@ style "menubar_item" {
   xthickness = 3
   ythickness = 6
 
-  bg[NORMAL] = "#2A373E"
-  bg[PRELIGHT] = "#2A373E"
+  bg[NORMAL] = @inverted_dark_color
+  bg[PRELIGHT] = @inverted_dark_color
   fg[NORMAL] = mix(0.8, @selected_fg_color, shade(0.96, @bg_color))
   fg[PRELIGHT] = @selected_fg_color
   fg[INSENSITIVE] = mix(0.4, @selected_fg_color, @bg_color)
@@ -1776,7 +1776,7 @@ style "menu_item" {
       recolorable     = TRUE
       state           = NORMAL
       shadow          = IN
-      overlay_file    = "Check-Radio/check-dark.png"
+      overlay_file    = "Check-Radio/check-on-dark.png"
       overlay_stretch = FALSE
     }
     image {
@@ -1784,7 +1784,7 @@ style "menu_item" {
       recolorable     = TRUE
       state           = PRELIGHT
       shadow          = IN
-      overlay_file    = "Check-Radio/check-selected-dark.png"
+      overlay_file    = "Check-Radio/check-on-hover-dark.png"
       overlay_stretch = FALSE
     }
     image {
@@ -1792,7 +1792,7 @@ style "menu_item" {
       recolorable     = TRUE
       state           = ACTIVE
       shadow          = IN
-      overlay_file    = "Check-Radio/check-selected-dark.png"
+      overlay_file    = "Check-Radio/check-on-active-dark.png"
       overlay_stretch = FALSE
     }
     image {
@@ -1800,7 +1800,7 @@ style "menu_item" {
       recolorable     = TRUE
       state           = INSENSITIVE
       shadow          = IN
-      overlay_file    = "Check-Radio/check-insensitive-dark.png"
+      overlay_file    = "Check-Radio/check-on-insensitive-dark.png"
       overlay_stretch = FALSE
     }
 
@@ -1837,28 +1837,28 @@ style "menu_item" {
       function        = OPTION
       state           = NORMAL
       shadow          = IN
-      overlay_file    = "Check-Radio/radio-dark.png"
+      overlay_file    = "Check-Radio/radio-on-dark.png"
       overlay_stretch = FALSE
     }
     image {
       function        = OPTION
       state           = PRELIGHT
       shadow          = IN
-      overlay_file    = "Check-Radio/radio-selected-dark.png"
+      overlay_file    = "Check-Radio/radio-on-hover-dark.png"
       overlay_stretch = FALSE
     }
     image {
       function        = OPTION
       state           = ACTIVE
       shadow          = IN
-      overlay_file    = "Check-Radio/radio-selected-dark.png"
+      overlay_file    = "Check-Radio/radio-on-active-dark.png"
       overlay_stretch = FALSE
     }
     image {
       function        = OPTION
       state           = INSENSITIVE
       shadow          = IN
-      overlay_file    = "Check-Radio/radio-insensitive-dark.png"
+      overlay_file    = "Check-Radio/radio-on-insensitive-dark.png"
       overlay_stretch = FALSE
     }
 

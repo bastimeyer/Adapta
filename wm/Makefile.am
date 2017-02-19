@@ -4,7 +4,7 @@ noktodir     = $(DESTDIR)$(themedir)/Adapta-Nokto
 adaptaetadir = $(DESTDIR)$(themedir)/Adapta-Eta
 noktoetadir  = $(DESTDIR)$(themedir)/Adapta-Nokto-Eta
 
-metacitydir = $(srcdir)/metacity-1
+metacitydir   = $(srcdir)/metacity-1
 metacity_file = \
 	$(metacitydir)/button_close_prelight.svg \
 	$(metacitydir)/button_close_pressed.svg \
@@ -48,7 +48,7 @@ metacity_file = \
 	$(metacitydir)/metacity-theme-2.xml \
 	$(metacitydir)/metacity-theme-3.xml
 
-xfwmdir = $(srcdir)/xfwm4
+xfwmdir   = $(srcdir)/xfwm4
 xfwm_file = \
 	$(xfwmdir)/bottom-active.png \
 	$(xfwmdir)/bottom-inactive.png \
@@ -115,7 +115,7 @@ xfwm_file = \
 	$(xfwmdir)/top-right-active.png \
 	$(xfwmdir)/top-right-inactive.png
 
-openboxdir = $(srcdir)/openbox-3
+openboxdir   = $(srcdir)/openbox-3
 openbox_file = \
 	$(openboxdir)/close.xbm \
 	$(openboxdir)/desk_toggled.xbm \
@@ -159,6 +159,14 @@ if !ENABLE_FLASHBACK
 endif
 endif
 
+if ENABLE_MATE
+if !ENABLE_FLASHBACK
+	cd $(srcdir)/asset/assets-metacity-scripts && \
+	./clone-assets-metacity.sh && \
+	./render-assets-metacity.sh
+endif
+endif
+
 if ENABLE_XFCE
 if ENABLE_PARALLEL
 	cd $(srcdir)/asset/assets-xfwm-scripts && \
@@ -176,7 +184,7 @@ endif
 
 if ENABLE_OPENBOX
 	cd $(srcdir)/asset/assets-openbox-scripts && \
-	./clone-assets-openbox.sh
+		./clone-assets-openbox.sh
 endif
 
 # *****************
@@ -185,15 +193,6 @@ endif
 
 install-data-local:
 if ENABLE_FLASHBACK
-	$(MKDIR_P) $(adaptadir)/metacity-1
-	cp -Rv $(metacity_file) $(adaptadir)/metacity-1
-	cd $(adaptadir)
-	ln -sf ../Adapta/metacity-1 $(noktodir)/metacity-1
-	ln -sf ../Adapta/metacity-1 $(adaptaetadir)/metacity-1
-	ln -sf ../Adapta/metacity-1 $(noktoetadir)/metacity-1
-endif
-
-if ENABLE_MATE
 	$(MKDIR_P) $(adaptadir)/metacity-1
 	cp -Rv $(metacity_file) $(adaptadir)/metacity-1
 	cd $(adaptadir)
@@ -264,13 +263,6 @@ if ENABLE_FLASHBACK
 	test -e $(adaptaetadir)/metacity-1 && rm -rfv $(adaptaetadir)/metacity-1
 endif
 
-if ENABLE_MATE
-	test -e $(noktodir)/metacity-1 && rm -rfv $(noktodir)/metacity-1
-	test -e $(adaptadir)/metacity-1 && rm -rfv $(adaptadir)/metacity-1
-	test -e $(noktoetadir)/metacity-1 && rm -rfv $(noktoetadir)/metacity-1
-	test -e $(adaptaetadir)/metacity-1 && rm -rfv $(adaptaetadir)/metacity-1
-endif
-
 if ENABLE_CINNAMON
 if !ENABLE_FLASHBACK
 	test -e $(noktodir)/metacity-1 && rm -rfv $(noktodir)/metacity-1
@@ -315,15 +307,6 @@ endif
 CLEANFILES =
 
 if ENABLE_FLASHBACK
-CLEANFILES += \
-	$(metacitydir)/*.svg \
-	$(metacitydir)/*.png \
-	$(srcdir)/asset/assets-metacity/button_close_pressed.svg \
-	$(srcdir)/asset/assets-metacity/button_close_prelight.svg \
-	$(srcdir)/asset/inkscape.log
-endif
-
-if ENABLE_MATE
 CLEANFILES += \
 	$(metacitydir)/*.svg \
 	$(metacitydir)/*.png \

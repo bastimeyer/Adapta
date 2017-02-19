@@ -1,6 +1,6 @@
 AC_INIT(
 	[Adapta ],
-	3.89.2,
+	3.89.4,
 	[https://github.com/adapta-project/adapta-gtk-theme],
 	[adapta-gtk-theme]
 )
@@ -21,6 +21,10 @@ ADAPTA_OPTION([OPENBOX],   [openbox],   [Openbox],        [disable])
 ADAPTA_OPTION([CHROME],    [chrome],    [Chrome(ium)],    [disable])
 ADAPTA_OPTION([PLANK],     [plank],     [Plank],          [disable])
 ADAPTA_OPTION([TELEGRAM],  [telegram],  [Telegram],       [disable])
+
+PKG_CHECK_MODULES(GDK_PIXBUF, [gdk-pixbuf-2.0 >= 2.32.2])
+PKG_CHECK_MODULES(GLIB, [glib-2.0 >= 2.48.0])
+PKG_CHECK_MODULES(RSVG, [librsvg-2.0 >= 2.40.13])
 
 if test x"$ENABLE_PARALLEL" = xyes; then
 	AC_PATH_PROG([PARALLEL], [parallel])
@@ -110,6 +114,7 @@ AC_MSG_RESULT([
         | Extra support
         -----------------------------------------------------------
 
+         GtkSourceView/Gedit:  always
          Chrome(ium):          $ENABLE_CHROME
          Plank:                $ENABLE_PLANK
          Telegram:             $ENABLE_TELEGRAM

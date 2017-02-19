@@ -559,7 +559,7 @@ button,
                              (destructive-action, $destructive_color) {
     &.#{$b_type} {
       background-color: $b_color;
-      color: $selected_fg_color;
+      color: $secondary_selected_fg_color;
       &:hover {
         @extend %button_hover;
         background-color: $b_color;
@@ -896,6 +896,7 @@ button,
                                   to(gtkopacity($selected_bg_color, 0.2)),
                                   to(transparent))
                                   0 0 2 / 0 0 2px;
+
       > label { color: inherit; }
     }
   }
@@ -944,6 +945,7 @@ button,
       background-color: $track_color;
       &:dir(ltr) { box-shadow: inset 2px 0 gtkopacity($selected_bg_color, 0.2); }
       &:dir(rtl) { box-shadow: inset -2px 0 gtkopacity($selected_bg_color, 0.2); }
+
       > label { color: inherit; }
     }
   }
@@ -1130,6 +1132,7 @@ button:link,
 button:visited {
   // FIXME: aggregate with buttons
   @extend *:link;
+
   > label { text-decoration-line: underline; }
 }
 
@@ -1209,7 +1212,7 @@ spinbutton {
                            background-image,
                            box-shadow;
 
-      &:not(:last-child) { // '-' button
+      &.down { // '-' button
         &:hover {
           @extend %button_flat_hover;
           background: none;
@@ -1229,7 +1232,8 @@ spinbutton {
           color: $insensitive_fg_color;
         }
       }
-      &:last-child { // '+' button
+
+      &.up { // '+' button
         &:hover {
           @extend %button_flat_hover;
           background: none;
@@ -1311,6 +1315,7 @@ spinbutton {
           color: $insensitive_fg_color;
         }
       }
+
       &.down { // '-' button
         &:hover {
           @extend %button_flat_hover;
@@ -1622,7 +1627,9 @@ toolbar {
     &:active {
       @extend %button_flat_active;
       border-image: none;
-      background-color: transparent;
+      // filled background for LibreOffice 5.3.x
+      // LO uses ":active" pseudo-class as ":checked"
+      background-color: gtkopacity($fg_color, 0.1);
       color: $fg_color;
     }
     &:checked {
@@ -1655,11 +1662,11 @@ toolbar {
       &.text-button,
       &.text-button.image-button {
         border-radius: 2px;
-	-gtk-outline-radius: 2px;
+        -gtk-outline-radius: 2px;
       }
       &.image-button {
         border-radius: 100px;
-	-gtk-outline-radius: 100px;
+        -gtk-outline-radius: 100px;
       }
     }
 
@@ -1688,7 +1695,8 @@ toolbar {
     }
   }
 
-  .linked > button:not(.combo) { // remove double-background and underlines
+  .linked > button:not(.combo):not(.text-button) {
+    // remove double-background and underlines
     &, &.image-button {
       border-image: none;
       box-shadow: none;
@@ -1733,6 +1741,8 @@ toolbar {
 
   .linked > button.text-button:not(.image-button) { // revive underlines
     @extend %button_array;
+    border-radius: 2px;
+    -gtk-outline-radius: 2px;
   }
 
   // toolbar separators
@@ -2170,6 +2180,7 @@ headerbar {
         background-color: transparent;
         &:disabled {
           color: $insensitive_selected_fg_color;
+
           > label { color: inherit; }
         }
       }
@@ -2235,6 +2246,7 @@ headerbar {
           background-color: transparent;
           &:disabled {
             color: $insensitive_selected_fg_color;
+
             > label { color: inherit; }
           }
         }
@@ -2292,14 +2304,8 @@ headerbar {
 
   // reduce hidden gap reserved for separators
   > box.horizontal {
-    &.left {
-      &:dir(ltr) { margin-right: -8px; }
-      &:dir(rtl) { margin-left: -8px; }
-    }
-    &.right {
-      &:dir(ltr) { margin-left: -8px; }
-      &:dir(rtl) { margin-right: -8px; }
-    }
+    &.left { margin-right: -8px; }
+    &.right { margin-left: -8px; }
   }
 
   // To avoid double-padding, set it only for titlebar in case it
@@ -2323,10 +2329,9 @@ headerbar {
     .title { margin-bottom: rem(5.3px - 1.3px); }
 
     > box.vertical {
-      > .title,
-      > .subtitle {
-        margin: if($ref_weight < 1.0, rem(-4px) 0, rem(-2.7px) 0);
-      }
+      > .title { margin: 0; }
+
+      > .subtitle { margin: rem(-2.7px) 0; }
     }
 
     .tiled &  { @extend %tiled_integration; }
@@ -2776,6 +2781,19 @@ menubar {
 
       > label { color: $insensitive_inverted_fg_color; }
     }
+
+    // special mode in .unity-csd class
+    .background.unity-csd > grid.vertical & {
+      box-shadow: inset 0 -1px $track_color;
+
+      > label { color: $secondary_fg_color; }
+
+      &:hover {
+        box-shadow: inset 0 -2px $selected_bg_color;
+
+        > label { color: $fg_color; }
+      }
+    }
   }
 }
 
@@ -2899,6 +2917,17 @@ menuitem {
     border-top: 1px solid $borders_color;
     &:dir(ltr) { margin-left: rem($icon_size + 10px * 2, $sw: 1.0); }
     &:dir(rtl) { margin-right: rem($icon_size + 10px * 2, $sw: 1.0); }
+  }
+
+  box.horizontal separator { // special case for nm-applet
+    min-height: 1px;
+    border: none;
+    background-color: $borders_color;
+
+    &:dir(ltr),
+    &:dir(rtl) {
+      margin: rem(13.3px - 0.5px, $sw: 1.0) 0;
+    }
   }
 }
 
@@ -3184,9 +3213,20 @@ notebook {
         min-height: rem($icon_size);
         min-width: rem($icon_size);
         padding: 0;
-        border-radius: 100px;
-        -gtk-outline-radius: 100px;
+
         > image { padding: rem(6.7px); }
+
+        &.toggle {
+          &:checked { // draw underlines
+            background-color: transparent;
+            border-image: -gtk-gradient(radial,
+                                        center bottom, 0,
+                                        center bottom, 0.5,
+                                        to($selected_bg_color),
+                                        to(transparent))
+                                        0 0 2 / 0 0 2px;
+          }
+        }
       }
     }
   }
@@ -3221,7 +3261,7 @@ notebook {
 
     &.reorderable-page label { // reorderable-page tab text
       padding: if($ref_weight < 1.0, rem(5.3px - 2.7px) 0 rem(5.3px - 2.7px),
-+                                    rem(5.3px - 1.3px) 0 rem(5.3px - 1.3px));
+                                     rem(5.3px - 1.3px) 0 rem(5.3px - 1.3px));
     }
 
     button { // tab close button
@@ -3236,6 +3276,7 @@ notebook {
       &:hover { @include button(flat-hover); }
       &:active { @include button(flat-active); }
       &:disabled { @include button(flat-insensitive); }
+
       > image { // this is a hack which makes tabs grow
         padding: rem(5.3px + 2.7px, $sw: 1.0);
       }
@@ -3255,6 +3296,7 @@ notebook {
       min-width: rem($icon_size);
       min-height: rem($icon_size);
       padding: 0;
+
       // weird wdiget gets in our way
       > widget > box > image { padding: rem(5.3px + 2.7px, $sw: 1.0); }
     }
@@ -3347,7 +3389,7 @@ scrollbar,
       slider {
         margin: 0;
         border: 0 none transparent;
-	// FIXME: Ephy at dark-variant needs fixed colour
+        // FIXME: Ephy at dark-variant needs fixed colour
         background-color: gtkopacity($fixed_fg_color, 0.55 * 0.5);
 
         .background & { // actual colour
@@ -3724,30 +3766,6 @@ switch {
       -gtk-icon-source: -gtk-scaled(url("assets/#{$a}#{$as}#{$asset_suffix}.png"),
                                     url("assets/#{$a}#{$as}#{$asset_suffix}@2.png"));
       -gtk-icon-shadow: none;
-    }
-  }
-
-  // menu
-  @each $s,$as in ('',''),
-                  // (':active', '-checked'),
-                  (':disabled','-insensitive'),
-                  (':indeterminate', '-mixed'),
-                  // (':indeterminate:active', '-mixed'),
-                  (':indeterminate:disabled', '-mixed-insensitive'),
-                  (':checked', '-checked'),
-                  // (':checked:active', '-checked'),
-                  (':checked:disabled','-checked-insensitive') {
-    menu menuitem.#{$w}#{$s},
-    menu menuitem #{$w}#{$s} {
-      -gtk-icon-source: -gtk-scaled(url("assets/#{$a}#{$as}-symbolic#{$asset_suffix}.png"),
-                                    url("assets/#{$a}#{$as}-symbolic#{$asset_suffix}@2.png"));
-      -gtk-icon-shadow: none;
-      &:hover {
-        -gtk-icon-source: -gtk-scaled(url("assets/#{$a}#{$as}-symbolic#{$asset_suffix}.png"),
-                                      url("assets/#{$a}#{$as}-symbolic#{$asset_suffix}@2.png"));
-        -gtk-icon-shadow: none;
-        transition: none;
-      }
     }
   }
 }
@@ -4399,9 +4417,9 @@ levelbar {
 printdialog {
   paper {
     padding: 0;
-    color: $fixed_fg_color;
+    color: $fg_color;
     border: 1px solid $borders_color;
-    background-color: white;
+    background-color: $dark_color;
   }
 
   .dialog-action-box { margin: rem(12px); }
@@ -4419,14 +4437,17 @@ frame > border,
   border-radius: 0;
   border: 1px solid $borders_color;
   box-shadow: none;
+
   &.flat { border-style: none; }
 }
 
-actionbar > frame > border { border-width: 1px 0 0; }
+actionbar {
+  > frame > border { border-width: 1px 0 0; }
 
-actionbar > revealer > box {
-  padding: rem(5.3px);
-  border-top: 1px solid $borders_color;
+  > revealer > box {
+    padding: rem(5.3px);
+    border-top: 1px solid $borders_color;
+  }
 }
 
 placessidebar,
@@ -4440,35 +4461,10 @@ scrolledwindow {
   // when content is touch-dragged past boundaries.
   // This draws a box on top of the content, the size changes programmatically.
   overshoot {
-    &.top {
-      @include overshoot(top);
-    }
-    &.bottom {
-    @include overshoot(bottom);
-    }
-    &.left {
-      @include overshoot(left);
-    }
-    &.right {
-      @include overshoot(right);
-    }
-  }
-
-  // Overflow indication, works similarly to the overshoot,
-  // the size if fixed tho.
-  undershoot {
-    &.top {
-      @include undershoot(top, $base_color);
-    }
-    &.bottom {
-    @include undershoot(bottom, $base_color);
-    }
-    &.left {
-      @include undershoot(left, $base_color);
-    }
-    &.right {
-      @include undershoot(right, $base_color);
-    }
+    &.top { @include overshoot(top); }
+    &.bottom { @include overshoot(bottom); }
+    &.left { @include overshoot(left); }
+    &.right { @include overshoot(right); }
   }
 
   junction { // the small square between two scrollbars
@@ -4486,11 +4482,10 @@ scrolledwindow {
 
 // vbox and hbox separators
 separator {
-  // always disable separators
+  min-height: 1px;
+  min-width: 1px;
   color: transparent;
   background-color: $borders_color;
-  min-width: 1px;
-  min-height: 1px;
 }
 
 
@@ -4503,9 +4498,7 @@ list {
   background-color: $base_color;
 }
 
-row {
-  padding: 2px;
-}
+row { padding: 2px; }
 
 row.activatable {
   // let's take care of background colors
@@ -4515,25 +4508,23 @@ row.activatable {
                     image(gtkalpha(currentColor, 0));
   background-repeat: no-repeat;
   background-position: center, center;
+  transition-timing-function: $slope_slow;
   &.has-open-popup, // this is for indicating which sidebar row
                     // generated a popover
   &:hover {         // see https://bugzilla.gnome.org/show_bug.cgi?id=754411
-    transition: none;
     background-image: radial-gradient(circle farthest-corner at center,
                                       gtkalpha(currentColor, 0) 100%,
                                       transparent 0%),
                       image(gtkalpha(currentColor, 0.05));
+    transition-timing-function: $slope_slow;
+    transition-duration: 0.1s;
   }
 
   &:active {
     transition: all 0.2s $slope_slow,
                 background-image 0,
                 background-color 0;
-    animation: list_ripple_effect 0.3s $slope_slow forwards;
-    &:hover { transition: all 0.2s $slope_slow,
-                          background-image 0,
-                          background-color 0;
-    }
+    animation: list_ripple_effect 0.2s $slope_slow forwards;
   }
 }
 
@@ -4548,13 +4539,21 @@ row {
   }
 }
 
-row:selected {
+row:selected { // buttons inside the selected-row
   @extend %selected_items;
+
   button {
+    color: $secondary_fg_color;
+    &:hover,
+    &:active,
+    &:checked { color: $fg_color; }
     &:disabled { color: $insensitive_secondary_selected_fg_color; }
+
     &.flat {
       color: $secondary_selected_fg_color;
-      &:hover, &:active { color: $selected_fg_color; }
+      &:hover,
+      &:active,
+      &:checked { color: $selected_fg_color; }
       &:disabled { color: $insensitive_secondary_selected_fg_color; }
     }
   }
@@ -4595,11 +4594,6 @@ row:selected { // special case to use raised GtkEntry
       &, &:focus { @extend %selected_items; }
     }
   }
-}
-
-// transition
-row {
-  &:hover { transition: none; }
 }
 
 
@@ -4752,7 +4746,7 @@ calendar {
 //  * Dialogs *
 //  ***********/
 
-messagedialog { // Message Dialog styling
+messagedialog {
   .titlebar {
     min-height: rem(20px);
     border-style: none;
@@ -4763,7 +4757,8 @@ messagedialog { // Message Dialog styling
   }
 
   entry {
-    &, &:focus {
+    &,
+    &:focus {
       color: $inverted_fg_color;
       caret-color: $inverted_fg_color;
     }
@@ -4777,6 +4772,7 @@ messagedialog { // Message Dialog styling
     &:checked { color: $inverted_accent_label_color; }
     &:disabled { color: $insensitive_inverted_fg_color; }
   }
+
   .linked > button {
     border: 2px solid transparent;
     border-radius: 2px;
@@ -4831,7 +4827,6 @@ messagedialog { // Message Dialog styling
 
   &.csd { // rounded bottom border styling for csd version
     &.background {
-      // bigger radius for better antialiasing
       border-bottom-left-radius: 2px;
       border-bottom-right-radius: 2px;
     }
@@ -4839,9 +4834,10 @@ messagedialog { // Message Dialog styling
 
   &.background,
   &.csd.background {
-    color: $inverted_secondary_fg_color;
+    color: $inverted_fg_color;
 
-    &, .titlebar { background-color: gtkopacity($inverted_dark_color, 0.9); }
+    &,
+    .titlebar { background-color: gtkopacity($inverted_dark_color, 0.9); }
 
     .dialog-action-area {
       button,
@@ -4853,9 +4849,6 @@ messagedialog { // Message Dialog styling
         color: $inverted_secondary_accent_label_color;
         font-size: initial;
         font-weight: 700;
-
-        // &:first-child { border-bottom-left-radius: 2px; }
-        // &:last-child { border-bottom-right-radius: 2px; }
         &:hover {
           @extend %button_flat_hover;
           background-color: transparent;
@@ -5694,9 +5687,11 @@ decoration {
   // appmenu buttons
   button.titlebutton.popup.toggle,
   &.selection-mode button.titlebutton.popup.toggle {
-    min-width: $icon_size;
-    min-height: $icon_size;
-    padding: rem(($widget_size - $icon_size) / 2);
+    min-width: $icon_size * 1.5;
+    min-height: $icon_size * 1.5;
+    padding: if($ref_weight < 1.0,
+             rem(($widget_size - $icon_size * 1.5 - 2px) / 2),
+             rem(($widget_size - $icon_size * 1.5) / 2));
     border-radius: 100px;
     -gtk-outline-radius: 100px;
     &:checked { // reset fill-area
@@ -5718,9 +5713,11 @@ decoration {
       &:backdrop,
       &:backdrop:hover,
       &:backdrop:active {
-        min-width: $icon_size;
-        min-height: $icon_size;
-        padding: rem(($widget_size - $icon_size) / 2);
+        min-width: $icon_size * 1.5;
+        min-height: $icon_size * 1.5;
+        padding: if($ref_weight < 1.0,
+                 rem(($widget_size - $icon_size * 1.5 - 2px) / 2),
+                 rem(($widget_size - $icon_size * 1.5) / 2));
         border-radius: 100px;
         -gtk-outline-radius: 100px;
         background-image: none;
@@ -6195,24 +6192,6 @@ popover.touch-selection {
     border-color: $drop_target_color;
     box-shadow: inset 0 0 0 1px $drop_target_color;
     caret-color: $drop_target_color;
-  }
-}
-
-// undershoot for speciic-cases
-undershoot {
-  box > scrolledwindow & {
-    &.top { @include undershoot(top, $bg_color); }
-    &.bottom { @include undershoot(bottom, $bg_color); }
-    &.left { @include undershoot(left, $bg_color); }
-    &.right { @include undershoot(right, $bg_color); }
-  }
-
-  placessidebar &,
-  .sidebar & {
-    &.top { @include undershoot(top, $secondary_dark_color); }
-    &.bottom { @include undershoot(bottom, $secondary_dark_color); }
-    &.left { @include undershoot(left, $secondary_dark_color); }
-    &.right { @include undershoot(right, $secondary_dark_color); }
   }
 }
 

@@ -51,7 +51,7 @@ $budgie_transition: opacity 0.2s $slope_medium,
   font-weight: 700;
 
   // used to indicate unread notifications
-  .alert { color: $inverted_accent_label_color; }
+  .alert { color: $suggested_color; }
 }
 
 @each $along_side, $opp_side in $full_orientation {
@@ -66,14 +66,21 @@ $budgie_transition: opacity 0.2s $slope_medium,
 }
 
 // wnck tasklist styling
-.budgie-panel #tasklist-button {
-  button {
-    border: none;
-    background: none;
-    opacity: 0.5;
-    &:hover,
-    &:active,
-    &:checked { opacity: 1.0; }
+.budgie-panel button#tasklist-button {
+  border: none;
+  background: none;
+  box-shadow: none; // unset standard wnck styling
+
+  label,
+  image { opacity: 0.75; }
+
+  &:hover,
+  &:active,
+  &:checked {
+    box-shadow: none;
+
+    label,
+    image { opacity: 1.0; }
   }
 }
 
@@ -127,17 +134,7 @@ box.horizontal.pinned { // drop-target
 // draw underscores
 @each $along_side, $opp_side in $orientation {
   .#{$along_side} .budgie-panel {
-    #tasklist-button button {
-      border: 2px solid transparent;
-      &:hover {
-        border-#{$along_side}: 2px solid gtkalpha($inverted_fg_color, 0.4);
-      }
-      &:active,
-      &:checked {
-        border-#{$along_side}: 2px solid $selected_bg_color;
-      }
-    }
-
+    button#tasklist-button,
     button.flat.launcher {
       border: 2px solid transparent;
       &:hover {
@@ -254,17 +251,10 @@ box.horizontal.pinned { // drop-target
       }
 
       label { // tweak vertical spacing and font weight
-        padding: rem(4px, $sw: 1.0) 0 rem(5.3px, $sw: 1.0);
+        padding: rem(5.3px, $sw: 1.0) 0 rem(6.7px, $sw: 1.0);
         font-weight: 500;
       }
     }
-  }
-
-  scrolledwindow undershoot {
-    &.top { @include undershoot(top, $secondary_base_color); }
-    &.bottom { @include undershoot(bottom, $secondary_base_color); }
-    &.left { @include undershoot(left, $secondary_base_color); }
-    &.right { @include undershoot(right, $secondary_base_color); }
   }
 }
 
@@ -431,6 +421,11 @@ box.horizontal.pinned { // drop-target
         &:checked { color: $inverted_fg_color; }
         &:disabled { color: $insensitive_inverted_fg_color; }
       }
+
+      > image { // gear icon in settings-view
+        &:dir(ltr) { margin-left: 4px; }
+        &:dir(rtl) { margin-right: 4px; }
+      }
     }
 
     // reduce the gap between child elements
@@ -593,6 +588,11 @@ box.horizontal.pinned { // drop-target
       min-width: $icon_size;
       min-height: $icon_size;
       padding: rem(8px);
+      color: gtkopacity($destructive_color, 0.75);
+      &:hover,
+      &:active,
+      &:checked { color: $destructive_color; }
+      &:disabled { color: gtkopacity($destructive_color, 0.4); }
     }
 
     // reduce height of scale node
@@ -633,13 +633,6 @@ box.horizontal.pinned { // drop-target
       }
     }
   }
-
-  undershoot { // remove undershoot
-    &.top,
-    &.bottom,
-    &.left,
-    &.right { background-image: none; }
-  }
 }
 
 // MPRIS Applet
@@ -656,17 +649,7 @@ box.horizontal.pinned { // drop-target
   // shrink label
   > box widget > widget > label {
     font-size: 80%;
-    padding: 0 2px rem(1.3px, $sw: 1.0);
-  }
-}
-
-// na-tray-applet styling
-.budgie-panel > .end-region {
-  widget > widget > widget > box.horizontal {
-    > widget {
-      min-height: $icon_size;
-      margin: -4px;
-    }
+    padding: 0 2px;
   }
 }
 
@@ -762,7 +745,7 @@ popover.places-menu {
             transition: none;
             animation: none;
           }
-          &:active { animation: list_ripple_effect 0.3s $slope_slow forwards; }
+          &:active { animation: list_ripple_effect 0.2s $slope_slow forwards; }
         }
       }
 
@@ -785,6 +768,31 @@ popover.places-menu {
     label.dim-label {
       font-size: 90%;
       font-weight: 700;
+    }
+  }
+
+  box.unlock-area {
+    border-width: 1px 0 1px;
+    border-style: solid none solid;
+    border-color: $borders_color;
+    background-color: $secondary_dark_color;
+    box-shadow: if($variant == 'light', $inline-shadow-light,
+                                        $inline-shadow-dark);
+
+    entry { // where is the combo node?
+      min-height: $icon_size;
+      min-width: $icon_size;
+      margin: rem(1.3px) rem(5.3px);
+      padding: rem(4px);
+    }
+
+    button {
+      min-height: $icon_size;
+      min-width: $icon_size;
+      margin: rem(1.3px) rem(5.3px);
+      padding: rem(4px);
+      border-radius: 2px; // revert to square button
+      -gtk-outline-radius: 2px;
     }
   }
 }
@@ -907,19 +915,14 @@ wnck-pager {
         }
       }
     }
-
-    undershoot { // remove undershoot
-      &.top,
-      &.bottom,
-      &.left,
-      &.right { background-image: none; }
-    }
   }
 
   box > box {
     entry {
+      min-height: rem($widget_size, $sw: 1.0);
       color: $inverted_fg_color;
       caret-color: $inverted_fg_color;
+      font-size: 110%;
       &:focus {
         color: $selected_fg_color;
         caret-color: $selected_fg_color;
@@ -1083,21 +1086,18 @@ UnityDecoration {
   -UnityDecoration-title-alignment: 0.0;
 
   .top {
+    padding: 1px 6px 0 6px;
     border: 0 none transparent;
     border-radius: 2px 2px 0 0;
-    padding: 1px 6px 0 6px;
-
     background-image: linear-gradient(to bottom, $inverted_dark_color);
     // The foreground color will be used to paint the text
     color: $inverted_fg_color;
     box-shadow: inset 0 1px $highlight_color;
-
-    &:backdrop { color: $insensitive_inverted_fg_color; }
-
     &:hover { // for L.I.M's selected menuitem
       color: $selected_fg_color;
       box-shadow: inset 0 -2px $selected_bg_color;
     }
+    &:backdrop { color: $insensitive_inverted_fg_color; }
   }
 
   .left,
@@ -1123,25 +1123,27 @@ UnityPanelWidget,
   }
 }
 
-.unity-panel.menuitem,
-.unity-panel .menuitem { padding: 1px 1px 0; }
-
-.unity-panel.menubar,
-.unity-panel .menubar {
-  background-color: transparent;
-  background-image: none;
-  box-shadow: none;
-
+.unity-panel {
   &.menuitem,
-  .menuitem * {
-    padding: 0 6px;
-    border-radius: 0;
-    border-bottom: none;
-    color: $inverted_fg_color;
+  .menuitem { padding: 1px 1px 0; }
+
+  &.menubar,
+  .menubar {
     background-color: transparent;
-    &:hover {
-      color: $selected_fg_color;
-      box-shadow: inset 0 2px $selected_bg_color;
+    background-image: none;
+    box-shadow: none;
+
+    &.menuitem,
+    .menuitem * {
+      padding: 0 6px;
+      border-radius: 0;
+      border-bottom: none;
+      color: $inverted_fg_color;
+      background-color: transparent;
+      &:hover {
+        color: $selected_fg_color;
+        box-shadow: inset 0 2px $selected_bg_color;
+      }
     }
   }
 }
@@ -1338,10 +1340,26 @@ headerbar.titlebar box {
   }
 }
 
-// use asymmetrical separators
 .background.csd box.vertical > stack > scrolledwindow,
 .background.solid-csd box.vertical > stack > scrolledwindow {
   list > row.activatable.tweet {
+    // speed-up scrolling
+    background-image: none;
+    &:hover {
+      background-image: none;
+      background-color: gtkalpha(currentColor, 0.05);
+    }
+
+    &,
+    widget.inline-media,
+    button.text-only-button {
+      transition: none;
+      &:active { animation: none; }
+
+      label { transition: none; }
+    }
+
+    // use asymmetrical separators
     &:dir(ltr) {
       border-image: linear-gradient(to right,
                                     transparent 72px,
@@ -1371,6 +1389,36 @@ window.background > stack > grid.horizontal > widget {
   > button.close-button.image-button {
     // disabled box-shadow by hard-coded style.css
     @extend button.destructive-action;
+  }
+}
+
+// popup window for media
+window.background:not(.csd):not(.solid-csd):not(.unity-csd) > frame {
+  > scrolledwindow {
+    > scrollbar { // always draw troughs
+      background-color: gtkopacity($base_color, 0.55);
+
+      &.overlay-indicator {
+        &:not(.dragging):not(.hovering) {
+          background-color: gtkopacity($base_color, 0.55);
+        }
+      }
+    }
+  }
+}
+
+window.background > popover.background > frame > list > row.activatable {
+  > grid.horizontal > button.flat.image-button {
+    // revive transitions
+    transition-property: opacity,
+                         border-color,
+                         border-image,
+                         background-color,
+                         background-image,
+                         box-shadow,
+                         icon-shadow;
+    transition-timing-function: $slope_slow;
+    transition-duration: 0.2s;
   }
 }
 
@@ -1411,11 +1459,11 @@ window.background > stack > grid.horizontal > widget {
                                         $toolbar-shadow-dark);
 
     > button.flat.toggle { // 'back/forward'?
-      &, image {
-        min-height: $icon_size * 2.2;
-        min-width: $icon_size * 2.2;
-        padding: 0;
-      }
+      min-height: $icon_size * 2.0;
+      min-width: $icon_size * 2.0;
+      padding: 0;
+      border-radius: 2px;
+      -gtk-outline-radius: 2px;
     }
 
     .linked.raised > button,
@@ -1426,29 +1474,30 @@ window.background > stack > grid.horizontal > widget {
         min-width: rem(26.7px);
         padding-top: 0;
         padding-bottom: 0;
+        border-radius: 2px;
+        -gtk-outline-radius: 2px;
 
         > widget { padding: rem(4px) 0; } // GtkArrow?
       }
 
-      // general circle buttons
       &.image-button,
       &.image-button.toggle {
-        &, image {
-          min-height: $icon_size * 2.2;
-          min-width: $icon_size * 2.2;
-          padding: 0;
-        }
+        min-height: $icon_size * 2.0;
+        min-width: $icon_size * 2.0;
+        padding: 0;
+        border-radius: 2px;
+        -gtk-outline-radius: 2px;
       }
     }
 
     // optional buttons
     .raised:not(.linked) > button {
       &:not(.text-button):not(.toggle) {
-        &, image {
-          min-height: $icon_size * 2.2;
-          min-width: $icon_size * 2.2;
-          padding: 0;
-        }
+        min-height: $icon_size * 2.0;
+        min-width: $icon_size * 2.0;
+        padding: 0;
+        border-radius: 2px;
+        -gtk-outline-radius: 2px;
       }
     }
 
@@ -1909,9 +1958,9 @@ window > box.vertical > box.horizontal {
       label,
       entry {
         min-height: rem(13.3px);
-	padding-top: rem(1.3px);
-	padding-bottom: rem(1.3px);
-	font-size: 90%;
+        padding-top: rem(1.3px);
+        padding-bottom: rem(1.3px);
+        font-size: 90%;
       }
 
       > label { color: $insensitive_fg_color; }
@@ -2020,7 +2069,7 @@ window.background > box.vertical {
 //  ***********/
 
 // FIXME: Gtk+3 firefox needs this!
-window.background {
+window.background:not(.csd):not(.solid-csd) {
   > widget > menubar {
     color: $inverted_secondary_fg_color;
     &:hover {
@@ -2034,9 +2083,13 @@ window.background {
     > menuitem > label:disabled { color: $insensitive_fg_color; }
   }
 
-  > window.background > menu > separator { color: $borders_color; }
+  // revert to standard separators
+  > window.background > menu separator { color: $borders_color; }
 
-  > widget > frame { color: $borders_color; }
+  > widget {
+    > frame,
+    > separator { color: $borders_color; }
+  }
 }
 
 
@@ -2165,8 +2218,8 @@ PanelSeparator {
 //  * Caja *
 //  ********/
 
-widget.caja-desktop.view { // desktop icon-grid styling
-  @extend .nautilus-desktop.nautilus-canvas-item;
+.caja-desktop { // desktop icon-grid styling
+  &.caja-canvas-item { @extend .nautilus-desktop.nautilus-canvas-item; }
 
   > widget.entry { // = EelEditableLabel.entry
     &, &:focus {
@@ -2404,15 +2457,6 @@ widget.caja-desktop.view { // desktop icon-grid styling
       box-shadow: if($variant == 'light', $inline-shadow-light,
                                           $inline-shadow-dark);
     }
-
-    scrolledwindow {
-      undershoot { // remove undershoot
-        &.top,
-        &.bottom,
-        &.left,
-        &.right { background-image: none; }
-      }
-    }
   }
 
   statusbar {
@@ -2459,13 +2503,6 @@ widget.caja-desktop.view { // desktop icon-grid styling
         background-color: $selected_bg_color;
         color: $selected_fg_color;
       }
-    }
-
-    undershoot { // remove undershoot
-      &.top,
-      &.bottom,
-      &.left,
-      &.right { background-image: none; }
     }
   }
 }
@@ -2611,7 +2648,7 @@ window#Emacs {
 
 // workaround for the context-menus in Electron apps
 // do not use the alpha-blended colours
-.popup:not(.csd) {
+window.popup:not(.csd) {
   menu {
     background-color: $secondary_base_color;
 

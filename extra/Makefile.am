@@ -1,6 +1,6 @@
-themedir  = $(datadir)/themes
-adaptadir = $(DESTDIR)$(themedir)/Adapta
-noktodir  = $(DESTDIR)$(themedir)/Adapta-Nokto
+themedir     = $(datadir)/themes
+adaptadir    = $(DESTDIR)$(themedir)/Adapta
+noktodir     = $(DESTDIR)$(themedir)/Adapta-Nokto
 adaptaetadir = $(DESTDIR)$(themedir)/Adapta-Eta
 noktoetadir  = $(DESTDIR)$(themedir)/Adapta-Nokto-Eta
 
@@ -11,9 +11,14 @@ chrome_nokto_file = $(chromedir)/adapta-nokto-theme.crx
 plankdir   = $(srcdir)/plank
 plank_file = $(plankdir)/dock.theme
 
-telegramdir   = $(srcdir)/telegram
-telegram_file = $(telegramdir)/adapta.tdesktop-theme
+telegramdir         = $(srcdir)/telegram
+telegram_file       = $(telegramdir)/adapta.tdesktop-theme
 telegram_nokto_file = $(telegramdir)/adapta-nokto.tdesktop-theme
+
+geditdir   = $(srcdir)/gedit
+gedit_file = \
+	$(geditdir)/adapta.xml \
+	$(geditdir)/README.md
 
 # ******************
 # * Generate files *
@@ -57,6 +62,11 @@ if ENABLE_TELEGRAM
 	ln -sf ../Adapta-Nokto/telegram $(noktoetadir)/telegram
 endif
 
+	$(MKDIR_P) $(adaptadir)/gedit
+	cp -Rv $(gedit_file) $(adaptadir)/gedit
+	cd $(adaptadir)
+	ln -sf ../Adapta/gedit $(noktodir)/gedit
+
 # *******************
 # * Uninstall files *
 # *******************
@@ -82,6 +92,9 @@ if ENABLE_TELEGRAM
 	test -e $(noktoetadir)/telegram && rm -rfv $(noktoetadir)/telegram
 	test -e $(adaptaetadir)/telegram && rm -rfv $(adaptaetadir)/telegram
 endif
+
+	test -e $(noktodir)/gedit && rm -rfv $(noktodir)/gedit
+	test -e $(adaptadir)/gedit && rm -rfv $(adaptadir)/gedit
 
 # ****************************
 # * Clean up generated files *

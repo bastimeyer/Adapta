@@ -44,7 +44,7 @@ $full_orientation: ((top, bottom),
   font-weight: 700;
 
   // used to indicate unread notifications
-  .alert { color: $inverted_accent_label_color; }
+  .alert { color: $suggested_color; }
 
   // do no make un-clickable gaps
   > GtkBox:first-child {
@@ -81,14 +81,22 @@ $full_orientation: ((top, bottom),
 
 // wnck tasklist styling
 .budgie-panel WnckTasklist {
-  .button,
-  .button:backdrop {
+  .button {
     border: none;
     background: none;
-    opacity: 0.5;
+    box-shadow: none;
+
+    .label,
+    GtkImage { opacity: 0.75; }
+
     &:hover,
     &:active,
-    &:checked { opacity: 1.0; }
+    &:checked {
+      box-shadow: none;
+
+      .label,
+      GtkImage { opacity: 1.0; }
+    }
   }
 }
 
@@ -139,17 +147,7 @@ $full_orientation: ((top, bottom),
 // draw underscores
 @each $along_side, $opp_side in $orientation {
   .#{$along_side} .budgie-panel {
-    WnckTasklist .button {
-      border: 2px solid transparent;
-      &:hover {
-        border-#{$along_side}: 2px solid gtkalpha($inverted_fg_color, 0.4);
-      }
-      &:active,
-      &:checked {
-        border-#{$along_side}: 2px solid $selected_bg_color;
-      }
-    }
-
+    WnckTasklist .button,
     .launcher {
       border: 2px solid transparent;
       &:hover {
@@ -348,13 +346,6 @@ $full_orientation: ((top, bottom),
       font-weight: 500;
     }
   }
-
-  GtkScrolledWindow .undershoot {
-    &.top { @include undershoot(top, $secondary_base_color); }
-    &.bottom { @include undershoot(bottom, $secondary_base_color); }
-    &.left { @include undershoot(left, $secondary_base_color); }
-    &.right { @include undershoot(right, $secondary_base_color); }
-  }
 }
 
 // user-indicator styling
@@ -514,6 +505,11 @@ $full_orientation: ((top, bottom),
         &:checked { color: $inverted_fg_color; }
         &:insensitive { color: $insensitive_inverted_fg_color; }
       }
+
+      > GtkImage { // gear icon in settings-view
+        &:dir(ltr) { padding-left: 4px; }
+        &:dir(rtl) { padding-right: 4px; }
+      }
     }
 
     // last-child is constructed without header-label
@@ -635,6 +631,11 @@ $full_orientation: ((top, bottom),
       padding: 0.5em;
       border-radius: 100px;
       outline-radius: 100px;
+      color: gtkopacity($destructive_color, 0.75);
+      &:hover,
+      &:active,
+      &:checked { color: $destructive_color; }
+      &:insensitive { color: gtkopacity($destructive_color, 0.4); }
     }
   }
 
@@ -664,13 +665,6 @@ $full_orientation: ((top, bottom),
     border: none;
     background-color: transparent;
   }
-
-  .undershoot { // remove undershoot
-    &.top,
-    &.bottom,
-    &.left,
-    &.right { background-image: none; }
-  }
 }
 
 // MPRIS applet
@@ -685,7 +679,10 @@ $full_orientation: ((top, bottom),
 // clock-applet styling
 .budgie-panel {
   // shrink label
-  ClockApplet .label { font-size: 90%; }
+  ClockApplet .label {
+    padding: 0 2px;
+    font-size: 90%;
+  }
 }
 
 // popover of sound-indicator styling
@@ -794,6 +791,26 @@ $full_orientation: ((top, bottom),
     .label.dim-label {
       font-size: 90%;
       font-weight: 700;
+    }
+  }
+
+  GtkBox.unlock-area {
+    .list {
+      box-shadow: if($variant == 'light', $inline-shadow-light,
+                                          $inline-shadow-dark);
+
+      .list-row:first-child { border-top: 1px solid $borders_color; }
+    }
+
+    .entry { // where is the combo node?
+      padding: 0.6em;
+    }
+
+    .button {
+      padding: 0.6em;
+      border: 2px solid transparent;
+      border-radius: 2px; // revert to square button
+      outline-radius: 2px;
     }
   }
 }
@@ -943,13 +960,6 @@ $full_orientation: ((top, bottom),
         color: $inverted_fg_color;
         transition: none;
       }
-    }
-
-    .undershoot { // remove undershoot
-      &.top,
-      &.bottom,
-      &.left,
-      &.right { background-image: none; }
     }
   }
 
@@ -1389,25 +1399,26 @@ NemoWindow {
     }
 
     > .toolbar .button.image-button {
-      @extend .button.flat;
+      @extend %button_flat_normal;
       border-radius: 2px;
       outline-radius: 2px;
       padding: 0.7em 1em 0.8em;
-      box-shadow: none;
       border-image: -gtk-gradient(radial,
                                   center bottom, 0,
                                   center bottom, 0.001,
                                   to($track_color),
                                   to(transparent))
                                   0 0 0 / 0 0 0px;
+      background-color: transparent;
       color: $secondary_fg_color;
       &:hover {
-        box-shadow: none;
+        @extend %button_flat_hover;
         border-image: none;
+        background-color: transparent;
         color: $fg_color;
       }
       &:checked {
-        box-shadow: none;
+        @extend %button_flat_checked;
         border-image: -gtk-gradient(radial,
                                     center bottom, 0,
                                     center bottom, 0.5,
@@ -1417,18 +1428,17 @@ NemoWindow {
         background-color: transparent;
         color: $fg_color;
         &:insensitive {
-          box-shadow: none;
+          @extend %button_flat_checked_insensitive;
+          border-image: none;
           background-color: transparent;
           color: $insensitive_fg_color;
-          border-image: none;
-          > label { color: inherit; }
         }
       }
       &:insensitive {
-        box-shadow: none;
+        @extend %button_flat_insensitive;
+        border-image: none;
         background-color: transparent;
         color: $insensitive_secondary_fg_color;
-        border-image: none;
       }
     }
 
@@ -1612,9 +1622,9 @@ GtkWindow > GtkBox.vertical > GtkBox.horizontal {
     GtkToolItem > GtkBox {
       .label,
       .entry {
-	padding-top: 0.1em;
-	padding-bottom: 0.1em;
-	font-size: 90%;
+        padding-top: 0.1em;
+        padding-bottom: 0.1em;
+        font-size: 90%;
       }
 
       > .label { color: $insensitive_fg_color; }
