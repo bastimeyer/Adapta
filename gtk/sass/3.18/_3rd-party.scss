@@ -113,7 +113,6 @@ $full_orientation: ((top, bottom),
                                       gtkalpha($inverted_fg_color, 0));
     background-size: 3em * 2 / 0.8 3em * 2 / 0.8, auto;
     background-position: center center;
-    opacity: 0.5;
     transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
     transition-property: opacity,
                          border-color,
@@ -121,26 +120,33 @@ $full_orientation: ((top, bottom),
                          background-image,
                          box-shadow;
     transition-duration: 0.2s;
+
+    > GtkImage { opacity: 0.5; }
+
     &:hover {
-      opacity: 0.75;
       -gtk-image-effect: highlight;
+
+      > GtkImage { opacity: 0.75; }
     }
     &:active {
-      opacity: 1.0;
       transition-duration: 0;
       animation: budgie_ripple_effect 0.2s
                  cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+
+      > GtkImage { opacity: 1.0; }
     }
     &:checked {
-      opacity: 1.0;
       &:hover { -gtk-image-effect: highlight; }
+
+      > GtkImage { opacity: 1.0; }
     }
   }
 
   .unpinned .launcher,
   .pinned .launcher.running {
-    opacity: 1.0;
     &:hover { -gtk-image-effect: highlight; }
+
+    > GtkImage { opacity: 1.0; }
   }
 }
 
@@ -866,17 +872,6 @@ $full_orientation: ((top, bottom),
     font-weight: 400;
   }
 
-  .button,
-  GtkButtonBox > botton,
-  GtkButtonBox > .linked > botton { // OSD-style buttons
-    border-image: none;
-    color: $inverted_secondary_accent_label_color;
-    &:hover,
-    &:active,
-    &:checked { color: $inverted_accent_label_color; }
-    &:insensitive { color: gtkopacity($inverted_accent_label_color, 0.4); }
-  }
-
   .budgie-osd-text {
     color: $inverted_fg_color;
     font-size: 110%;
@@ -890,6 +885,20 @@ $full_orientation: ((top, bottom),
   }
 
   .progressbar { background-color: $success_color; }
+}
+
+.budgie-notification,
+.budgie-osd,
+.drop-shadow {
+  .button,
+  .linked > botton { // OSD-style buttons
+    border-image: none;
+    color: $inverted_secondary_accent_label_color;
+    &:hover,
+    &:active,
+    &:checked { color: $inverted_accent_label_color; }
+    &:insensitive { color: gtkopacity($inverted_accent_label_color, 0.4); }
+  }
 }
 
 // dialog styling
@@ -1123,13 +1132,31 @@ UnityPanelWidget,
   }
 }
 
-// workaround for stupid compiz
-.background:not(.csd):not(.ssd):not(.solid-csd) .header-bar {
-  &, &:not(:last-child) {
-    padding: 0.4em;
-    border-radius: 0;
-    border-top: 0 none transparent;
-    box-shadow: $menubar-shadow;
+// workaround for ugly Ubuntu-related CSD patches
+.background:not(.csd):not(.ssd):not(.solid-csd) {
+  GtkBox .header-bar,
+  .header-bar {
+    &, &:not(:last-child) {
+      padding: 0.4em;
+      border-radius: 0;
+      border-top: 0 none transparent;
+      box-shadow: none;
+
+      // unset fade-effect
+      *:backdrop { opacity: 1.0; }
+    }
+  }
+
+  &.tiled,
+  &.maximized {
+    GtkBox .header-bar,
+    .header-bar {
+      &, &:not(:last-child) {
+        border-top: 0 none transparent;
+        background-color: $inverted_dark_color;
+        box-shadow: none;
+      }
+    }
   }
 }
 
@@ -1216,6 +1243,7 @@ UnityPanelWidget,
     }
 
     GtkComboBox .button {
+      padding: 0.9em 8px 1em;
       border-image: -gtk-gradient(radial,
                                   center bottom, 0,
                                   center bottom, 0.5,
@@ -1223,8 +1251,7 @@ UnityPanelWidget,
                                   to(transparent))
                                   0 0 1 / 0 0 1px;
       color: $inverted_fg_color;
-      font-weight: 700;
-      font-size: 110%;
+      font-weight: 500;
       &:hover,
       &:active {
         border-image: -gtk-gradient(radial,
@@ -1248,7 +1275,7 @@ UnityPanelWidget,
     }
 
     .entry { // prevent junmping when showing CapsLock warning
-      padding: 0.9em 1em 1em;
+      padding: 0.9em 8px 1em;
       font-family: monospace;
     }
 
@@ -1482,14 +1509,21 @@ CcShellCategoryView { // stop using $base_color
 
 .xfce4-panel,
 .xfce4-panel.background {
+  &, // unset borders
+  .frame { border: 0 none transparent; }
+
   background-color: $panel_bg_color;
   color: $inverted_fg_color;
   font-weight: 700;
   text-shadow: none;
   icon-shadow: none;
 
+  // dashed outline indicator?
+  // default -> 1px dashed #ff0000;
+  &.marching-ants { border: 1px dashed $destructive_color; }
+
   .button {
-    padding: 0px 4px;
+    padding: 0 4px;
     border: none;
     border-radius: 0;
     background-color: transparent;
@@ -1518,6 +1552,7 @@ CcShellCategoryView { // stop using $base_color
   }
 
   .menu {
+    font-weight: 400; // for enforcing regular weight
     text-shadow: none;
     -gtk-image-effect: none;
   }
@@ -1646,6 +1681,21 @@ GtkWindow > GtkBox.vertical > GtkBox.horizontal {
 
   > GtkScrolledWindow .toolbar { // remove inline-shadows
     box-shadow: none;
+  }
+}
+
+
+// /***********
+//  * Synapse *
+//  ***********/
+
+.background:not(.csd):not(.ssd):not(.solid-csd) > GtkBox.vertical {
+  > SynapseGuiSelectionContainer SynapseGuiMatchListView,
+  > SynapseGuiSpecificMatchList GtkWidget {
+    &:selected { // selected-row?
+      color: $selected_fg_color;
+      background-color: $selected_bg_color;
+    }
   }
 }
 

@@ -9,7 +9,7 @@ panel-plug,
 panel-toplevel > grid.horizontal > widget > widget {
   // Always use dark-color of dark variant
   color: $inverted_secondary_fg_color;
-  background-color: $panel_bg_color;
+  background-color: transparent;
   box-shadow: none;
 }
 
@@ -28,6 +28,7 @@ panel-applet menubar {
 
   > menuitem,
   > .gnome-panel-menu-item {
+    padding: 0 rem(4px, $sw: 1.0);
     color: $inverted_secondary_fg_color;
     background-color: transparent;
     &:hover {
@@ -42,7 +43,7 @@ wnck-tasklist > button.toggle,
 #clock-applet-button,
 #showdesktop-button {
   @extend %button_flat_normal;
-  padding: 0px rem(4px);
+  padding: 0 rem(4px, $sw: 1.0);
   border: none;
   border-radius: 0;
   color: $inverted_secondary_fg_color;
@@ -75,14 +76,14 @@ wnck-pager {
 }
 
 na-tray-applet {
-  -NaTrayApplet-icon-padding: 2;
-  -NaTrayApplet-icon-size: 16;
+  -NaTrayApplet-icon-padding: 0 2px;
+  -NaTrayApplet-icon-size: 16px;
 }
 
 gp-arrow-button {
   min-width: rem(20px);
   min-height: 0;
-  margin: rem(2px);
+  margin: 0 rem(2px);
   border: 1px solid transparent;
   background-image: none;
   color: $inverted_secondary_fg_color;
@@ -90,7 +91,7 @@ gp-arrow-button {
   &:active { color: $inverted_fg_color; }
 }
 
-sn-button { padding: rem(4px); }
+sn-button { padding: 0 rem(4px, $sw: 1.0); }
 
 
 // /********************
@@ -116,7 +117,6 @@ sn-button { padding: rem(4px); }
     min-height: 0;
     border-color: transparent;
     background-color: transparent;
-    color: transparent;
   }
 }
 
@@ -134,10 +134,30 @@ sn-button { padding: rem(4px); }
   }
 }
 
-// container and tweaks in a group
-.tweak-group {
+row.tweak { // basic row node container in right-pane
+  &:dir(ltr) { padding-left: rem(13.3px, $sw: 1.0); }
+  &:dir(rtl) { padding-right: rem(13.3px, $sw: 1.0); }
+
+  &, &.title {
+    min-height: rem($widget_size);
+    &:hover,
+    &:active { // unset hover/active effects
+      background-image: none;
+      background-color: transparent;
+      animation: none;
+    }
+  }
+
+  &.title {
+    color: $tertiary_fg_color;
+    font-weight: 700;
+    // unset indentation
+    &:dir(ltr) { padding-left: 0; }
+    &:dir(rtl) { padding-right: 0; }
+  }
 }
 
+// container and tweaks in a group
 .tweak-group-startup {
   background-color: $bg_color;
 
@@ -186,14 +206,87 @@ sn-button { padding: rem(4px); }
   }
 }
 
-.tweak {
-}
+.tweak-titlebar-right { // FIXME: weird allocations with standard switches,
+  switch {              // use pixmap based switches instead
+    min-width: rem(50px);
+    min-height: rem(28px);
 
-.tweak-group-white,
-.tweak-white {
-}
+    &:not(:hover):not(:checked):not(:disabled),
+    &:hover,
+    &:checked,
+    &:checked:hover,
+    &:checked:disabled,
+    &:disabled {
+      margin: 0 0 rem(-7px);
+      padding: 0;
+      border: none;
+      color: transparent;
+      background: none;
+      background-image: none;
+      background-size: rem(50px) rem(35px);
+      background-repeat: no-repeat;
+      background-position: right center;
+      box-shadow: none;
 
-.tweak-startup {
+      &:dir(rtl) { background-position: left center; }
+    }
+
+    // reset all of default sliders
+    &:not(:hover):not(:checked):not(:disabled) slider,
+    &:hover slider,
+    &:checked slider,
+    &:checked:hover slider,
+    &:checked:disabled slider,
+    &:disabled slider {
+      margin: 0;
+      padding: 0;
+      border: none;
+      border-radius: 0;
+      color: transparent;
+      background: none;
+      background-image: none;
+      background-size: rem(50px) rem(35px);
+      background-repeat: no-repeat;
+      background-position: right center;
+      box-shadow: none;
+
+      &:dir(rtl) { background-position: left center; }
+    }
+
+    // use ugly pixmaps
+    &:not(:hover):not(:checked):not(:disabled) {
+      background-image: -gtk-scaled(
+                        url("assets/toggle-off-dark.png"),
+                        url("assets/toggle-off-dark@2.png"));
+    }
+    &:hover {
+      background-image: -gtk-scaled(
+                        url("assets/toggle-off-hover-dark.png"),
+                        url("assets/toggle-off-hover-dark@2.png"));
+    }
+    &:checked {
+      background-image: -gtk-scaled(
+                        url("assets/toggle-on-dark.png"),
+                        url("assets/toggle-on-dark@2.png"));
+      &:hover {
+        background-image: -gtk-scaled(
+                          url("assets/toggle-on-hover-dark.png"),
+                          url("assets/toggle-on-hover-dark@2.png"));
+      }
+      &:disabled,
+      &:disabled:hover {
+        background-image: -gtk-scaled(
+                          url("assets/toggle-on-insensitive-dark.png"),
+                          url("assets/toggle-on-insensitive-dark@2.png"));
+      }
+    }
+    &:disabled,
+    &:disabled:hover {
+      background-image: -gtk-scaled(
+                        url("assets/toggle-off-insensitive-dark.png"),
+                        url("assets/toggle-off-insensitive-dark@2.png"));
+    }
+  }
 }
 
 
@@ -225,14 +318,30 @@ sn-button { padding: rem(4px); }
 }
 
 #gf-bubble {
-  box.horizontal > button {
-    color: $inverted_secondary_fg_color;
-    &:hover,
+  box.horizontal > button { // 'close' button
+    // upstream always calls gtk_image_new_from_icon_name with 'window-close'
+    // instead of 'window-close-symbolic', so draw background for dark icon
+    // foreground
+    min-width: $icon_size;
+    min-height: $icon_size;
+    padding: rem(6.7px);
+    border-radius: 100px;
+    -gtk-outline-radius: 100px;
+    color: $inverted_secondary_accent_label_color;
+    background-color: gtkopacity($accent_color, 0.2);
+    &:hover {
+      color: $inverted_accent_label_color;
+      background-color: gtkopacity($accent_color, 0.2);
+    }
     &:active,
-    &:checked { color: $inverted_fg_color; }
-    &:disabled { color: gtkopacity($inverted_fg_color, 0.4); }
-
-    // > image { -gtk-icon-source: -gtk-icontheme("window-close-symbolic"); }
+    &:checked {
+      color: $inverted_accent_label_color;
+      background-color: gtkopacity($accent_color, 0.2);
+    }
+    &:disabled {
+      color: $insensitive_inverted_fg_color;
+      background-color: transparent;
+    }
   }
 }
 
@@ -290,18 +399,25 @@ sn-button { padding: rem(4px); }
     &,
     &:first-child,
     &:last-child {
-      @include button(flat-normal);
-      &:hover { @include button(flat-hover); }
-      &:active { @include button(flat-active); }
-      &:disabled { @include button(flat-insensitive); }
-      &:checked { @include button(flat-checked); }
-      &:checked:disabled { @include button(flat-checked-insensitive); }
-
+      @extend %button_flat_normal;
       border-radius: 0;
       border: none;
       background-color: transparent;
       color: $inverted_secondary_accent_label_color;
-      box-shadow: none;
+      &:hover {
+        @extend %button_flat_hover;
+        background-color: transparent;
+        color: $inverted_accent_label_color;
+      }
+      &:active {
+        @extend %button_flat_active;
+        background-color: transparent;
+        color: $inverted_accent_label_color;
+      }
+      &:disabled {
+        @extend %button_flat_disabled;
+        color: $insensitive_inverted_fg_color;
+      }
     }
   }
 }
@@ -355,17 +471,46 @@ sn-button { padding: rem(4px); }
   -gtk-outline-radius: 9999px;
 }
 
-NautilusTrashBar {
-  @extend infobar;
-}
-
-.nautilus-window > grid.horizontal {
-  paned > separator {
+.nautilus-window {
+  > grid.horizontal paned > separator {
     // do not use transparentize
     background-image: image($solid_light_borders_color);
     background-size: $separator_narrow;
     background-repeat: repeat-y;
     transition: none;
+  }
+
+  flowboxchild { // for 3.23/24
+    margin: unset; // unset spacing first
+    padding: unset;
+
+    > widget > box > .icon {
+      &-background { // use solid black backgrounds
+        border: 0 none transparent;
+        background-color: black;
+      }
+
+      &-item-background {
+        padding: 4px;
+        border-radius: 2px;
+        border: 0 none transparent;
+        background-color: black;
+      }
+    }
+
+    &:selected {
+      // unset selection colour
+      background-color: transparent;
+
+      > widget > box > .icon {
+        &-background,
+        &-item-background {
+          // re-add selection colour for specific childs
+          border: 0 none transparent;
+          background-color: $selected_bg_color;
+        }
+      }
+    }
   }
 }
 
@@ -536,8 +681,17 @@ dialog.background.csd > box.dialog-vbox > grid.horizontal {
   .conversation-frame {
     > border { border: none; }
 
-    // reset weight
-    treeview.view { font-weight: 400; }
+    treeview.view {
+      font-weight: 400; // reset weight
+      &:selected {
+        &, &:focus {
+          background-color: gtkopacity($selected_bg_color, 0.2);
+          color: $fg_color;
+          &:dir(ltr) { box-shadow: inset 4px 0 $selected_bg_color; }
+          &:dir(rtl) { box-shadow: inset -4px 0 $selected_bg_color; }
+        }
+      }
+    }
   }
 
   .folder-frame > scrolledwindow {
@@ -550,6 +704,15 @@ dialog.background.csd > box.dialog-vbox > grid.horizontal {
     &:dir(rtl) {
       box-shadow: if($variant == 'light', $sidebar-light-rtl,
                                           $sidebar-dark-rtl);
+    }
+
+    treeview.view.sidebar {
+      &:selected {
+        &, &:focus {
+          background-color: transparent;
+          color: $selected_bg_color;
+        }
+      }
     }
   }
 }
@@ -616,9 +779,58 @@ paned.vertical > overlay > scrolledwindow > overlay {
 //  * Epiphany *
 //  ************/
 
+// incognito-mode styling
+//
+// most of widget styling are hard-coded by ephy's stylesheet,
+// but we should force using dark foregrounds at least...
+headerbar.titlebar.incognito-mode {
+  entry {
+    color: $secondary_fixed_fg_color;
+    caret-color: $fixed_fg_color;
+
+    image {color: $secondary_fixed_fg_color; }
+
+    &:focus {
+      &, image { color: $fixed_fg_color; }
+    }
+    &:disabled {
+      &, image { color: $insensitive_fixed_fg_color; }
+    }
+  }
+
+  button,
+  box.linked.raised > button {
+    &:not(.destructive-action):not(.suggested-action) {
+      &.image-button,
+      &.toggle.popup,
+      &.minimize,
+      &.maximize,
+      &.close {
+        &,
+        label,
+        image { color: $secondary_fixed_fg_color; }
+
+        &:hover,
+        &:active,
+        &:checked {
+          &,
+          label,
+          image { color: $fixed_fg_color; }
+        }
+        &:disabled,
+        &:checked:disabled {
+          &,
+          label,
+          image { color: $insensitive_fixed_fg_color; }
+        }
+      }
+    }
+  }
+}
+
 // reset inverted foreground colour
-EphyWindow {
-  .nautilus-window .floating-bar { color: $secondary_fg_color; }
+notebook > stack > box.vertical > paned.vertical > overlay {
+  > .floating-bar { color: $secondary_fg_color; }
 }
 
 .background:not(.csd) > box.vertical > headerbar {
@@ -636,6 +848,28 @@ EphyWindow {
   .linked > button.image-button { // = 'back/forward' button
     border-radius: 100px;
     -gtk-outline-radius: 100px;
+  }
+}
+
+// overrides foregrounds for 3.24's ssd-mode
+.background headerbar entry {
+  &.starred,
+  &.non-starred {
+    color: $inverted_secondary_fg_color;
+    caret-color: $inverted_secondary_fg_color;
+    &:focus {
+      color: $inverted_fg_color;
+      caret-color: $inverted_fg_color;
+    }
+    &:disabled { color: $insensitive_inverted_secondary_fg_color; }
+  }
+
+  // render yellow 'star' icon if bookmarked
+  &.starred > image.right {
+    color: gtkalpha($question_bg_color, 0.75);
+    &:hover,
+    &:active,
+    &:checked { color: $question_bg_color; }
   }
 }
 
@@ -666,10 +900,11 @@ popover.background stack stack > scrolledwindow > viewport.frame {
   border: 1px solid $borders_color;
 }
 
-// 'preferences' -> 'language'
-dialog.background box.dialog-vbox.vertical grid.vertical {
-  // use flat-buttons
-  @extend buttonbox.dialog-action-area;
+dialog.background.csd > box.dialog-vbox.vertical > box.horizontal {
+  > box.vertical > box.horizontal:not(.linked) > button:not(.flat) {
+    // enforce flat-button-array
+    @extend %button_array;
+  }
 }
 
 
@@ -727,11 +962,16 @@ window.background box.vertical > paned.horizontal > box.vertical {
   }
 }
 
-// Why GtkLabel was needed, crazy...
-box > headerbar > label.polari-titlebar-separator {
-  min-width: 0;
-  border: none;
-  opacity: 0;
+// bottom-paned entry area
+window.background > box.horizontal > overlay > stack > overlay > box.vertical {
+  > stack.view { // mimic inline-toolbar styling
+    border-style: solid;
+    border-width: 1px 0 0;
+    border-color: $borders_color;
+    background-color: $secondary_dark_color;
+    box-shadow: if($variant == 'light', $inline-shadow-light,
+                                        $inline-shadow-dark);
+  }
 }
 
 
@@ -791,24 +1031,35 @@ box > headerbar > label.polari-titlebar-separator {
     }
   }
 
-  .sidebar {
+  treeview.view.sidebar {
     background-color: if($variant == 'light', rgba(12, 18, 0, 0.01),
                                               rgba(18, 22, 0, 0.04));
+    &:selected {
+      &, &:focus {
+        background-color: if($variant == 'light', rgba(12, 18, 0, 0.01),
+                                                  rgba(18, 22, 0, 0.04));
+        color: $selected_bg_color;
+      }
+    }
   }
 }
 
-// tweak drop-shadow and frame in alt-toolbar
+// tweak border and frame in alt-toolbar
 window.csd > box.vertical > box.vertical,
 window.solid-csd > box.vertical > box.vertical {
   > toolbar.horizontal {
-    margin-top: -1px;
+    margin: -1px 0;
     border-top: 1px solid $borders_color;
     background-color: $secondary_dark_color;
-    box-shadow: if($variant == 'light', $inline-shadow-light,
-                                        $inline-shadow-dark);
+    box-shadow: none;
   }
 
-  > frame > border { border: none; }
+  > frame {
+    margin: -1px 0;
+    padding: 0;
+
+    > border { border: none; }
+  }
 }
 
 // force using circle buttons for 'play/pause' etc
@@ -830,7 +1081,8 @@ $album_art: 54px;
 $min_circle: 24px;
 $toolitem_margin: ($album_art - $min_circle) * 0.5;
 
-window > box.vertical > toolbar.primary-toolbar {
+window.background > box.vertical > toolbar.primary-toolbar,
+window.background > box.vertical > box.vertical > toolbar.primary-toolbar {
   toolitem {
     &:first-child { // 'prev/play/next'
       .linked > button.image-button.raised {
@@ -857,8 +1109,19 @@ window > box.vertical > toolbar.primary-toolbar {
       padding: 0;
     }
 
+    > box.horizontal:not(.linked) > button.toggle,
+    > .linked > button:not(.toggle):not(.raised):not(.flat) {
+      min-width: $min_circle * 1.5;
+      min-height: $min_circle * 1.5;
+      padding: 0;
+      border-radius: 100px;
+      -gtk-outline-radius: 100px;
+
+      > widget > box > image { padding: 0; }
+    }
+
     &:last-child { // 'gear'
-      button.popup.raised.toggle {
+      button.popup.toggle {
         min-width: $min_circle * 1.5;
         min-height: $min_circle * 1.5;
         padding: 0;
@@ -878,6 +1141,22 @@ window.background.solid-csd > headerbar.titlebar > box.horizontal > box.horizont
     padding: if($ref_weight < 1.0,
              rem(($widget_size - $icon_size * 1.5 - 2px) / 2),
              rem(($widget_size - $icon_size * 1.5) / 2));
+  }
+}
+
+notebook > stack > grid.horizontal > grid.horizontal > grid.horizontal,
+notebook > stack > box > grid.horizontal > grid.horizontal > grid.horizontal {
+  button.flat.toggle { // 'edit' and 'browse' button
+    &:checked { // draw underline indicator
+      border-radius: 0;
+      border-image: radial-gradient(circle farthest-corner at center,
+                                    $selected_bg_color 100%,
+                                    transparent)
+                                    0 0 2 / 0 0 2px;
+      background-color: transparent;
+      color: $fg_color;
+      &:hover { border-radius: 2px; } // return to rounded edges
+    }
   }
 }
 
@@ -1075,14 +1354,19 @@ $fake-shadow-dark: linear-gradient(to bottom, rgba(0, 0, 0, 0.20),
 paned.titlebar.horizontal {
   headerbar {
     button.flat.toggle.popup:not(.image-button) { // left-pane header button
-      min-height: $icon_size;
-      padding-top: rem(($widget_size - $icon_size - 4px) / 2);
-      padding-bottom: rem(($widget_size - $icon_size - 1.3px) / 2);
+      min-height: $icon_size * 1.5;
+      padding-top: if($ref_weight < 1.0,
+                   rem(($widget_size - $icon_size * 1.5 - 2px) / 2),
+                   rem(($widget_size - $icon_size * 1.5) / 2));
+      padding-bottom: if($ref_weight < 1.0,
+                      rem(($widget_size - $icon_size * 1.5 - 2px) / 2),
+                      rem(($widget_size - $icon_size * 1.5) / 2));
       border-radius: 2px;
       -gtk-outline-radius: 2px;
 
       box > .title {
-        margin-bottom: 0; // reset bottom-margin
+        padding: 0; // remove lateral padding
+        margin: rem(-2px) 0;
         color: $inverted_secondary_fg_color;
       }
 
@@ -1210,8 +1494,6 @@ overlay > box.vertical > paned.horizontal > box.vertical {
 // workaround for unity7
 .background:not(.csd):not(.ssd) overlay > box > paned.horizontal {
   > headerbar {
-    box-shadow: $menubar-shadow;
-
     &:not(:only-child) {
       button.flat.toggle.popup:not(.image-button) { // left-pane header button
         border-radius: 2px;
@@ -1242,28 +1524,17 @@ overlay > box.vertical > paned.horizontal > box.vertical {
 //  * Gnome-Builder *
 //  *****************/
 
-//
-// do not use box-shadows. it's too problematic!
-//
-
-// work around some gtk padding issue
-filechooser actionbar button.combo {
-  padding: 0;
-}
-
 // styling for editor search
 frame.gb-search-frame {
   background-image: image($bg_color);
   padding: rem(6px);
   border-style: solid;
   border-color: $borders_color;
-  border-left-width: 1px;
-  border-right-width: 1px;
-  border-bottom-width: 1px;
+  border-width: 0 1px 1px;
   border-radius: 0;
-}
 
-frame.gb-search-frame border { border: none; }
+  border { border: none; }
+}
 
 .gb-search-entry-occurrences-tag {
   color: $insensitive_fg_color;
@@ -1273,55 +1544,30 @@ frame.gb-search-frame border { border: none; }
 }
 
 // Tweaks for the editortweak popover in the editor.
-editortweak button { padding: 0 rem(6px) 0 rem(6px); }
-editortweak list row { padding: 0; }
+editortweak {
+  button { padding: 0 rem(6px) 0 rem(6px); }
+
+  list row { padding: 0; }
+}
 
 // Keep search bar and layouttab height in sync.
 layouttabbar > box { min-height: rem(39px); }
+
 eggsearchbar > revealer > box { min-height: rem(39px); }
+
 eggsearchbar entry { min-height: rem(24px); }
 
 // Pillbox is used to render "languages" in the greeter.
-pillbox { border-radius: 2px; }
+pillbox {
+  border-radius: 2px;
+  background-color: $bg_color;
+}
 
 // Styling in the genesis (create project) perspective.
 genesisperspective stack > box:first-child list row {
   padding: rem(10px);
   border-bottom: 1px solid $solid_light_borders_color;
   &:last-child { border-bottom: none; }
-}
-
-// Perspectives switcher
-//
-// The following tweaks the left-most sidebar containing
-// the list of perspectives.
-perspectiveswitcher {
-  padding: 0 rem(4px);
-  border-right: 1px solid $solid_light_borders_color;
-  background-color: $secondary_dark_color;
-
-  button {
-    padding: rem(6px);
-    border-radius: 100px;
-    border: none;
-    background: none;
-    color: $tertiary_fg_color;
-    box-shadow: none;
-
-    image { opacity: 0.55; }
-
-    &:hover {
-      background: none;
-
-      image { opacity: 0.75; }
-    }
-    &:active,
-    &:checked {
-      background: none;
-
-      image { opacity: 1.0; }
-    }
-  }
 }
 
 // Layout tab and tab bar tweaks
@@ -1335,64 +1581,73 @@ layouttabbar {
   background-image: if($variant == 'light', $fake-shadow-light,
                                             $fake-shadow-dark);
 
-  > box > button {
-    opacity: 0.55;
-    &:hover { opacity: 0.75; }
-    &:active { opacity: 1.0; }
-  }
-
-  button {
-    @include button(flat-normal);
-    &:hover { @include button(flat-hover); }
-    &:active { @include button(flat-active); }
-    &:disabled { @include button(flat-insensitive); }
-    &:checked { @include button(flat-checked); }
-    &:checked:disabled { @include button(flat-checked-insensitive); }
-
-    padding: rem(4px) rem(5.3px) rem(5.3px);
-    margin: rem(2.7px);
-    border-radius: 2px;
-    background-color: transparent;
+  box.horizontal > button {
+    &, &.popup.toggle {
+      @extend %button_flat_normal;
+      padding: rem(4px) rem(5.3px) rem(5.3px);
+      border-radius: 2px;
+      background-color: transparent;
+      &:hover { @include button(flat-hover); }
+      &:active { @include button(flat-active); }
+      &:disabled { @include button(flat-insensitive); }
+      &:checked { // draw underline
+        border-image: -gtk-gradient(radial,
+                                    center bottom, 0,
+                                    center bottom, 0.5,
+                                    to($selected_bg_color),
+                                    to(transparent))
+                                    0 0 2 / 0 0 2px;
+        background-color: transparent;
+        color: $fg_color;
+      }
+      &:checked:disabled { @include button(flat-checked-insensitive); }
+    }
   }
 }
 
 layouttab {
-  margin: rem(2.7px);
+  margin: 4px;
   padding: rem(5.3px);
   background-color: transparent;
 
   label { padding: rem(4px); }
 
   separator.vertical {
-    margin: rem(2.7px);
-    color: transparent;
+    margin: 0 rem(2.7px); // expand vertically
     background-color: $borders_color;
   }
 
   button {
-    @include button(flat-normal);
-    &:hover { @include button(flat-hover); }
-    &:active { @include button(flat-active); }
-    &:disabled { @include button(flat-insensitive); }
-    &:checked { @include button(flat-checked); }
-    &:checked:disabled { @include button(flat-checked-insensitive); }
-
-    margin: rem(2.7px);
-    border-radius: 2px;
-    padding-left: rem(5.3px);
-    padding-right: rem(5.3px);
+    &, &.popup.toggle {
+      @extend %button_flat_normal;
+      margin: 4px;
+      border-radius: 2px;
+      padding-left: rem(5.3px);
+      padding-right: rem(5.3px);
+      background-color: transparent;
+      &:hover { @include button(flat-hover); }
+      &:active { @include button(flat-active); }
+      &:disabled { @include button(flat-insensitive); }
+      &:checked { // draw underline
+        border-image: radial-gradient(circle farthest-corner at center,
+                                      $selected_bg_color 100%,
+                                      transparent)
+                                      0 0 2 / 0 0 2px;
+        background-color: transparent;
+        color: $fg_color;
+      }
+      &:checked:disabled { @include button(flat-checked-insensitive); }
+    }
   }
-}
 
-// Close button styling for layouttab.
-layouttab > box {
-  > button:last-child {
+  // close button styling for layouttab.
+  > box > button.close {
+    @extend %button_flat_normal;
     min-height: rem(13.3px);
     min-width: rem(13.3px);
     padding: rem(6.7px);
     border-radius: 100px;
     -gtk-outline-radius: 100px;
-    @include button(flat-normal);
     &:hover { @include button(flat-hover); }
     &:active { @include button(flat-active); }
     &:disabled { @include button(flat-insensitive); }
@@ -1425,13 +1680,55 @@ layout {
   -PnlDockBin-handle-size: 1;
 }
 
+// multi-columned editor-views
+layoutgrid > paned.horizontal separator:not(.vertical),
+layoutgrid > paned.horizontal > paned.horizontal separator:not(.vertical) {
+  // draw vertically gradient pane-separators
+  @if $variant=='light' {
+    border-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.32),
+                                             rgba(0, 0, 0, 0.21) 2px,
+                                             rgba(0, 0, 0, 0.09) 4px,
+                                             rgba(0, 0, 0, 0.09))
+                  0 1 0 / 0 1px 0 stretch;
+  }
+  @if $variant=='dark' {
+    border-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.24),
+                                             rgba(0, 0, 0, 0.16) 2px,
+                                             rgba(0, 0, 0, 0.11) 4px,
+                                             rgba(0, 0, 0, 0.11))
+                  0 1 0 / 0 1px 0 stretch;
+  }
+}
+
 eggsearchbar box.search-bar {
   background-color: $secondary_dark_color;
 }
 
-pillbox {
-  background-color: $bg_color;
-  border-radius: 2px;
+headerbar > omnibar.linked.horizontal {
+  // enforce inverted label colour
+  > entry.horizontal {
+    color: $inverted_secondary_fg_color;
+    caret-color: $inverted_secondary_fg_color;
+  }
+
+  &:hover {
+    > entry.horizontal {
+      color: $inverted_fg_color;
+      caret-color: $inverted_fg_color;
+    }
+  }
+  &:active {
+    > entry.horizontal {
+      &, &:focus {
+        border-image: radial-gradient(circle farthest-corner at center,
+                                      $selected_bg_color 100%,
+                                      transparent)
+                                      0 0 2 / 0 0 2px;
+        color: $inverted_fg_color;
+        caret-color: $inverted_fg_color;
+      }
+    }
+  }
 }
 
 docktabstrip,
@@ -1466,6 +1763,7 @@ dockstack > stack { // treeviews inside the left/right layoutpane
   > dockwidget treeview.project-tree.view,
   > devhelppanel treeview.view {
     background-color: $bg_color;
+    font-weight: 500;
     &:selected, // use standard selection styling
     &:selected:focus { @extend %selected_items; }
   }
@@ -1505,82 +1803,10 @@ greeter > box.vertical > stack > box.vertical > stack {
 //  ***************/
 
 // side-bar styling
-// FIXME: it doesn't work properly
-GdMainView,
 .side-panel {
-  &:dir(ltr) { border-right: 1px solid $borders_color; }
-  &:dir(rtl) { border-left: 1px solid $borders_color; }
-
   .view {
-    background-color: $secondary_dark_color;
-    box-shadow: none;
-    &, row.activatable {
-      padding: 0;
-      background-color: transparent;
-      color: $secondary_fg_color;
-      font-weight: 500;
-      box-shadow: none;
-      &:hover { color: $fg_color; }
-      &:hover:selected,
-      &:selected { @extend %selected_items; }
-    }
-
-    // &:dir(ltr) {
-    //   box-shadow: if($variant == 'light', $sidebar-light-ltr,
-    //                                       $sidebar-dark-ltr);
-    // }
-    // &:dir(rtl) {
-    //   box-shadow: if($variant == 'light', $sidebar-light-rtl,
-    //                                       $sidebar-dark-rtl);
-    // }
-  }
-}
-
-// player-bar
-// FIXME: it doesn't work properly
-actionbar {
-  &, &.frame { background-color: $secondary_dark_color; }
-  box-shadow: if($variant == 'light', $inline-shadow-light,
-                                      $inline-shadow-dark);
-
-  button,
-  .linked > button.image-button {
-    @extend %button_flat_normal;
-    border-radius: 100px;
-    -gtk-outline-radius: 100px;
-    border-image: radial-gradient(circle farthest-corner at center,
-                                  $track_color 0%,
-                                  transparent)
-                                  0 0 0 / 0 0 0px;
-    background-color: transparent;
-    color: $secondary_fg_color;
-    &:hover {
-      @extend %button_flat_hover;
-      border-image: none;
-      background-color: transparent;
-      color: $fg_color;
-    }
-    &:checked {
-      @extend %button_flat_checked;
-      border-image: radial-gradient(circle farthest-corner at center,
-                                    $selected_bg_color 100%,
-                                    transparent)
-                                    0 0 2 / 0 0 2px;
-      background-color: transparent;
-      color: $fg_color;
-      &:disabled {
-        @extend %button_flat_checked_disabled;
-        border-image: none;
-        background-color: transparent;
-        color: $insensitive_fg_color;
-      }
-    }
-    &:disabled {
-      @extend %button_flat_disabled;
-      border-image: none;
-      background-color: transparent;
-      color: $insensitive_secondary_fg_color;
-    }
+    &,
+    row.activatable { font-weight: 500; }
   }
 }
 
@@ -1608,12 +1834,6 @@ actionbar {
       box-shadow: if($variant == 'light', $tiled-header-shadow-light-rtl,
                                           $tiled-header-shadow-dark-rtl);
     }
-
-    .maximized & {
-      @extend %maxd_integration;
-      box-shadow: if($variant == 'light', $tiled-header-shadow-light-rtl,
-                                          $tiled-header-shadow-dark-rtl);
-    }
   }
   &:dir(rtl) {
     border-left-width: 0;
@@ -1623,11 +1843,6 @@ actionbar {
 
     .tiled &  {
       @extend %tiled_integration;
-      box-shadow: if($variant == 'light', $tiled-header-shadow-light-ltr,
-                                          $tiled-header-shadow-dark-ltr);
-    }
-    .maximized & {
-      @extend %maxd_integration;
       box-shadow: if($variant == 'light', $tiled-header-shadow-light-ltr,
                                           $tiled-header-shadow-dark-ltr);
     }
@@ -1645,12 +1860,6 @@ actionbar {
         box-shadow: if($variant == 'light', $tiled-header-shadow-light-rtl,
                                             $tiled-header-shadow-dark-rtl);
       }
-
-      .maximized & {
-        @extend %maxd_integration;
-        box-shadow: if($variant == 'light', $tiled-header-shadow-light-rtl,
-                                            $tiled-header-shadow-dark-rtl);
-      }
     }
     &:dir(rtl) {
       border-left-width: 0;
@@ -1660,12 +1869,6 @@ actionbar {
 
       .tiled &  {
         @extend %tiled_integration;
-        box-shadow: if($variant == 'light', $tiled-header-shadow-light-ltr,
-                                            $tiled-header-shadow-dark-ltr);
-      }
-
-      .maximized & {
-        @extend %maxd_integration;
         box-shadow: if($variant == 'light', $tiled-header-shadow-light-ltr,
                                             $tiled-header-shadow-dark-ltr);
       }
@@ -1691,7 +1894,7 @@ window overlay > grid > frame > grid {
       color: $secondary_fg_color;
       background-color: if($variant == 'light', rgba(12, 18, 0, 0.01),
                                                 rgba(18, 22, 0, 0.04));
-
+      font-weight: 500;
       &:hover { color: $fg_color; }
       &:selected,
       &:selected.activatable {
@@ -1699,7 +1902,6 @@ window overlay > grid > frame > grid {
         background-color: if($variant == 'light', rgba(12, 18, 0, 0.01),
                                                   rgba(18, 22, 0, 0.04));
       }
-      &:backdrop { opacity: 1.0; }
     }
 
     // hide horizontal separator
@@ -1821,7 +2023,6 @@ window.background > box.vertical > stack > box.horizontal {
 
     row.activatable.category { // use side-bar styling
       // paddings in row were hard-coded with crazy large values...
-      // padding: rem(2.7px) rem(8px) rem(4px);
       color: $secondary_fg_color;
       background-color: transparent;
       font-weight: 500;
@@ -2040,12 +2241,6 @@ window headerbar > box.horizontal:not(.linked) {
       padding: rem(($widget_size - $icon_size - 2.7px) / 2);
       border-radius: 2px;
       -gtk-outline-radius: 2px;
-
-      // draw rectangular without roundness
-      > colorswatch.activatable {
-        border-radius: 0;
-        -gtk-outline-radius: 0;
-      }
     }
   }
 }
@@ -2083,9 +2278,10 @@ window > popover > stack > grid > button {
 
   treeview.view {
     background-color: transparent;
+    font-weight: 500;
     &:selected {
-      background-color: $selected_bg_color;
-      color: $selected_fg_color;
+      background-color: transparent;
+      color: $selected_bg_color;
     }
   }
 }
@@ -2114,8 +2310,8 @@ window > popover > stack > grid > button {
     background-color: transparent;
     font-weight: 500;
     &:selected {
-      background-color: $selected_bg_color;
-      color: $selected_fg_color;
+      background-color: transparent;
+      color: $selected_bg_color;
     }
   }
 }
@@ -2180,16 +2376,20 @@ stack > box.vertical > widget > overlay grid.horizontal > stack {
     &:disabled { @include button(flat-insensitive); }
     &:checked { // draw underline
       @extend %button_flat_checked;
-      border-image: -gtk-gradient(radial,
-                                  center bottom, 0,
-                                  center bottom, 0.5,
-                                  to($selected_bg_color),
-                                  to(transparent))
-                                  0 0 2 / 0 0 2px;
+      border-image: radial-gradient(circle farthest-corner at center,
+                                    $selected_bg_color 100%,
+                                    transparent)
+                                    0 0 2 / 0 0 2px;
       background-color: transparent;
       color: $fg_color;
     }
   }
+}
+
+// carousel widgets
+.carousel-arrow-container.bottom.horizontal {
+  // prevent double density border
+  margin-bottom: -1px;
 }
 
 
@@ -2392,13 +2592,6 @@ window.background > box.vertical > stack > widget > stack {
   > box.vertical > scrolledwindow > viewport.frame > widget > list {
     background-color: $bg_color; // override $base_color
 
-    // > row.activatable > box.horizontal widget button.star {
-    //   > image { // star images
-    //     &.star-enabled { color: $accent_color; }
-    //     &.star-disabled { color: gtkopacity($accent_color, 0.2); }
-    //   }
-    // }
-
     // use asymmetrical separators
     > separator {
       &:dir(ltr) { border-left: $icon_size * 6 solid transparent; }
@@ -2461,11 +2654,13 @@ viewport.frame > box.vertical > revealer > box.horizontal {
 //  * Gnome-Photos *
 //  ****************/
 
-window.background.csd > box.vertical > overlay > revealer,
-window.background.solid-csd > box.vertical > overlay > revealer {
-  > spinner { // allocation: 128 x 128
-    min-height: $icon_size;
-    padding: 56px 0;
+window.background {
+  &.csd,
+  &.solid-csd {
+    > box.vertical > overlay > revealer > spinner { // allocation: 128 x 128
+      min-height: $icon_size;
+      padding: 56px 0;
+    }
   }
 }
 
@@ -2493,6 +2688,64 @@ window.background {
 //  * Gnome-Calendar *
 //  ******************/
 
+// 'year-view' sidebar
+stack.view > calendar-view.year-view > box.vertical {
+  background-color: $secondary_dark_color;
+  &:dir(ltr) { // flip ltr/rtl shadow
+    box-shadow: if($variant == 'light', $sidebar-light-rtl,
+                                        $sidebar-dark-rtl);
+  }
+  &:dir(rtl) {
+    box-shadow: if($variant == 'light', $sidebar-light-ltr,
+                                        $sidebar-dark-ltr);
+  }
+
+  > stack { // unset presets
+    > box.sidebar,
+    > scrolledwindow > viewport.frame > list.sidebar {
+      border: none;
+      background-color: transparent;
+      box-shadow: none;
+    }
+  }
+
+  // enforce action-button styling for 'Add event...' button
+  > button.text-button {
+    @extend %button_flat_normal;
+    background-color: transparent;
+    color: $secondary_accent_label_color;
+    font-weight: 700;
+    &:hover {
+      @extend %button_flat_hover;
+      background-color: transparent;
+      color: $accent_label_color;
+    }
+    &:active {
+      @extend %button_flat_active;
+      background-color: transparent;
+      color: $accent_label_color;
+    }
+    &:disabled {
+      @extend %button_flat_disabled;
+      color: $insensitive_fg_color;
+    }
+    &:checked {
+      @extend %button_flat_checked;
+      background-color: transparent;
+      color: $accent_label_color;
+      &:disabled {
+        @extend %button_flat_checked_disabled;
+        background-color: transparent;
+        color: gtkopacity($accent_label_color, 0.4);
+      }
+    }
+
+    // add missing borders
+    &:dir(ltr) { border-left: 1px solid $borders_color; }
+    &:dir(rtl) { border-right: 1px solid $borders_color; }
+  }
+}
+
 dialog.background {
   > headerbar.titlebar > button.flat.sources-button.popup.toggle {
     box.vertical { // optimize label spacing like gnome-logs
@@ -2517,5 +2770,73 @@ dialog.background {
       margin: rem(4px) rem(5.3px) rem(10.7px);
     }
   }
+}
+
+
+// /*****************
+//  * Gnome-Recipes *
+//  *****************/
+
+window.background > box.vertical > overlay > stack > box.vertical {
+  > scrolledwindow > viewport.frame {
+    button.tile.view {
+      // prevent unwated truncation of drop-shadows
+      margin-bottom: rem(13.3px, $sw: 1.0);
+      // revive ripple-effect
+      &:active { @extend %button_active; }
+    }
+
+    box.vertical > label.heading { color: $selected_bg_color; }
+  }
+}
+
+window.background > box.vertical > overlay > stack > box.horizontal {
+  > stack > box.horizontal > scrolledwindow > viewport.frame {
+    // right-pane scrolled-window
+    > box.vertical > label.heading { color: $selected_bg_color; }
+
+    // left-pane sidebar
+    > list {
+      background-color: $secondary_dark_color;
+
+      &:dir(ltr) {
+        box-shadow: if($variant == 'light', $sidebar-light-ltr,
+                                            $sidebar-dark-ltr);
+      }
+      &:dir(rtl) {
+        box-shadow: if($variant == 'light', $sidebar-light-rtl,
+                                            $sidebar-dark-rtl);
+      }
+
+      > row.activatable {
+        background-color: transparent;
+        color: $secondary_fg_color;
+        box-shadow: none;
+
+        > label.sidebar {
+          box-shadow: unset; // unset .sidebar class shadows
+          color: $secondary_fg_color;
+          font-weight: 500;
+        }
+
+        &:hover,
+        &:active {
+
+          &, > label.sidebar { color: $fg_color; }
+        }
+        &:selected {
+          background-color: transparent;
+
+          &, > label.sidebar { color: $selected_bg_color; }
+        }
+      }
+    }
+  }
+}
+
+flowbox > flowboxchild > button.recipe.tile.view {
+  // add outer spacing around those tiles
+  // to prevent unwated truncation of drop-shadows
+  margin: if($ref_weight < 1.0, 6px, 8px);
 }
 

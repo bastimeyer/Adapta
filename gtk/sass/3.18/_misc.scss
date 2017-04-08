@@ -30,26 +30,15 @@ ClockBox {
 .gnome-panel-menu-bar,
 PanelApplet > GtkMenuBar.menubar {
   box-shadow: none;
-  & .menuitem {
+
+  > .menuitem {
+    padding: 0 4px;
     color: $inverted_secondary_fg_color;
     background-color: transparent;
     &:hover {
       color: $selected_fg_color;
       box-shadow: inset 0 -2px $selected_bg_color;
     }
-  }
-  .menu {
-    font: regular;
-    .menuitem {
-      color: $secondary_fg_color;
-      background-color: $base_color;
-      &:hover {
-        color: $fg_color;
-        background-color: gtkalpha(currentColor, 0.1);
-        box-shadow: none;
-      }
-    }
-    .separator { color: $borders_color; }
   }
 }
 
@@ -110,15 +99,17 @@ TaskList TaskItem {
 
 WpTaskTitle {
   background-color: transparent;
+
   .label { color: $inverted_secondary_fg_color; }
 }
 
 WnckPager {
+  background-color: transparent;
   &:selected { box-shadow: inset 0 -2px $selected_bg_color; }
 }
 
 NaTrayApplet {
-  -NaTrayApplet-icon-padding: 2;
+  -NaTrayApplet-icon-padding: 0 2;
   -NaTrayApplet-icon-size: 16;
 }
 
@@ -647,10 +638,45 @@ GeditViewFrame {
 }
 
 .gedit-titlebar-left {
-  .button.flat { // left-pane header button
+  > GeditMenuStackSwitcher.button.flat { // left-pane header button
+    &:not(.suggested-action):not(.destructive-action) {
+      // specificity bump
+      border-radius: 2px;
+      outline-radius: 2px;
+    }
+
+    .label.title { color: $inverted_secondary_fg_color; }
+
+    &:hover,
+    &:active,
+    &:checked {
+      .label.title { color: $inverted_fg_color; }
+    }
+  }
+}
+
+.gedit-side-panel-paned {
+  GeditFileBrowserWidget .button.image-button.small-button {
+    // back to square 'up' button
     border-radius: 2px;
     outline-radius: 2px;
   }
+
+  // gradient separator
+  .pane-separator {
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.24),
+                                                 rgba(0, 0, 0, 0.11) 2px,
+                                                 rgba(0, 0, 0, 0.05) 4px,
+                                                 rgba(0, 0, 0, 0.05));
+    background-position: left top;
+    background-repeat: no-repeat;
+    background-size: 1px auto;
+  }
+}
+
+// hide weird 1px gaps at the left/right side of pane-separator
+GtkPaned.gedit-headerbar-paned.horizontal {
+  .pane-separator { background-color: $inverted_dark_color; }
 }
 
 GeditStatusbar { // inline-toolbar style

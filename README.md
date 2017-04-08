@@ -66,9 +66,10 @@ Variant Matrix
 >   **Eta** is a tiny Gtk+ 2.x/3.2x Gtk+ widget variant for saving space.
 >
 >   * To enable global dark theme, you use proper tools like Gnome-Tweak-Tool.
->     Or add this porperty to `[settings]` section of `$HOME/.config/gtk-3.0/settings.ini`:
+>     Or add this porperty to `[Settings]` section of `$HOME/.config/gtk-3.0/settings.ini`:
 >
 >     ```
+>     [Settings]
 >     gtk-application-prefer-dark-theme=1
 >     ```
 >
@@ -84,7 +85,7 @@ Required Components
 Adapta supports Gtk+ 3.22.x, 3.20.x and 3.18.x
 
  ```
- * Gtk+-3.0             >= 3.22.0 (or 3.20.1 or  3.18.9)
+ * Gtk+-3.0             >= 3.18.9
  * Gtk+-2.0             >= 2.24.30
  * gtk2-engines-pixbuf  >= 2.24.30
  * gtk2-engines-murrine >= 0.98.1
@@ -94,10 +95,10 @@ Supported Desktop Environments
 ------------------------------
 
  ```
- * GNOME-Shell     >= 3.22.0 (or 3.20.1 or 3.18.3)
- * GNOME-Flashback >= 3.22.0 (or 3.20.1 or 3.18.2)
+ * GNOME-Shell     >= 3.18.3
+ * GNOME-Flashback >= 3.18.2
  * Budgie-Desktop  >= 10.2.7
- * Cinnamon        >= 3.2.0 (or 3.0.1 or 2.8.6)
+ * Cinnamon        >= 2.8.6
  * Unity7          >= 7.4.0
  * XFce4           >= 4.12.2
  * Mate            >= 1.14.0 (Gtk+ 3.2x only)
@@ -108,9 +109,13 @@ Supported Desktop Environments
  >
  >   * Mate-Desktop support is a W.I.P.
 
-Unsupported Gtk+ Based Desktops
+Unsupported Gtk+ Based Desktop(s)
 -------------------------------
  * Pantheon
+
+ > **Note:**
+ >
+ >   * Adapta does NOT support elementaryOS.
 
 Installation from Package(s)
 ----------------------------
@@ -323,7 +328,6 @@ Extra Telegram Support
 Work in Progress
 ----------------
 * Conversion to Gtk+ 4.0
-* Telegram 1.0 theming support
 
 TODO
 ----

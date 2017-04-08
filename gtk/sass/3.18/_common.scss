@@ -349,18 +349,20 @@ GtkTextView { // This will get overridden by .view,
   }
 
   GtkTreeView & { // reset styling inside tree-view
-    &.flat:focus {
-      padding: 1px;
-      border-radius: 0;
-      border-image: none;
-      background-color: $base_color;
-      color: $fg_color;
-      box-shadow: none;
-      transition: none;
-      &:selected { @extend %selected_items; }
+    &, &.flat {
+      &, &:focus {
+        padding: 1px;
+        border-radius: 0;
+        border-image: none;
+        border: 1px solid $base_color;
+        background-color: $base_color;
+        color: $fg_color;
+        box-shadow: none;
+        transition: none;
+        &:selected { @extend %selected_items; }
+      }
+      &:insensitive { color: $insensitive_fg_color; }
     }
-    &:insensitive,
-    &.flat:insensitive { color: $insensitive_fg_color; }
   }
 
   .osd & {
@@ -1074,8 +1076,12 @@ GtkComboBox {
   -GtkComboBox-arrow-scaling: 0.5;
   -GtkComboBox-shadow-type: none;
 
-  .menu { padding: 2px 0; }
-  .menu .menuitem { padding: 0.35em 0.5em 0.45em; }
+  .menu {
+    padding: 2px 0;
+    transition: none; // do not set transitions
+
+    .menuitem { padding: 0.35em 0.5em 0.45em; }
+  }
 
   .separator.vertical {
     // always disable separators
@@ -1566,6 +1572,8 @@ GtkComboBox {
     color: $selected_fg_color;
     &:backdrop { opacity: 1.0; }
 
+    .maximized & { border-top-color: $selected_bg_color; }
+
     .subtitle:link { @extend *:link:selected;  }
 
     .button,
@@ -1644,8 +1652,10 @@ GtkComboBox {
     @extend %tiled_integration;
     transition: none;
   }
+
   .maximized & {
-    @extend %maxd_integration;
+    border-top-color: $inverted_dark_color;
+    border-radius: 0;
     transition: none;
   }
 
@@ -1683,7 +1693,6 @@ GtkComboBox {
                                         $header-shadow-dark);
 
     .tiled &  { @extend %tiled_integration; }
-    .maximized & { @extend %maxd_integration; }
   }
 
   // override unwanted side-borders
@@ -1692,8 +1701,7 @@ GtkComboBox {
     border-left-color: $inverted_dark_color;
     border-right-color: $inverted_dark_color;
 
-    .tiled &,
-    .maximized & {
+    .tiled & {
       border-left-color: $panel_bg_color;
       border-right-color: $panel_bg_color;
     }
@@ -1706,14 +1714,12 @@ GtkComboBox {
                                           $sub-header-shadow-dark-ltr);
 
       .tiled &  { @extend %tiled_integration; }
-      .maximized & { @extend %maxd_integration; }
     }
     &:dir(rtl) {
       box-shadow: if($variant == 'light', $sub-header-shadow-light-rtl,
                                           $sub-header-shadow-dark-rtl);
 
       .tiled &  { @extend %tiled_integration; }
-      .maximized & { @extend %maxd_integration; }
     }
   }
 
@@ -1723,13 +1729,11 @@ GtkComboBox {
       border-left: 1px solid $solid_dark_borders_color;
 
       .tiled &  { @extend %tiled_integration; }
-      .maximized & { @extend %maxd_integration; }
     }
     &:dir(rtl) {
       border-right: 1px solid $solid_dark_borders_color;
 
       .tiled &  { @extend %tiled_integration; }
-      .maximized & { @extend %maxd_integration; }
     }
   }
 }
@@ -1742,14 +1746,12 @@ GtkComboBox {
                                             $selected-header-shadow-dark-ltr);
 
         .tiled &  { @extend %tiled_integration; }
-        .maximized & { @extend %maxd_integration; }
       }
       &:dir(rtl) {
         box-shadow: if($variant == 'light', $selected-header-shadow-light-rtl,
                                             $selected-header-shadow-dark-rtl);
 
         .tiled &  { @extend %tiled_integration; }
-        .maximized & { @extend %maxd_integration; }
       }
     }
   }
@@ -1788,14 +1790,6 @@ GtkComboBox {
   &:backdrop { border-top-color: $track_color; }
 }
 
-%maxd_integration {
-  border-radius: 0;
-  border-color: $panel_bg_color;
-  border-width: 1px 0 0 0;
-  background-color: $panel_bg_color;
-  box-shadow: none;
-}
-
 
 // /************
 //  * Pathbars *
@@ -1829,28 +1823,33 @@ GtkComboBox {
 GtkTreeView.view {
   @at-root * {
     -GtkTreeView-horizontal-separator: 4;
-    -GtkTreeView-grid-line-width: 1;
+    -GtkTreeView-grid-line-width: 0;
     -GtkTreeView-grid-line-pattern: '';
     -GtkTreeView-tree-line-width: 1;
     -GtkTreeView-tree-line-pattern: '';
     -GtkTreeView-expander-size: 16;
   }
 
-  border-left-color: $track_color;  // this is actually the tree lines color,
-  border-top-color: $borders_color; // while this is the grid lines color,
-                                    // better then nothing
-
-  &.rubberband { @extend .rubberband; } // to avoid borders being overridden
-                                        // by the previously set props
+  // this is actually the tree lines color,
+  // while this is the grid lines color, better then nothing to avoid borders
+  // being overridden by the previously set props
+  border-left-color: $track_color;
+  border-top-color: $borders_color;
 
   border-radius: 0; // rest border radius in lists
 
+  &.rubberband { @extend .rubberband; }
+
   &:hover,
-  &:selected { border-radius: 0; }
+  &:active { border-radius: 0; }
+  &:selected {
+    border-radius: 0;
+    @extend %selected_items;
+  }
 
   // override foreground colours
-  &, & .entry,
-  & .entry > .label {
+  &, .entry,
+  .entry > .label {
     color: $secondary_fg_color;
     &:hover,
     &:active,
@@ -1917,7 +1916,7 @@ column-header {
     border-width: 1px;
     border-color: $borders_color;
     border-radius: 0;
-    background-color: $base_color;
+    background-color: $bg_color;
     color: $tertiary_fg_color;
     box-shadow: none;
     &:hover,
@@ -1925,7 +1924,7 @@ column-header {
       color: $fg_color;
       box-shadow: none;
     }
-    &:insensitive { background-color: $base_color; }
+    &:insensitive { background-color: $bg_color; }
     &.dnd { @extend column-header.button.dnd; }
   }
 
@@ -1937,9 +1936,9 @@ column-header {
 
   GtkPaned & { // redraw some stuff for RhythmBox
     .button {
-      background-color: $base_color;
+      background-color: $bg_color;
       // background-image: linear-gradient(to bottom, $bg_color);
-      &:insensitive { background-color: $base_color; }
+      &:insensitive { background-color: $bg_color; }
     }
 
     &:not(:first-child):not(:last-child) {
@@ -1956,7 +1955,6 @@ column-header {
 }
 
 column-header.button.dnd { // for treeview-like derive widgets
-  // transition: none;
   border-left-style: solid;
   color: $selected_bg_color;
 }
@@ -1970,18 +1968,12 @@ column-header.button.dnd { // for treeview-like derive widgets
   -GtkWidget-window-dragging: true;
   padding: 0;
   background-color: $inverted_dark_color;
-  box-shadow: $menubar-shadow;
 
   GtkWindow GtkWidget & { // FIXME: Gtk+3 firefox needs this!
     color: $inverted_secondary_fg_color;
   }
 
-
-  .tiled &,
-  .maximized & {
-    background-color: $panel_bg_color;
-    box-shadow: none;
-  }
+  .tiled & { background-color: $panel_bg_color; }
 
   > .menuitem {
     padding: 0.4em 0.6em;
@@ -3105,6 +3097,11 @@ GtkScrolledWindow {
     padding: 0.4em;
     background-size: 2em * 1 / 0.8 2em * 1 / 0.8, auto;
   }
+
+  // entry spacing
+  .entry {
+    &, &.flat { padding: 0.35em 1em 0.45em; }
+  }
 }
 
 .list-row:selected {
@@ -3649,13 +3646,15 @@ GtkInfoBar {
 
   color: $inverted_fg_color;
   padding: 0.2em; // not working
-  border-radius: 2px;
   box-shadow: none; // otherwise it gets inherited by windowframe.csd
 
   // FIXME: we need a border or tooltips vanish on black background.
   &.window-frame.csd {
     background-color: transparent;
   }
+
+  // use roundness only for CSDs
+  &.csd { border-radius: 2px; }
 }
 
 .tooltip * { // Yeah this is ugly
@@ -3933,8 +3932,10 @@ GtkVolumeButton.button {
       @extend %tiled_integration;
       transition: none;
     }
+
     .maximized .titlebar {
-      @extend %maxd_integration;
+      border-top-color: $inverted_dark_color;
+      border-radius: 0;
       transition: none;
     }
   }

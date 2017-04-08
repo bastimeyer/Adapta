@@ -1,12 +1,25 @@
+m4_define([adapta_major_version], [3])
+m4_define([adapta_minor_version], [90])
+m4_define([adapta_micro_version], [0])
+m4_define([adapta_version], [adapta_major_version.adapta_minor_version.adapta_micro_version])
+m4_define([adapta_git_url], [https://github.com/adapta-project/adapta-gtk-theme])
+
 AC_INIT(
 	[Adapta ],
-	3.89.4,
-	[https://github.com/adapta-project/adapta-gtk-theme],
+	[adapta_version],
+	[adapta_git_url],
 	[adapta-gtk-theme]
 )
-
 AC_CONFIG_MACRO_DIR([m4])
-AM_INIT_AUTOMAKE([-Wno-portability no-dist-gzip dist-xz foreign subdir-objects 1.9 tar-ustar])
+AM_INIT_AUTOMAKE([
+	-Wno-portability \
+	no-dist-gzip \
+	dist-xz \
+	foreign \
+	subdir-objects \
+	1.9 \
+	tar-ustar
+])
 AC_PREFIX_DEFAULT(/usr)
 AM_SILENT_RULES([yes])
 
@@ -23,8 +36,8 @@ ADAPTA_OPTION([PLANK],     [plank],     [Plank],          [disable])
 ADAPTA_OPTION([TELEGRAM],  [telegram],  [Telegram],       [disable])
 
 PKG_CHECK_MODULES(GDK_PIXBUF, [gdk-pixbuf-2.0 >= 2.32.2])
-PKG_CHECK_MODULES(GLIB, [glib-2.0 >= 2.48.0])
-PKG_CHECK_MODULES(RSVG, [librsvg-2.0 >= 2.40.13])
+PKG_CHECK_MODULES(GLIB,       [glib-2.0 >= 2.48.0])
+PKG_CHECK_MODULES(RSVG,       [librsvg-2.0 >= 2.40.13])
 
 if test x"$ENABLE_PARALLEL" = xyes; then
 	AC_PATH_PROG([PARALLEL], [parallel])
@@ -50,14 +63,14 @@ fi
 
 ADAPTA_COLOR_SCHEME
 
-AC_CONFIG_FILES([ \
+AC_CONFIG_FILES([
 	Makefile \
 	gtk/Makefile \
 	shell/Makefile \
 	wm/Makefile \
-	extra/Makefile ])
+	extra/Makefile
+])
 AC_OUTPUT
-
 AC_MSG_RESULT([
         Adapta Gtk+ Theme $VERSION
         ===========================================================
@@ -94,7 +107,7 @@ AC_MSG_RESULT([
          Budgie-Desktop:       >= 10.2.7
 
         -----------------------------------------------------------
-        | Extra DE support
+        | Extra DE and WM support
         -----------------------------------------------------------
 
          Cinnamon:             $ENABLE_CINNAMON

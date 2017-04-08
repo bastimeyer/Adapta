@@ -69,6 +69,9 @@ style "default" {
   GtkTreeView::vertical-separator = 2
   GtkTreeView::horizontal-separator = 2
   GtkTreeView::allow-rules = 1
+  # Some file-managers apply these 'stripes'
+  GtkTreeView::odd-row-color = mix(0.5, @bg_color, @base_color)
+  GtkTreeView::even-row-color = @base_color
 
   GtkExpander::expander-size = 16
 
@@ -649,7 +652,11 @@ style "progressbar" {
   }
 }
 
-style "range" { 
+style "range" {
+  # FIXME: thickness needed by Qt4/5 backend?
+  xthickness = 3
+  ythickness = 3
+
   engine "pixmap" {
     image {
       function    = BOX
@@ -1669,16 +1676,6 @@ style "menubar" {
   fg[NORMAL] = mix(0.8, @selected_fg_color, shade(0.96, @bg_color))
   fg[PRELIGHT] = @selected_fg_color
   fg[INSENSITIVE] = mix(0.4, @selected_fg_color, @bg_color)
-
-  engine "pixmap" {
-    image {
-      function    = BOX
-      file        = "Shadows/z-depth-1.svg"
-      border      = { 1, 1, 1, 1 }
-      stretch     = TRUE
-      recolorable = TRUE
-    }
-  }
 }
 
 style "menubar_item" {
@@ -1709,9 +1706,9 @@ style "menu" {
 
   GtkMenuItem::arrow-scaling = 0.4
 
-  bg[NORMAL] = @base_color
-  bg[PRELIGHT] = @base_color
-  bg[INSENSITIVE] = @base_color
+  bg[NORMAL] = mix(0.5, @base_color, @bg_color)
+  bg[PRELIGHT] = mix(0.5, @base_color, @bg_color)
+  bg[INSENSITIVE] = mix(0.5, @base_color, @bg_color)
 }
 
 style "menu_framed_box" {
@@ -1776,7 +1773,7 @@ style "menu_item" {
       recolorable     = TRUE
       state           = NORMAL
       shadow          = IN
-      overlay_file    = "Check-Radio/check-on-dark.png"
+      overlay_file    = "Check-Radio/check-on-menuitem.png"
       overlay_stretch = FALSE
     }
     image {
@@ -1784,7 +1781,7 @@ style "menu_item" {
       recolorable     = TRUE
       state           = PRELIGHT
       shadow          = IN
-      overlay_file    = "Check-Radio/check-on-hover-dark.png"
+      overlay_file    = "Check-Radio/check-on-hover-menuitem.png"
       overlay_stretch = FALSE
     }
     image {
@@ -1792,7 +1789,7 @@ style "menu_item" {
       recolorable     = TRUE
       state           = ACTIVE
       shadow          = IN
-      overlay_file    = "Check-Radio/check-on-active-dark.png"
+      overlay_file    = "Check-Radio/check-on-hover-menuitem.png"
       overlay_stretch = FALSE
     }
     image {
@@ -1800,7 +1797,7 @@ style "menu_item" {
       recolorable     = TRUE
       state           = INSENSITIVE
       shadow          = IN
-      overlay_file    = "Check-Radio/check-on-insensitive-dark.png"
+      overlay_file    = "Check-Radio/check-on-insensitive-menuitem.png"
       overlay_stretch = FALSE
     }
 
@@ -1837,28 +1834,28 @@ style "menu_item" {
       function        = OPTION
       state           = NORMAL
       shadow          = IN
-      overlay_file    = "Check-Radio/radio-on-dark.png"
+      overlay_file    = "Check-Radio/radio-on-menuitem.png"
       overlay_stretch = FALSE
     }
     image {
       function        = OPTION
       state           = PRELIGHT
       shadow          = IN
-      overlay_file    = "Check-Radio/radio-on-hover-dark.png"
+      overlay_file    = "Check-Radio/radio-on-hover-menuitem.png"
       overlay_stretch = FALSE
     }
     image {
       function        = OPTION
       state           = ACTIVE
       shadow          = IN
-      overlay_file    = "Check-Radio/radio-on-active-dark.png"
+      overlay_file    = "Check-Radio/radio-on-hover-menuitem.png"
       overlay_stretch = FALSE
     }
     image {
       function        = OPTION
       state           = INSENSITIVE
       shadow          = IN
-      overlay_file    = "Check-Radio/radio-on-insensitive-dark.png"
+      overlay_file    = "Check-Radio/radio-on-insensitive-menuitem.png"
       overlay_stretch = FALSE
     }
 
@@ -2121,6 +2118,11 @@ style "frame" {
   ythickness = 1
 
   engine "pixmap" {
+    image {
+      function = SHADOW
+      shadow   = NONE
+    }
+
     image {
       function = SHADOW
       file     = "Shadows/frame.png"

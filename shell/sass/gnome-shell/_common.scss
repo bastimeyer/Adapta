@@ -118,8 +118,9 @@ StEntry {
 //  **************/
 
 StScrollView {
-  &.vfade { -st-vfade-offset: 32px; }
-  &.hfade { -st-hfade-offset: 32px; }
+  // disable undershoots
+  &.vfade { -st-vfade-offset: 0; }
+  &.hfade { -st-hfade-offset: 0; }
 }
 
 StScrollBar {
@@ -133,26 +134,16 @@ StScrollBar {
   StBin#trough {
     margin: 0;
     border-radius: 0;
-    background-color: $fill_color;
+    background-color: shellopacity($osd_fg_color, 0.15);
   }
 
   StButton#vhandle,
   StButton#hhandle {
     margin: 0;
     border-radius: 0;
-    background-color: if($nokto == 'false',
-                      shellopacity($inverted_fg_color, 0.6),
-                      shellopacity($fg_color, 0.6));
-    &:hover {
-      background-color: if($nokto == 'false',
-                        shellopacity($inverted_fg_color, 0.8),
-                        shellopacity($fg_color, 0.8));
-    }
-    &:active {
-      background-color: if($nokto == 'false',
-                        shellopacity($inverted_fg_color, 1),
-                        shellopacity($fg_color, 1));
-    }
+    background-color: shellopacity($osd_fg_color, 0.5 * 0.55);
+    &:hover { background-color: shellopacity($osd_fg_color, 0.75 * 0.55); }
+    &:active { background-color: $osd_fg_color; }
   }
 }
 
@@ -214,8 +205,8 @@ StScrollBar {
 //  ************/
 
 .toggle-switch {
-  width: 40px;
-  height: 20px;
+  width: 3.0em; // = 40px nominal
+  height: 1.5em; // = 20px nominal
   background-size: contain;
 }
 
@@ -706,13 +697,13 @@ StScrollBar {
   }
 
   StScrollBar {
-    StBin#trough { background-color: $fill_color; }
+    StBin#trough { background-color: shellopacity($base_color, 0.55); }
 
     StButton#vhandle,
     StButton#hhandle { // use variant-sensitive slider-bit
-      background-color: shellopacity($fg_color, 0.6);
-      &:hover { background-color: shellopacity($fg_color, 0.8); }
-      &:active { background-color: shellopacity($fg_color, 1); }
+      background-color: shellopacity($fg_color, 0.5 * 0.55);
+      &:hover { background-color: shellopacity($fg_color, 0.75 * 0.55); }
+      &:active { background-color: $fg_color; }
     }
   }
 }
@@ -725,7 +716,7 @@ StScrollBar {
 
 .popup-menu-boxpointer {
   -arrow-border-radius: 2px; // FIXME: need more than 2px
-  -arrow-background-color: $bg_color; // fake arrows
+  -arrow-background-color: $secondary_base_color; // fake arrows
   -arrow-border-width: 0;
   -arrow-border-color: transparent;
   -arrow-base: 48px; // 'popup-menu-arrow' base * 3
@@ -734,7 +725,7 @@ StScrollBar {
   margin: 0.1em 0.3em 0.5em;
   border-radius: 2px;
   border-top: 1px solid $base_color;
-  background-color: $bg_color;
+  background-color: $secondary_base_color;
   box-shadow: $z-depth-3;
 }
 
@@ -780,6 +771,29 @@ StScrollBar {
 }
 
 
+// /*******************************
+//  * Applications Menu Extension *
+//  *******************************/
+
+.popup-menu {
+  // '.apps-menu' is the child boxLayout (right-pane)
+  StScrollView.apps-menu {
+    margin: 0 4px;
+    border-style: solid;
+    border-color: $borders_color;
+
+    &:ltr {
+      padding: if($eta == 'false', 0 0 0 12px, 0 0 0 8px);
+      border-left-width: 1px;
+    }
+    &:rtl {
+      padding: if($eta == 'false', 0 12px 0 0, 0 8px 0 0);
+      border-right-width: 1px;
+    }
+  }
+}
+
+
 // /*******
 //  * OSD *
 //  *******/
@@ -812,9 +826,17 @@ StScrollBar {
 //  * Pad OSD *
 //  ***********/
 
-.pad-osd-window {
-  padding: if($eta == 'false', 32px, 26px);
-  background-color: shellopacity($osd_bg_color, 0.9);
+.pad-osd {
+  &-window {
+    padding: if($eta == 'false', 32px, 26px);
+    background-color: shellopacity($osd_bg_color, 0.9);
+
+    .pad-osd-title {
+      &-box { spacing: if($eta == 'false', 12px, 10px); }
+
+      &-menu-box { spacing: if($eta == 'false', 6px, 5px); }
+    }
+  }
 }
 
 .combo-box-label { width: 15em; }
@@ -1099,13 +1121,28 @@ StScrollBar {
   margin: if($eta == 'false', 0 1.5em, 0 1em);
 }
 
-.datemenu-calendar-column { spacing: 0.5em; }
+.datemenu { // optimize spacing
+  &-calendar-column { spacing: 0.5em; }
 
-.datemenu-displays-section { padding-bottom: 0; }
+  &-displays-section { padding-bottom: 0; }
+
+  &-displays-box { spacing: if($eta == 'false', 1em, 0.7em); }
+}
+
+// pane-separator between messages and calendar
+.datemenu-calendar-column {
+  border-style: solid;
+  border-color: $borders_color;
+
+  &:ltr { border-left-width: 1px; }
+  &:rtl { border-right-width: 1px; }
+}
 
 .datemenu-today-button,
 .world-clocks-button,
-.message-list-section-title {
+.weather-button,
+.message-list-section-title, // in 3.24 cycle, use .event-section-title
+.events-section-title {
   padding: 0.4em;
   border-radius: 2px;
 }
@@ -1117,7 +1154,10 @@ StScrollBar {
 
 .datemenu-today-button,
 .world-clocks-button,
-.message-list-section-title {
+.weather-button,
+.message-list-section-title, // in 3.24 cycle, use .event-section-title
+.events-section-title {
+  color: $secondary_fg_color;
   &:hover,
   &:focus {
     color: $fg_color;
@@ -1129,22 +1169,34 @@ StScrollBar {
   }
 }
 
-.datemenu-today-button {
-  .day-label { color: $secondary_fg_color; }
+.datemenu-today-button { // re-define foregrounds
+  .day-label { color: $dim_fg_color; }
 
   .date-label {
     @include fontscaling($ref_size * 1.5);
-    color: $fg_color;
+    color: $secondary_fg_color;
+  }
+
+  &:hover,
+  &:focus,
+  &:active {
+    .day-label { color: $secondary_fg_color; }
+
+    .date-label { color: $fg_color; }
   }
 }
 
 .world-clocks-header,
-.message-list-section-title {
-  color: $secondary_fg_color;
+.weather-header,
+.message-list-section-title, // in 3.24 cycle, use .event-section-title
+.events-section-title {
+  color: $dim_fg_color;
   font-weight: 700;
 }
 
 .world-clocks-grid { spacing-rows: 0.4em; }
+
+.weather-box { spacing: 0.4em; }
 
 .calendar-month-label {
   padding: 4px 0;
@@ -1267,6 +1319,24 @@ StScrollBar {
 .calendar-today {
   border: none;
   font-weight: 700;
+
+  &,
+  &.calendar-day-with-events {
+    background-color: shellopacity($panel_bg_color, 0.75);
+    color: shellopacity($selected_fg_color, 0.75);
+    &:hover,
+    &:focus {
+      background-color: $panel_bg_color;
+      color: $selected_fg_color;
+    }
+    &:selected {
+      &, &:hover {
+        color: $selected_fg_color;
+        background-color: $selected_bg_color;
+        border-color: transparent;
+      }
+    }
+  }
 }
 
 .calendar-other-month-day {
@@ -1288,6 +1358,24 @@ StScrollBar {
 
 .message-list {
   width: if($eta == 'false', 420px, 380px);
+
+  &-clear-button.button { // 'Clear all' button
+    margin:  if($eta == 'false', 1.5em 1.5em 0, 1.2em 1.2em 0);
+    color: $secondary_accent_label_color;
+    background-color: transparent;
+    font-weight: 700;
+    &:hover,
+    &:focus {
+      color: $accent_label_color;
+      background-color: $accent_fill_color;
+    }
+    &:active {
+      color: $accent_label_color;
+      background-color: $accent_active_fill_color;
+      box-shadow: $empty_shadow;
+    }
+    &:insensitive { @include button(flat-insensitive); }
+  }
 
   &-sections { spacing: if($eta == 'false', 1.5em, 1.2em); }
 
@@ -1316,18 +1404,30 @@ StScrollBar {
       background-color: $fill_color;
     }
   }
+
+  // labels for empty messages/events
+  &-placeholder { color: $dim_fg_color; }
 }
 
 .message {
-  min-height: 22px;
+  // No need to set any height/min-height with fixed values,
+  // 'no-values' can keep its height automatically even
+  // if switched to scrolled-view mode.
+  // So only padding property seems enough to control the spacing.
   padding: 6px;
   border-radius: 0;
-  background-color: $semi_fill_color;
-  color: $secondary_fg_color;
+  background-color: transparent;
+  color: $osd_fg_color;
 
   .popup-menu & {
+    background-color: $semi_fill_color;
+    color: $secondary_fg_color;
     &:ltr { box-shadow: inset 4px 0 $semi_fill_color; }
     &:rtl { box-shadow: inset -4px 0 $semi_fill_color; }
+
+    .message-icon-bin > StIcon,
+    .message-title,
+    .message-content { color: $secondary_fg_color; }
 
     &:hover,
     &:focus {
@@ -1335,39 +1435,79 @@ StScrollBar {
       color: $fg_color;
       &:ltr { box-shadow: inset 4px 0 $secondary_accent_color; }
       &:rtl { box-shadow: inset -4px 0 $secondary_accent_color; }
+
+      .message-icon-bin > StIcon,
+      .message-title,
+      .message-content { color: $fg_color; }
+
+      .message-secondary-bin {
+        &,
+        > .event-time { color: $secondary_fg_color; }
+      }
     }
     &:active {
       background-color: $accent_active_fill_color;
       color: $fg_color;
       &:ltr { box-shadow: inset 4px 0 $accent_color; }
       &:rtl { box-shadow: inset -4px 0 $accent_color; }
+
+      .message-icon-bin > StIcon,
+      .message-title,
+      .message-content { color: $fg_color; }
+
+      .message-secondary-bin {
+        &,
+        > .event-time { color: $secondary_fg_color; }
+      }
     }
   }
 
   &-icon-bin {
-    &:ltr { padding: 3px 0 3px 6px; }
-    &:rtl { padding: 3px 6px 3px 0; }
+    padding: 0; // FIXME: needs to override the stock gresource
+                // (Since upstream still uses padding properties)
 
-    > StIcon { icon-size: 32px; }
+    // subtruct .message-content's 'close' button padding
+    &:ltr { margin: 4px - 2px 0 0 6px; }
+    &:rtl { margin: 4px - 2px 6px 0 0; }
+
+    > StIcon {
+      color: $osd_fg_color;
+      icon-size: 16px;
+      -st-icon-style: symbolic;
+    }
   }
 
   &-secondary-bin {
-    color: $dim_fg_color;
+    color: $osd_dim_fg_color;
     &:ltr { padding-left: 6px; }
     &:rtl { padding-right: 6px; }
 
+    > .event-time {
+      @include fontscaling($ref_size * 0.8);
+      // '.message-title' padding + extra 0.1em for finer base-line
+      padding-bottom: 0.5em + 0.1em;
+      color: $osd_dim_fg_color;
+    }
+
     > StIcon { icon-size: 16px; }
+
+    .popup-menu & {
+      &,
+      > .event-time { color: $dim_fg_color; }
+    }
   }
 
   &-title {
     @include fontscaling($ref_size * 1.1);
     padding: 0 0 4px;
+    color: $osd_fg_color;
     font-weight: 700;
   }
 
   &-content {
     @include fontscaling($ref_size * 0.9);
     padding: 0 8px 4px;
+    color: $osd_fg_color;
 
     * > StIcon {
       padding: 2px;
@@ -1396,7 +1536,6 @@ StScrollBar {
   color: $secondary_accent_label_color;
   background: transparent;
   background-size: 32px 32px;
-
   &:hover {
     color: $accent_label_color;
     background-image: url("assets/media-control-hover.svg");
@@ -1407,19 +1546,39 @@ StScrollBar {
     background-image: url("assets/media-control-active.svg");
     background-size: 32px 32px;
   }
+  &:insensitive {
+    color: $insensitive_accent_label_color;
+    background-image: none;
+    background: transparent;
+  }
 }
 
 .media-message-cover-icon {
-  icon-size: 32px;
+  // use 'important' flag to overrride .message-icon-bin > StIcon size
+  icon-size: if($eta == 'false', 48px, 36px) !important;
+  // subtruct .message-content's 'close' button padding
+  margin-bottom: 4px - 2px;
 
   &.fallback {
-    icon-size: 16px;
-    padding: 8px;
+    icon-size: if($eta == 'false', 24px, 16px) !important;
+    padding: if($eta == 'false', 12px, 10px);
     border: none;
     border-radius: 2px;
-    color: $dim_fg_color;
-    background-color: $base_color;
-    box-shadow: $z-depth-1;
+    color: $osd_dim_fg_color;
+    background-color: $osd_semi_fill_color;
+    box-shadow: $empty_shadow;
+
+    .popup-menu .message & {
+      color: $dim_fg_color;
+      background-color: $semi_fill_color;
+    }
+
+    .popup-menu .message:hover &,
+    .popup-menu .message:focus &,
+    .popup-menu .message:active & {
+      color: $secondary_fg_color;
+      background-color: $accent_fill_color;
+    }
   }
 }
 
@@ -1531,75 +1690,6 @@ StScrollBar {
 .openweather-sunset-icon,
 .openweather-build-icon {
   color: $secondary_fg_color;
-}
-
-
-// /*********************
-//  * MailNag Extension *
-//  *********************/
-
-.mailnag-counter {
-  @include fontscaling($ref_size * 0.6);
-  min-width: 14px;
-  min-height: 14px;
-  border-radius: 100px;
-  background-color: $accent_color;
-  color: $selected_fg_color;
-  -mailnag-counter-overlap-x: -4px;
-  -mailnag-counter-overlap-y: -2px;
-}
-
-.menu-item-box {
-  width: 24em;
-  spacing: if($eta == 'false', 12px, 9px);
-  padding: if($eta == 'false', 8px, 6px);
-  border-radius: 2px;
-  color: $secondary_fg_color;
-  background-color: $secondary_dark_color;
-  &:hover,
-  &:focus {
-    color: $fg_color;
-    background-color: $semi_fill_color;
-  }
-  &:active {
-    color: $fg_color;
-    background-color: $fill_color;
-  }
-}
-
-.account-group-label {
-  @include fontscaling($ref_size * 1.0);
-  color: $dim_fg_color;
-  font-weight: 700;
-}
-
-.more-label,
-.subject-label,
-.date-label {
-  @include fontscaling($ref_size * 0.9);
-  color: $dim_fg_color;
-  font-weight: 400;
-}
-
-.sender-label {
-  @include fontscaling($ref_size * 1.0);
-  color: $fg_color;
-  font-weight: 700;
-}
-
-.generic-box { spacing: if($eta == 'false', 8px, 6px); }
-
-.overflow-badge {
-  @include fontscaling($ref_size * 0.9);
-  padding: 0.4em 0;
-  border-radius: 2px;
-  color: $dim_fg_color;
-  background-color: $accent_fill_color;
-}
-
-.avatar {
-  border-radius: 2px;
-  background-size: contain;
 }
 
 
@@ -1877,7 +1967,27 @@ StScrollBar {
 }
 
 .search-provider {
-  &-icon { padding: 15px; }
+  &-icon {
+    padding: 15px;
+    border: none;
+    border-radius: 100px;
+    color: $osd_secondary_fg_color;
+    transition-duration: 0s;
+    &:focus,
+    &:selected,
+    &:hover {
+      background-color: $osd_slight_fill_color;
+      transition-duration: 0s;
+    }
+    &:active {
+      background-color: $osd_semi_fill_color;
+      transition-duration: $duration_medium;
+    }
+    &:checked {
+      background-color: $osd_indicator_color;
+      transition-duration: $duration_medium;
+    }
+  }
 
   &-icon-more {
     width: 16px;
@@ -2073,19 +2183,21 @@ StScrollBar {
 }
 
 // Icon tile
-.search-provider-icon,
 .list-search-result {
   @extend %icon_tile;
   transition-duration: 0s;
   &:focus,
   &:selected,
   &:hover {
-    background-color: $osd_semi_fill_color;
+    background-color: $osd_slight_fill_color;
     transition-duration: 0s;
   }
-  &:active,
+  &:active {
+    background-color: $osd_semi_fill_color;
+    transition-duration: $duration_medium;
+  }
   &:checked {
-    background-color: $osd_fill_color;
+    background-color: $osd_indicator_color;
     transition-duration: $duration_medium;
   }
 }
@@ -2096,26 +2208,31 @@ StScrollBar {
 .grid-search-result {
   .overview-icon {
     @extend %icon_tile;
-    color: if($nokto == 'false', $osd_secondary_fg_color,
-                                 $secondary_fg_color);
+    color: $osd_secondary_fg_color;
     transition-duration: 0s;
   }
 
-  &:hover .overview-icon,
   &:focus .overview-icon,
+  &:hover .overview-icon,
   &:selected .overview-icon {
     border-image: none;
-    background-color: $osd_semi_fill_color;
+    background-color: $osd_slight_fill_color;
     background-image: none;
     color: $osd_fg_color;
     transition-duration: 0s;
   }
-  &:active .overview-icon,
+  &:active .overview-icon {
+    border-image: none;
+    background-color: $osd_semi_fill_color;
+    background-image: none;
+    color: $osd_fg_color;
+    transition-duration: $duration_medium;
+  }
   &:checked .overview-icon {
     background-color: $osd_indicator_color;
     color: $osd_fg_color;
     box-shadow: $empty_shadow;
-    transition-duration: $duration_medium;
+    transition-duration: 0s;
   }
 }
 
@@ -2127,15 +2244,18 @@ StScrollBar {
       border-radius: 100px;
       transition-duration: 0s;
     }
-    &:hover .overview-icon { // more lighter fill than osd_semi_fill!
+    &:hover .overview-icon,
+    &:focus .overview-icon { // more lighter fill than osd_semi_fill!
       background-color: $osd_slight_fill_color;
       transition-duration: 0s;
     }
-    &:active .overview-icon,
-    &:focus .overview-icon,
+    &:active .overview-icon {
+      background-color: $osd_semi_fill_color;
+      transition-duration: $duration_medium;
+    }
     &:checked .overview-icon {
       background-color: $osd_indicator_color;
-      transition-duration: $duration_medium;
+      transition-duration: 0s;
     }
   }
 }
@@ -2177,8 +2297,12 @@ StScrollBar {
     color: transparent;
     background-image: url("assets/show-apps-active.svg");
     -st-background-image-shadow: $z-depth-2;
-    transition-duration: $duration_medium;
   }
+
+  &:hover,
+  &:focus,
+  &:checked { transition-duration: 0s; }
+  &:active { transition-duration: $duration_medium; }
 }
 
 // Collections
@@ -2801,29 +2925,39 @@ $legacy_icon_size: if($eta == 'false', 24px, 16px);
   &-message-hint {
     padding-top: 0;
     padding-bottom: 20px;
+    color: $osd_dim_fg_color;
   }
 
-  &-user-selection-box {
-    padding: 100px 0;
+  &-user-selection-box { padding: 100px 0; }
 
-    .login-dialog-not-listed-label {
-      padding-left: 2px;
-
-      .login-dialog-not-listed-button:focus &,
-      .login-dialog-not-listed-button:hover & { color: $osd_fg_color; }
-    }
+  &-not-listed-button {
+    // this class seems almost meaningless
+    margin: 12px 0 0;
   }
 
   &-not-listed-label {
     @include fontscaling($ref_size * 0.9);
-    padding-top: 1em;
-    color: $osd_secondary_fg_color;
+    padding: 4px 4px 5px;
+    border-radius: 2px;
+    color: $inverted_secondary_accent_label_color;
     font-weight: 700;
-    &:hover { color: $osd_fg_color; }
-    &:focus { background-color: $osd_semi_fill_color; }
-  }
+    text-align: center;
 
-  &-user-list-view { -st-vfade-offset: 1em; }
+    .login-dialog-not-listed-button:focus & {
+      color: $inverted_accent_label_color;
+      background-color: $hidden_fill_color;
+      box-shadow: inset 0 0 0 2px $accent_fill_color;
+    }
+    .login-dialog-not-listed-button:hover & {
+      color: $inverted_accent_label_color;
+      background-color: $accent_fill_color;
+    }
+    .login-dialog-not-listed-button:active & {
+      color: $inverted_accent_label_color;
+      background-color: $accent_active_fill_color;
+      box-shadow: $empty_shadow;
+    }
+  }
 
   &-user-list {
     width: 23em;
@@ -2832,37 +2966,63 @@ $legacy_icon_size: if($eta == 'false', 24px, 16px);
 
     &:expanded .login-dialog-user-list-item {
       &:focus {
-        background-color: $osd_semi_fill_color;
         color: $osd_fg_color;
+        background-color: $hidden_fill_color;
+        box-shadow: inset 0 0 0 2px $osd_semi_fill_color;
       }
       &:hover {
-        background-color: $osd_semi_fill_color;
         color: $osd_fg_color;
+        background-color: $osd_semi_fill_color;
       }
       &:active {
-        background-color: $osd_fill_color;
         color: $osd_fg_color;
+        background-color: $osd_fill_color;
       }
-      &:logged-in { border-right: 2px solid $osd_indicator_color; }
+
+      &:logged-in {
+        border-radius: 0;
+        background-color: shellopacity($selected_bg_color, 0.2);
+        &:focus,
+        &:hover {
+          background-color: mix(shellopacity($selected_bg_color, 0.2),
+                                shellopacity($osd_semi_fill_color, 0.5),
+                                50%);
+        }
+        &:active {
+          background-color: mix(shellopacity($selected_bg_color, 0.2),
+                                shellopacity($osd_fill_color, 0.5),
+                                50%);
+        }
+
+        &:ltr { box-shadow: inset 4px 0 $selected_bg_color; }
+        &:rtl { box-shadow: inset -4px 0 $selected_bg_color; }
+      }
     }
+
+    &-view { -st-vfade-offset: 0; }
   }
 
   &-user-list-item {
     padding: 4px 4px 0;
     border-radius: 2px;
     color: $osd_secondary_fg_color;
-    transition-duration: 0s;
+    transition-duration: $duration_short;
 
     &:ltr { padding-right: 1em; }
     &:rtl { padding-left: 1em; }
 
-    &:hover {
-      background-color: $osd_semi_fill_color;
+    &:focus {
       color: $osd_fg_color;
+      background-color: $hidden_fill_color;
+      box-shadow: inset 0 0 0 2px $osd_semi_fill_color;
+    }
+    &:hover {
+      color: $osd_fg_color;
+      background-color: $osd_semi_fill_color;
     }
     &:active {
-      background-color: $osd_fill_color;
       color: $osd_fg_color;
+      background-color: $osd_fill_color;
     }
 
     .login-dialog-timed-login-indicator {
@@ -2907,13 +3067,25 @@ $legacy_icon_size: if($eta == 'false', 24px, 16px);
 }
 
 .login-dialog-session {
-  &-list-button StIcon { icon-size: 16px; }
-
   &-list-button {
+    padding: 4px;
+    border-radius: 100px;
     color: $osd_secondary_fg_color;
-    &:hover,
-    &:focus { color: $selected_fg_color; }
-    &:active { color: $selected_fg_color; }
+    &:focus {
+      color: $osd_fg_color;
+      background-color: $hidden_fill_color;
+      box-shadow: inset 0 0 0 2px $osd_semi_fill_color;
+    }
+    &:hover {
+      color: $osd_fg_color;
+      background-color: $osd_semi_fill_color;
+    }
+    &:active {
+      color: $selected_fg_color;
+      background-color: $osd_indicator_color;
+    }
+
+    StIcon { icon-size: 16px; }
   }
 }
 
