@@ -6,12 +6,13 @@ An adaptive Gtk+ theme based on Material Design Guidelines.
 Before using Adapta
 -------------------
 
+#### Typography
+
 Adapta strongly depends on Material Design resources, especially its **fonts**.
 
-#### Typography
  1. [**Noto Sans**](https://fonts.google.com/specimen/Noto+Sans)
    - Noto (NO TOfu) sans-serif truetype/opentype font covers a lot of languages.
-   - Developed by Google and Adobe.
+   - Developed by Monotype and Adobe.
    - Weight used in Adapta: 400, (500), 700
 
  2. [**Roboto**](https://fonts.google.com/specimen/Roboto)
@@ -47,10 +48,9 @@ Variant Matrix
 
 | |<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/sunlight.png" align="left"/> Adapta|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/moon.png" align="left"/> Adapta-Nokto|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/sunlight-eta.png" align="left"/> Adapta-Eta|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/moon-eta.png" align="left"/> Adapta-Nokto-Eta|
 |:-----:|:-----:|:-----:|:-----:|:-----:|
-|Gtk+ 3.18.x |<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-off.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-off.png" align="center" />|
+|Gtk+ 2.24.x |<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|
 |Gtk+ 3.20.x |<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|
 |Gtk+ 3.22.x |<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|
-|Gtk+ 2.24.x |<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|
 |Mutter      |<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|
 |Metacity    |<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|
 |Muffin      |<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-on.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-off.png" align="center" />|<img src="https://github.com/adapta-project/adapta-github-resources/blob/master/images/check-off.png" align="center" />|
@@ -61,18 +61,8 @@ Variant Matrix
 
 > **Note:**
 >
->   **Nokto** is a dark variant.
->
->   **Eta** is a tiny Gtk+ 2.x/3.2x Gtk+ widget variant for saving space.
->
->   * To enable global dark theme, you use proper tools like Gnome-Tweak-Tool.
->     Or add this porperty to `[Settings]` section of `$HOME/.config/gtk-3.0/settings.ini`:
->
->     ```
->     [Settings]
->     gtk-application-prefer-dark-theme=1
->     ```
->
+>   * **Nokto** is a dark variant.
+>   * **Eta** is a tiny Gtk+ 2.x/3.2x Gtk+ widget variant for saving space.
 >   * I suggest you use the Eta variants if your LCD resolution is lower than FHD (1080p). Eta draws widgets around -20% to -30% spacing.
 >   * Metacity theming supports Eta variants (>= 3.20.x or 3.22.x).
 
@@ -82,10 +72,10 @@ Elements
 
 Required Components
 -------------------
-Adapta supports Gtk+ 3.22.x, 3.20.x and 3.18.x
+Adapta supports Gtk+ 3.22.x and 3.20.x
 
  ```
- * Gtk+-3.0             >= 3.18.9
+ * Gtk+-3.0             >= 3.20.0
  * Gtk+-2.0             >= 2.24.30
  * gtk2-engines-pixbuf  >= 2.24.30
  * gtk2-engines-murrine >= 0.98.1
@@ -99,7 +89,7 @@ Supported Desktop Environments
  * GNOME-Flashback >= 3.18.2
  * Budgie-Desktop  >= 10.2.7
  * Cinnamon        >= 2.8.6
- * Unity7          >= 7.4.0
+ * Unity7          >= 7.4.0 (Gtk+ 3.x only)
  * XFce4           >= 4.12.2
  * Mate            >= 1.14.0 (Gtk+ 3.2x only)
  * LXDE            >= 0.99.1 (Gtk+ 2.x only)
@@ -148,14 +138,17 @@ Installation from Git Source
  ```
  * autoconf
  * automake
- * inkscape
+ * inkscape                                  >= 0.91
  * libgdk-pixbuf2.0-dev (gdk-pixbuf2-devel)  >= 2.32.2
  * libglib2.0-dev (glib2-devel)              >= 2.48.0
  * librsvg2-dev (librsvg2-devel)             >= 2.40.13
- * libsass0 (libsass)                        >= 3.3.6
+ * libsass0 (libsass)                        >= 3.3
  * libxml2-utils (libxml2)
  * pkg-config (pkgconfig)
- * sassc                                     >= 3.3.2
+ * sassc                                     >= 3.3
+
+ * gnome-shell                               >= 3.18.3 (if --enable-gnome)
+ * parallel                                  (if --enable-parallel)
  ```
 
  > **Note:**
@@ -206,6 +199,7 @@ Installation from Git Source
 5. To disable some DE supports, pass these specific options to `autogen.sh`:
 
  ```
+ --disable-gnome         disable gnome-shell support (type: bool)
  --disable-cinnamon      disable cinnamon support (type: bool)
  --disable-flashback     disable flashback support (type: bool)
  --disable-unity         disable unity support (type: bool)
@@ -216,23 +210,24 @@ Installation from Git Source
 
  > **Note:**
  >
- >   * The installer installs GNOME/Budgie-Desktop support even if all of options above were applied.
+ >   * The installer installs Budgie-Desktop support even if all of options above were applied.
  >   * Cinnamon/Unity/Mate support hooks `metacity-1` directory even if GNOME-Flashback support was disabled.
 
-6. To enable next Gtk+ release support, pass this option:
+6. To enable extra Gtk+ release support, pass these options:
 
  ```
+ --enable-gtk_legacy    enable Gtk+ 3.18 support (type: bool)
  --enable-gtk_next      enable Gtk+ 4.0 support (type: bool)
  ```
 
 7. To change the default 5 **Key-Colors**, pass these options:
 
  ```
- --with-selection_color        Primary color for 'selected-items' (Default: #00BCD4 = Cyan500, type: int)
- --with-second_selection_color Primary color for 'select' effects (Default: #4DD0E1 = Cyan300, type: int)
- --with-accent_color           Secondary color for notifications and OSDs (Default: #4DB6AC = Teal300, type: int)
- --with-suggestion_color       Secondary color for 'suggested' buttons (Default: #009688 = Teal500, type: int)
- --with-destruction_color      Tertiary color for 'destructive' buttons (Default: #FF5252 = RedA200, type: int)
+ --with-selection_color        Primary color for 'selected-items' (Default: #00BCD4 = Cyan500, type: string)
+ --with-second_selection_color Primary color for 'select' effects (Default: #4DD0E1 = Cyan300, type: string)
+ --with-accent_color           Secondary color for notifications and OSDs (Default: #4DB6AC = Teal300, type: string)
+ --with-suggestion_color       Secondary color for 'suggested' buttons (Default: #009688 = Teal500, type: string)
+ --with-destruction_color      Tertiary color for 'destructive' buttons (Default: #FF5252 = RedA200, type: string)
  ```
 
  > **Note:**
@@ -258,7 +253,7 @@ GtkSourceView/Gedit Color Scheme Support
 
  > **Note:**
  >
- >   * The color-scheme can be used in Gnome-Builder and Gedit if installed to `gtksourceview-3.0/styles` directory.
+ >   * The color-scheme can be used in Gnome-Builder and Gedit if installed to `~/.local/share/gtksourceview-3.0/styles` directory.
  >   * Currently only dark-variant is supported.
 
 Extra Browser Support
@@ -274,13 +269,14 @@ Extra Browser Support
  > **Note:**
  >
  >   * Currently only Chrome(ium) theming is supported.
+ >   * Chrome(ium) 59.0.30xx or newer, theming is pulled from Gtk+ 3.x directly.
  >
  >   * Vivaldi can make custom themes via settings like these:
  >     ```
- >     Background: #FAFBFC (#3E515A)
- >     Foreground: #263238 (#ECEFF1)
+ >     Background: #FAFBFC (#263238)
+ >     Foreground: #263238 (#CFD8DC)
  >     Highlight:  #00BCD4
- >     Accent:     #2A373E
+ >     Accent:     #222D32
  >     Accent Color from Active Page: [ ]
  >     Apply Accent Color to Window:  [*]
  >     Transparent Tabs:              [*]
@@ -331,7 +327,8 @@ Work in Progress
 
 TODO
 ----
-* Move Gtk+ 3.18.x theming to legacy (priority: Mid)
+* Prepare for Meson build system (priority: high)
+* Prepare for FlatPak packaging (priority: mid)
 * Prepare for Steam theming (priority: Low)
 * Add Firefox specific theming (priority: undecided)
 

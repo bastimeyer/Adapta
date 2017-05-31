@@ -129,7 +129,7 @@ $full_orientation: ((top, bottom),
       > GtkImage { opacity: 0.75; }
     }
     &:active {
-      transition-duration: 0;
+      transition-duration: 0s;
       animation: budgie_ripple_effect 0.2s
                  cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 
@@ -177,7 +177,7 @@ $full_orientation: ((top, bottom),
       // FIXME: Upstream deformed aspect-ratio to 1:1.1
       border-image: -gtk-scaled(url("assets/running-dot-#{$_dot}.png"),
                                 url("assets/running-dot-#{$_dot}@2.png"))
-                    2.0 1.8 / 2.0px 1.8px;
+                    2.0 1.818 / 2.0px 1.818px;
       &:hover,
       &:active,
       &:checked {
@@ -223,22 +223,12 @@ $full_orientation: ((top, bottom),
     border-radius: 0;
     outline-color: transparent;
     color: $inverted_fg_color;
-    &:hover {
-      color: $selected_fg_color;
-      background-color: transparent;
-      background-image: none;
-
-      .top & { box-shadow: inset 0 2px gtkalpha($inverted_fg_color, 0.4); }
-      .bottom & { box-shadow: inset 0 -2px gtkalpha($inverted_fg_color, 0.4); }
-    }
+    &:hover,
     &:active,
     &:checked {
       color: $selected_fg_color;
       background-color: transparent;
       background-image: none;
-
-      .top & { box-shadow: inset 0 2px $selected_bg_color; }
-      .bottom & { box-shadow: inset 0 -2px $selected_bg_color; }
     }
   }
 }
@@ -253,31 +243,20 @@ $full_orientation: ((top, bottom),
     &:dir(ltr) { padding-right: 2px; }
     &:dir(rtl) { padding-left: 2px; }
   }
-
-  // dim symbolic icons to get better uniformity same as NaTray icons
-  * > GtkImage { opacity: 0.9; }
 }
 
 // main menu styling
 .budgie-panel BudgieMenuApplet {
   .button.flat.budgie-menu-launcher {
-    padding: 3px 0;
+    padding: 0;
+    border: 0 none transparent;
     border-radius: 0;
     outline-color: transparent;
-    &:hover {
-      background-color: transparent;
-      background-image: none;
-
-      .top & { box-shadow: inset 0 2px gtkalpha($inverted_fg_color, 0.4); }
-      .bottom & { box-shadow: inset 0 -2px gtkalpha($inverted_fg_color, 0.4); }
-    }
+    &:hover,
     &:active,
     &:checked {
-      background-color: transparent;
       background-image: none;
-
-      .top & { box-shadow: inset 0 2px $selected_bg_color; }
-      .bottom & { box-shadow: inset 0 -2px $selected_bg_color; }
+      background-color: transparent;
     }
 
     GtkImage {
@@ -287,17 +266,15 @@ $full_orientation: ((top, bottom),
       background-repeat: no-repeat;
       background-size: contain;
       color: transparent;
-      opacity: 0.9;
     }
 
     &:hover,
-    &:active,
+    &:active {
+      GtkImage { background-image: url("assets/show-apps-hover.svg"); }
+    }
     &:checked,
     &:checked:hover {
-      GtkImage {
-        background-image: url("assets/show-apps-active.svg");
-        opacity: 1.0;
-      }
+      GtkImage { background-image: url("assets/show-apps-checked.svg"); }
     }
   }
 }
@@ -434,14 +411,14 @@ $full_orientation: ((top, bottom),
         }
 
         .label {
-          color: $inverted_secondary_fg_color;
+          color: $secondary_selected_fg_color;
 
           &:dir(ltr) { padding-left: 0.6em; }
           &:dir(rtl) { padding-right: 0.6em; }
         }
 
         GtkImage {
-          color: $inverted_secondary_fg_color;
+          color: $secondary_selected_fg_color;
 
           &:first-child { // avatar image
             padding-top: 0.4em;
@@ -456,10 +433,10 @@ $full_orientation: ((top, bottom),
           transition-property: box-shadow;
           transition-duration: 0.2s;
 
-          .label { color: $inverted_fg_color; }
+          .label { color: $selected_fg_color; }
 
           GtkImage {
-            color: $inverted_fg_color;
+            color: $selected_fg_color;
 
             &:first-child { opacity: 1.0; }
           }
@@ -544,8 +521,8 @@ $full_orientation: ((top, bottom),
                         $dark_color,
                         mix($dark_color, $secondary_dark_color, 50%))),
                       color-stop(0.50, if($variant == 'light',
-                        gtkopacity($top_edge_border_color, 0.01),
-                        gtkopacity($solid_dark_borders_color, 0.4))),
+                        gtkopacity($top_edge_borders_color, 0.005),
+                        gtkopacity($solid_dark_borders_color, 0.02))),
                       color-stop(0.50, transparent),
                       to(transparent));
     box-shadow: none;
@@ -555,11 +532,11 @@ $full_orientation: ((top, bottom),
       @extend %button_normal;
       margin: 2px 8px;
       padding: 5.3px;
-      color: $inverted_secondary_fg_color;
+      color: $secondary_selected_fg_color;
       background-color: $suggested_color;
       &:hover {
         @extend %button_hover;
-        color: $inverted_fg_color;
+        color: $selected_fg_color;
       }
       &:active {
         @extend %button_active;
@@ -751,6 +728,14 @@ $full_orientation: ((top, bottom),
     }
   }
 
+  .alternative-label { // 'always expanded' option
+    font-size: 15px; // same size with 'Local volumes' label?
+    font-weight: 400;
+
+    &:dir(ltr) { padding: 3px 0.3em 0.3em 3px; }
+    &:dir(rtl) { padding: 3px 3px 0.3em 0.3em; }
+  }
+
   GtkBox.vertical > GtkRevealer {
     > .list { // drop-down list
       box-shadow: if($variant == 'light', $inline-shadow-light,
@@ -758,6 +743,15 @@ $full_orientation: ((top, bottom),
 
       // draw top-border in row class
       .list-row:first-child { border-top: 1px solid $borders_color; }
+
+      &.always-expand { // 'always expanded' option
+        // unset revealer elevations
+        background-color: transparent;
+        box-shadow: none;
+
+        // unset top-border
+        .list-row:first-child { border-top: 0 none transparent; }
+      }
     }
   }
 
@@ -899,6 +893,60 @@ $full_orientation: ((top, bottom),
     &:checked { color: $inverted_accent_label_color; }
     &:insensitive { color: gtkopacity($inverted_accent_label_color, 0.4); }
   }
+}
+
+// alt-tab apps switcher styling
+.background.budgie-switcher-window {
+  border-radius: 2px;
+  background-color: transparent;
+
+  // draw actual backgrounds and shadows
+  .drop-shadow {
+    border-radius: 2px;
+    background-color: gtkopacity($inverted_dark_color, 0.9);
+    // keeps level-2 since we can not enlarge the outer margin
+    box-shadow: $z-depth-2;
+
+    .label.budgie-switcher-title { // bottom label for app titles
+      color: $inverted_accent_label_color;
+      font-weight: 500;
+      &:dir(ltr) { padding: 0 0 3px 6px; }
+      &:dir(rtl) { padding: 0 6px 3px 0; }
+    }
+  }
+
+  GtkFlowBox { // unset spacing
+    margin: 0;
+    padding: 0;
+  }
+
+  GtkFlowBoxChild { // icon-tiles
+    margin: 3px;
+    border-radius: 2px;
+    outline-radius: 2px;
+    color: $inverted_secondary_accent_label_color;
+    background-color: transparent;
+    &:hover,
+    &:active {
+      background-color: gtkopacity($accent_color, 0.1);
+      color: $inverted_accent_label_color;
+    }
+    &:selected { // use the same values with Gnome-Shell
+      background-color: gtkopacity($accent_color, 0.25);
+      color: $inverted_accent_label_color;
+      -gtk-image-effect: highlight;
+      &:insensitive {
+        background-color: gtkopacity($inverted_fg_color, 0.1);
+        -gtk-image-effect: dim;
+
+        &, .label { color: $insensitive_inverted_fg_color; }
+      }
+    }
+  }
+}
+
+// an internal of the parent switcher-window
+.budgie-switcher {
 }
 
 // dialog styling
@@ -1084,7 +1132,7 @@ UnityDecoration { // FIXME: do not use scalable units
     background-image: linear-gradient(to bottom, $inverted_dark_color);
     // The foreground color will be used to paint the text
     color: $inverted_fg_color;
-    box-shadow: inset 0 1px $highlight_color;
+    box-shadow: inset 0 1px $top_edge_borders_color;
 
     &:backdrop { color: $insensitive_inverted_fg_color; }
 
@@ -1497,12 +1545,12 @@ CcShellCategoryView { // stop using $base_color
 //  * XFce4 *
 //  *********/
 
-.XfceHeading { // FIXME: I'm not sure what's this
+.XfceHeading {
   margin: 0;
   padding: 0;
   border-width: 0;
   background-image: none;
-  background-color: $base_color;
+  background-color: $bg_color;
   color: $fg_color;
   text-shadow: none;
 }
@@ -1548,6 +1596,9 @@ CcShellCategoryView { // stop using $base_color
       box-shadow: inset 0 -2px $selected_bg_color;
       transition: none;
       animation: none;
+    }
+    &:active {
+      &, &:hover { background-color: gtkopacity($inverted_fg_color, 0.1); }
     }
   }
 

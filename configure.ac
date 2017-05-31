@@ -1,5 +1,5 @@
 m4_define([adapta_major_version], [3])
-m4_define([adapta_minor_version], [90])
+m4_define([adapta_minor_version], [91])
 m4_define([adapta_micro_version], [0])
 m4_define([adapta_version], [adapta_major_version.adapta_minor_version.adapta_micro_version])
 m4_define([adapta_git_url], [https://github.com/adapta-project/adapta-gtk-theme])
@@ -25,6 +25,8 @@ AM_SILENT_RULES([yes])
 
 ADAPTA_OPTION([PARALLEL],  [parallel],  [parallel-build], [disable])
 ADAPTA_OPTION([GTK_NEXT],  [gtk_next],  [Gtk-4.0],        [disable])
+ADAPTA_OPTION([GTK_LEGACY],[gtk_legacy],[Gtk-3.18],       [disable])
+ADAPTA_OPTION([GNOME],     [gnome],     [Gnome-Shell],    [disable])
 ADAPTA_OPTION([CINNAMON],  [cinnamon],  [Cinnamon],       [disable])
 ADAPTA_OPTION([FLASHBACK], [flashback], [Flashback],      [disable])
 ADAPTA_OPTION([UNITY],     [unity],     [Unity],          [disable])
@@ -61,6 +63,14 @@ if test x"$GLIB_COMPILE_RESOURCES" = x; then
 	AC_MSG_ERROR(['glib-compile-resources' not found.])
 fi
 
+if test x"$ENABLE_GNOME" = xyes; then
+	AC_PATH_PROG([GNOME_SHELL], [gnome-shell])
+	if test x"$GNOME_SHELL" = x; then
+		AC_MSG_ERROR(['gnome-shell' not found.])
+	fi
+	ADAPTA_GNOME
+fi
+
 ADAPTA_COLOR_SCHEME
 
 AC_CONFIG_FILES([
@@ -74,10 +84,6 @@ AC_OUTPUT
 AC_MSG_RESULT([
         Adapta Gtk+ Theme $VERSION
         ===========================================================
-
-        -----------------------------------------------------------
-        | Supported Gtk+ version: 3.22 & 3.20 & 3.18
-        -----------------------------------------------------------
 
          prefix:                 ${prefix}
          datarootdir:            ${datarootdir}
@@ -100,37 +106,35 @@ AC_MSG_RESULT([
          destruction-color:      $DESTRUCTION (default: $destruction_default)
 
         -----------------------------------------------------------
-        | Default DE support
+        | Supported Gtk+ Version
         -----------------------------------------------------------
 
-         GNOME:                >= 3.22 (or 3.20 or 3.18)
-         Budgie-Desktop:       >= 10.2.7
+         Gtk+ 3.18:              $ENABLE_GTK_LEGACY
+         Gtk+ 3.20:              always
+         Gtk+ 3.22:              always
+         Gtk+ 4.0:               $ENABLE_GTK_NEXT
 
         -----------------------------------------------------------
-        | Extra DE and WM support
+        | DE and WM Support
         -----------------------------------------------------------
 
-         Cinnamon:             $ENABLE_CINNAMON
-         GNOME-Flashback:      $ENABLE_FLASHBACK
-         Unity:                $ENABLE_UNITY
-         XFce:                 $ENABLE_XFCE
-         Mate:                 $ENABLE_MATE
-         Openbox:              $ENABLE_OPENBOX
+         Budgie-Desktop:         always (>= 10.2.7)
+         GNOME:                  $ENABLE_GNOME (SCSS ver. $GNOME_SCSS_VERSION)
+         Cinnamon:               $ENABLE_CINNAMON
+         GNOME-Flashback:        $ENABLE_FLASHBACK
+         Unity:                  $ENABLE_UNITY
+         XFce:                   $ENABLE_XFCE
+         Mate:                   $ENABLE_MATE
+         Openbox:                $ENABLE_OPENBOX
 
         -----------------------------------------------------------
-        | Next Gtk+ support
+        | Extra Support
         -----------------------------------------------------------
 
-         Gtk+ 4.0:             $ENABLE_GTK_NEXT
-
-        -----------------------------------------------------------
-        | Extra support
-        -----------------------------------------------------------
-
-         GtkSourceView/Gedit:  always
-         Chrome(ium):          $ENABLE_CHROME
-         Plank:                $ENABLE_PLANK
-         Telegram:             $ENABLE_TELEGRAM
+         GtkSourceView/Gedit:    always
+         Chrome(ium):            $ENABLE_CHROME
+         Plank:                  $ENABLE_PLANK
+         Telegram:               $ENABLE_TELEGRAM
 
         ===========================================================
                              =>> run 'make' and 'sudo make install'
