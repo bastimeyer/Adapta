@@ -90,13 +90,13 @@ $titlebutton_small: if($ref_weight < 1.0, 20px, 28px);
 
 .gtkstyle-fallback {
   background-color: $bg_color;
-  color: $fg_color;
+  color: $secondary_fg_color;
   &:hover {
-    background-color: darken($bg_color, 5%);
+    background-color: mix($fg_color, $bg_color, 10%);
     color: $fg_color;
   }
   &:active {
-    background-color: darken($bg_color, 10%);
+    background-color: mix($fg_color, $bg_color, 20%);
     color: $fg_color;
   }
   &:disabled {
@@ -2477,7 +2477,8 @@ headerbar {
 
   // misc
   .tiled &,
-  .maximized & {
+  .maximized &,
+  .fullscreen & {
     border-top-color: $inverted_dark_color;
     border-radius: 0;
   }
@@ -2599,7 +2600,7 @@ headerbar.selection-mode { // selection-mode specific
   }
 }
 
-.background:not(.maximized):not(.tiled):not(.solid-csd) {
+.background:not(.maximized):not(.fullscreen):not(.tiled):not(.solid-csd) {
   headerbar,
   .titlebar { // set rounded corners
     border-top-left-radius: 2px;
@@ -2626,7 +2627,7 @@ headerbar.selection-mode { // selection-mode specific
 }
 
 // force using rounded corners in case of paned titlebars
-window:not(.maximized):not(.tiled):not(.solid-csd) {
+window:not(.maximized):not(.fullscreen):not(.tiled):not(.solid-csd) {
   paned.titlebar,
   grid.titlebar {
     border-top-left-radius: 2px;
@@ -2694,7 +2695,8 @@ headerbar.titlebar.default-decoration {
   }
 
   &.tiled,
-  &.maximized {
+  &.maximized,
+  &.fullscreen {
     box headerbar,
     headerbar {
       &, &:not(:last-child) {
@@ -2723,35 +2725,65 @@ dialog.background.csd > headerbar.titlebar {
 .linked.path-bar,
 .path-bar {
   button {
-    &, &.text-button {
-      padding: 0 rem(1.3px) 0;
+    &.text-button:not(.image-button) {
+      padding: 0 rem(2.7px, $sw: 1.0) 0;
       -gtk-outline-radius: 2px;
-    }
-    &.image-button { padding: 0 rem(5.3px) 0; }
 
-    &.text-button.image-button {
-      -gtk-outline-radius: 2px;
       label {
-        padding-left: 0;
-        padding-right: 0;
+        margin-left: rem(5.3px);
+        margin-right: rem(5.3px);
+        padding: 0 0 rem(1.3px);
       }
     }
 
-    &.text-button.image-button {
-      label { // FIXME: is it still needed?
-        &:last-child { padding-right: rem(5.3px); }
-        &:first-child { padding-left: rem(5.3px); }
-      }
-    }
-
-    image { padding: rem(1.3px) rem(5.3px) 0; }
-
-    &.slider-button, // workaround for Nautilus 3.2x
-    &.image-button.text-button.toggle {
-      min-height: $icon_size;
-      padding: 0 rem(1.3px) 0;
+    &.image-button {
+      padding: 0 rem(2.7px, $sw: 1.0) 0;
       border-radius: 2px;
       -gtk-outline-radius: 2px;
+
+      image {
+        margin: 0 rem(5.3px) 0;
+        padding: 0;
+      }
+    }
+
+    &.text-button.image-button {
+      &, &.toggle {
+        padding: 0 rem(2.7px, $sw: 1.0) 0;
+        -gtk-outline-radius: 2px;
+
+        label {
+          padding: 0 0 rem(1.3px);
+          &:dir(ltr) {
+            margin-left: 0;
+            margin-right: rem(5.3px);
+          }
+          &:dir(rtl) {
+            margin-left: rem(5.3px);
+            margin-right: 0;
+          }
+        }
+
+        image {
+          &:dir(ltr) {
+            margin-left: rem(1.3px);
+            margin-right: rem(5.3px);
+          }
+          &:dir(ltr) {
+            margin-left: rem(5.3px);
+            margin-right: rem(1.3px);
+          }
+        }
+      }
+    }
+
+    &.slider-button {
+      min-height: $icon_size;
+      padding: 0 rem(2.7px, $sw: 1.0) 0;
+      border-radius: 2px;
+      -gtk-outline-radius: 2px;
+
+      image { margin: 0 rem(5.3px) 0; }
     }
   }
 }
@@ -4565,6 +4597,7 @@ levelbar {
     border-radius: 2px;
     box-shadow: $z-depth-1;
     &:disabled { box-shadow: none; }
+
     &.horizontal { padding: 2px 1px; }
     &.vertical { padding: 1px 2px; }
   }
@@ -4576,16 +4609,16 @@ levelbar {
     border-radius: 0;
     border: none;
     box-shadow: none;
+
+    &.low { background-color: $warning_color; }
+
+    &:not(.empty),
+    &.high { background-color: $selected_bg_color; }
+
+    &.full { background-color: $success_color; }
+
+    &.empty { background-color: $track_color; }
   }
-
-  block.low { background-color: $warning_color; }
-
-  block:not(.empty),
-  block.high { background-color: $selected_bg_color; }
-
-  block.full { background-color: $success_color; }
-
-  block.empty { background-color: $track_color; }
 }
 
 
@@ -6321,19 +6354,18 @@ popover.touch-selection {
 
 // shortcut window keys
 .keycap {
-  min-width: rem(20px);
-  min-height: rem(26px);
-  margin-top: rem(2.7px);
-  margin-bottom: rem(3.3px);
-  padding: 0 rem(6px);
+  min-width: rem(20px, $sw: 1.0);
+  min-height: rem(20px, $sw: 1.0);
+  padding: rem((20px - 13.3px + 1.3px) / 2, $sw: 1.0)
+           rem((20px - 13.3px) / 2, $sw: 1.0)
+           rem((20px - 13.3px - 1.3px) / 2, $sw: 1.0);
   border: none;
   border-radius: 2px;
   color: $inverted_fg_color;
   background-color: if($variant == 'light', $inverted_base_color,
                                             $inverted_dark_color);
   box-shadow: $z-depth-1,
-              inset 0 1px $highlight_color;;
-  font-size: 90%;
+              inset 0 1px $highlight_color;
   font-weight: 700;
 
   // shortcut keycaps for Gnome-builder

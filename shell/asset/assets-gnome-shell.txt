@@ -1,14 +1,11 @@
 common/noise-texture.png .
 common/process-working.svg .
-common/toggle-on-hover.svg . r1
 common/toggle-on.svg . r1
 light/no-events.svg .
 light/no-notifications.svg .
-light/toggle-off-hover.svg .
 light/toggle-off.svg .
 nokto/no-events.svg .
 nokto/no-notifications.svg .
-nokto/toggle-off-hover.svg .
 nokto/toggle-off.svg .
 
 common/checkbox-hover.svg assets r1
@@ -25,6 +22,8 @@ common/media-control-hover.svg assets r2
 common/more-results.svg assets r2
 common/show-apps-checked.svg assets
 common/show-apps-hover.svg assets
+common/show-apps-panel-hover.svg assets
+common/show-apps-panel.svg assets
 common/show-apps.svg assets
 common/window-close-active.svg assets r1
 common/window-close-hover.svg assets r3
