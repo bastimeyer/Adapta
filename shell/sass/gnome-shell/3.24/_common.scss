@@ -1050,8 +1050,12 @@ StScrollBar {
 //  ***********/
 
 #panel {
-  height: if($eta == 'false', 30px,  // = 2.25em
-                              25px); // = 1.875em
+  // default height
+  min-height: if($eta == 'false', 30px,  // = 2.25em
+                                  25px); // = 1.875em
+  // special height for upscaled via font-scaling-factor
+  // this should be always smaller than min-height if f-s-f < 1.0
+  height: if($eta == 'false', 2.1em, 1.8em);
   background-color: $panel_bg_color;
   font-weight: 700;
   transition-timing-function: $slope_slow;
@@ -1662,6 +1666,11 @@ StScrollBar {
   padding: if($eta == 'false', 0 10px, 0 6px);
 
   StLabel { padding: if($eta == 'false', 0 4px 1px, 0 2px 1px); }
+
+  StIcon { // override StLabel base-line shifter
+    padding-top: 1px;
+    padding-bottom: 0;
+  }
 
   .label-shadow { color: transparent; }
 }

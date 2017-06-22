@@ -109,7 +109,7 @@ Unsupported Gtk+ Based Desktop(s)
 
 Installation from Package(s)
 ----------------------------
- * AUR: https://aur.archlinux.org/packages/adapta-gtk-theme/
+ * Archlinux (community): https://www.archlinux.org/packages/community/any/adapta-gtk-theme/
 
  * Copr: https://copr.fedorainfracloud.org/coprs/heikoada/gtk-themes/
 
@@ -253,12 +253,12 @@ GtkSourceView/Gedit Color Scheme Support
 
  > **Note:**
  >
- >   * The color-scheme can be used in Gnome-Builder and Gedit if installed to `~/.local/share/gtksourceview-3.0/styles` directory.
+ >   * The color-scheme can be used in Gnome-Builder, Gnome-Sushi and Gedit if installed to `~/.local/share/gtksourceview-3.0/styles` directory.
  >   * Currently only dark-variant is supported.
 
 Extra Browser Support
 ---------------------
- To try experimental browser specific theming, pass this option:
+ To try legacy Chrome(ium) specific theming (`< 59.0.30xx`), pass this option:
 
  ```
  --enable-chrome         enable Chrome(ium) support (type: bool)
@@ -268,8 +268,8 @@ Extra Browser Support
 
  > **Note:**
  >
- >   * Currently only Chrome(ium) theming is supported.
  >   * Chrome(ium) 59.0.30xx or newer, theming is pulled from Gtk+ 3.x directly.
+ >     So `Settings > Appearance > Themes` should be `GTK+`.
  >
  >   * Vivaldi can make custom themes via settings like these:
  >     ```
