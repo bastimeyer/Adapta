@@ -32,7 +32,7 @@ $ref_size: 13.33px; // = 10pt = 1em
 
 $z-depth-1: 0 1px 1px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.16);
 $z-depth-2: 0 2px 2px rgba(0, 0, 0, 0.12), 0 3px 4px rgba(0, 0, 0, 0.20);
-$z-depth-3: 0 5px 5px rgba(0, 0, 0, 0.16), 0 4px 4px rgba(0, 0, 0, 0.20);
+$z-depth-3: 0 4px 5px rgba(0, 0, 0, 0.16), 0 4px 4px rgba(0, 0, 0, 0.20);
 $z-depth-4: 0 6px 8px -4px rgba(0, 0, 0, 0.16),
             0 10px 6px rgba(0, 0, 0, 0.20);
 $z-depth-5: 0 8px 10px -4px rgba(0, 0, 0, 0.20),
@@ -638,5 +638,32 @@ $slope_quick: cubic-bezier(0.4, 0.0, 0.6, 1.0);
   border: none;
   box-shadow: none;
   transition: none;
+}
+
+
+//
+// Spinner animation
+//
+
+@keyframes colorful_bar {
+  @each $progress, $_color, $_hscale in (0%, $solid_red, 0),
+                                        (24.9%, $solid_red, 1.0),
+                                        (25%, $solid_yellow, 1.0),
+                                        (49.9%, $solid_yellow, 0),
+                                        (50%, $solid_green, 0),
+                                        (74.9%, $solid_green, 1.0),
+                                        (75%, $solid_blue, 1.0),
+                                        (99.9%, $solid_blue, 0),
+                                        (100%, $solid_red, 0) {
+    #{$progress} {
+      -gtk-icon-source: linear-gradient(to bottom,
+                                        transparent 50%,
+                                        #{$_color} 50%,
+                                        #{$_color} calc(50% + 2px),
+                                        transparent calc(50% + 2px),
+                                        transparent 100%);
+      -gtk-icon-transform: scale(#{$_hscale}, 1.0);
+    }
+  }
 }
 

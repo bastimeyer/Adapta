@@ -145,11 +145,12 @@ list.tweak-group {
 
   // for shell-extensions group
   row.activatable:not(.tweak) {
-    &:hover,
-    &:active { // unset hover/active effects
-      background-image: none;
+    &:hover { // unset hover effects
+      background-image: radial-gradient(circle farthest-corner at center,
+                                        gtkalpha(currentColor, 0) 100%,
+                                        transparent 0%),
+                        image(gtkalpha(currentColor, 0));
       background-color: transparent;
-      animation: none;
     }
   }
 }
@@ -217,31 +218,31 @@ list.tweak-group-startup {
   background-color: $bg_color;
 
   row {
-    &, &.activatable {
+    &.activatable {
       padding: rem(8px);
       background-image: image($bg_color);
       background-repeat: repeat-x;
       background-size: auto;
+      transition-duration: 0s; // child 'grid' already has
       &:hover {
-        > grid { background-image: image(gtkalpha($secondary_fg_color, 0.1)); }
+        > grid {
+          background-image: image(gtkalpha($secondary_fg_color, 0.1));
+          transition: background-image 0.1s $slope_slow;
+        }
       }
-      &:active {
+      &:active { // disable ripples
         transition: none;
         animation: none;
-
-        > grid {
-          transition: none;
-          animation: list_ripple_effect 0.2s $slope_slow forwards;
-        }
       }
 
       > grid { // actual container
         border-radius: 2px;
         padding: rem(8px);
+        transition: background-image 0.1s $slope_slow;
 
         > button { // 'remove' buttons
           color: $secondary_selected_fg_color;
-          background-color: $suggested_color;
+          background-color: $destructive_color;
           &:hover { color: $selected_fg_color; }
           &:active {
             color: $selected_fg_color;
@@ -249,7 +250,7 @@ list.tweak-group-startup {
           }
           &:checked {
             color: $secondary_selected_fg_color;
-            background-color: mix($selected_fg_color, $suggested_color, 20%);
+            background-color: mix($selected_fg_color, $destructive_color, 20%);
           }
           &:disabled {
             @include button(flat-insensitive, $track_color,
@@ -541,6 +542,11 @@ dialog.csd > headerbar.titlebar {
     transition: none;
   }
 
+  > headerbar.titlebar > box.horizontal > entry { // location-entry
+    padding-top: 0; // = revealed path-bar
+    padding-bottom: 0;
+  }
+
   flowboxchild { // for 3.23/24
     margin: unset; // unset spacing first
     padding: unset;
@@ -671,6 +677,9 @@ dialog.background.csd > box.dialog-vbox > grid.horizontal {
         margin: rem(-2px) 0;
         font-weight: 700;
       }
+
+      // correct base-line
+      image { margin: rem(1.3px, $sw: 1.0) 0 rem(-1.3px, $sw: 1.0); }
     }
   }
 
@@ -720,6 +729,7 @@ dialog.background.csd > box.dialog-vbox > grid.horizontal {
     > border { border: none; }
 
     treeview.view {
+      background-color: $base_color;
       font-weight: 400; // reset weight
       &:selected {
         &, &:focus {
@@ -1969,11 +1979,10 @@ notebook > stack > grid.vertical > actionbar {
 //  * Baobab *
 //  **********/
 
-window > box.vertical > grid.vertical > stack {
-  stack > spinner { // shrink spinner
-    min-width: rem(24px);
-    min-height: rem(24px);
-    padding: rem(53.2px) rem(79.8px) rem(53.2px);
+window > box.vertical > grid.vertical > stack > grid.horizontal {
+  stack > spinner { // shrink spinner height
+    min-height: $icon_size;
+    padding: 56px 0;
   }
 }
 
@@ -2181,47 +2190,184 @@ terminal-window {
 //  * Gnome-Weather *
 //  *****************/
 
-window stack > frame > frame > grid.horizontal > grid.horizontal {
-  .linked.osd.stack-switcher {
-    background-color: gtkopacity($dark_color, 0.9);
-    box-shadow: $z-depth-1;
-
-    > button.radio.text-button { // remove underlines
-      &,
-      &:hover { border-image: none; }
-      &:checked {
-        border-image: -gtk-gradient(radial,
-                                    center bottom, 0,
-                                    center bottom, 0.5,
-                                    to($selected_bg_color),
-                                    to(transparent))
-                                    0 0 2 / 0 0 2px;
-      }
-    }
-  }
-
-  button.osd {
-    min-width: $icon_size;
-    min-height: $icon_size;
-    padding: rem($icon_size);
-    border-radius: 100px;
-    -gtk-outline-radius: 100px;
-    background-color: gtkopacity($dark_color, 0.9);
-  }
-}
-
-window stack > frame > frame > grid.horizontal {
-  #weekly-forecast-frame {
-    background: transparent;
-    background-image: image(gtkopacity($dark_color, 0.9));
-  }
-}
-
 window > grid.vertical > stack > stack > grid.vertical {
   // allocated 128px x 128px?
   > spinner {
     min-height: $icon_size;
     padding: 56px 0;
+  }
+}
+
+popover > grid > stack > grid#locations-grid > frame#locations-frame {
+  // hide double borders
+  > border { border: none; }
+}
+
+frame#weather-page-content-view {
+  &, &:backdrop {
+    .linked.osd.stack-switcher {
+      background: transparent;
+
+      > button.radio.text-button { // remove underlines
+        border-image: none;
+        &:hover,
+        &:active { border-image: none; }
+        &:checked {
+          border-image: -gtk-gradient(radial,
+                                      center bottom, 0,
+                                      center bottom, 0.5,
+                                      to(currentColor),
+                                      to(transparent))
+                                      0 0 2 / 0 0 2px;
+        }
+        &:disabled { border-image: none; }
+      }
+    }
+
+    button.osd {
+      @extend %button_flat_normal;
+      min-width: $icon_size;
+      min-height: $icon_size;
+      padding: rem($icon_size);
+      border-radius: 100px;
+      -gtk-outline-radius: 100px;
+      background-color: transparent;
+      &:hover { @extend %button_flat_hover; }
+      &:active { @extend %button_flat_active; }
+      &:checked { @extend %button_flat_checked; }
+      &:disabled { @extend %button_flat_disabled; }
+    }
+
+    frame#weekly-forecast-frame { background: transparent; }
+  }
+}
+
+frame#weather-page-content-view { // condition-specific
+  &, &:backdrop {
+    &.weather-clear,
+    &.weather-few-clouds {
+      > grid > grid {
+        > label,
+        > image { color: gtkopacity($fixed_fg_color, 0.5); }
+      }
+
+      .linked.osd.stack-switcher > button.radio.text-button,
+      button.osd {
+        color: gtkopacity($fixed_fg_color, 0.5);
+        &:hover,
+        &:active,
+        &:checked { color: $fixed_fg_color; }
+        &:disabled { color: gtkopacity($fixed_fg_color, 0.3); }
+      }
+
+      frame#weekly-forecast-frame {
+        background: transparent;
+        background-image: image(gtkopacity($selected_fg_color, 0.1));
+
+        label,
+        image { color: mix($selected_fg_color, $selected_bg_color, 80%); }
+      }
+    }
+
+    &.weather-showers,
+    &.weather-showers-scattered,
+    &.weather-storm {
+      > grid > grid {
+        > label,
+        > image { color: gtkopacity($selected_fg_color, 0.75); }
+      }
+
+      .linked.osd.stack-switcher > button.radio.text-button,
+      button.osd {
+        color: gtkopacity($selected_fg_color, 0.75);
+        &:hover,
+        &:active,
+        &:checked { color: $selected_fg_color; }
+        &:disabled { color: gtkopacity($selected_fg_color, 0.3); }
+      }
+
+      frame#weekly-forecast-frame {
+        background: transparent;
+        background-image: image(gtkopacity($fixed_fg_color, 0.1));
+
+        label,
+        image { color: mix($selected_fg_color, $fixed_fg_color, 50%); }
+      }
+    }
+
+    &.weather-overcast,
+    &.weather-fog {
+      > grid > grid {
+        > label,
+        > image { color: gtkopacity($fixed_fg_color, 0.75); }
+      }
+
+      .linked.osd.stack-switcher > button.radio.text-button,
+      button.osd {
+        color: gtkopacity($fixed_fg_color, 0.75);
+        &:hover,
+        &:active,
+        &:checked { color: $fixed_fg_color; }
+        &:disabled { color: gtkopacity($fixed_fg_color, 0.3); }
+      }
+
+      frame#weekly-forecast-frame {
+        background: transparent;
+        background-image: image(gtkopacity($inverted_fg_color, 0.5));
+
+        label,
+        image { color: mix($fixed_fg_color, $selected_fg_color, 75%); }
+      }
+    }
+
+    &.weather-snow,
+    &.weather-few-clouds-night {
+      > grid > grid {
+        > label,
+        > image { color: gtkopacity($selected_fg_color, 0.5); }
+      }
+
+      .linked.osd.stack-switcher > button.radio.text-button,
+      button.osd {
+        color: gtkopacity($selected_fg_color, 0.5);
+        &:hover,
+        &:active,
+        &:checked { color: $selected_fg_color; }
+        &:disabled { color: gtkopacity($selected_fg_color, 0.3); }
+      }
+
+      frame#weekly-forecast-frame {
+        background: transparent;
+        background-image: image(gtkopacity($selected_fg_color, 0.1));
+
+        label,
+        image { color: mix($selected_fg_color, $link_color, 80%); }
+      }
+    }
+
+    &.weather-clear-night {
+      > grid > grid {
+        > label,
+        > image { color: gtkopacity($inverted_accent_label_color, 0.5); }
+      }
+
+      .linked.osd.stack-switcher > button.radio.text-button,
+      button.osd {
+        color: gtkopacity($inverted_accent_label_color, 0.75);
+        &:hover,
+        &:active,
+        &:checked { color: $inverted_accent_label_color; }
+        &:disabled { color: gtkopacity($inverted_accent_label_color, 0.3); }
+      }
+
+      frame#weekly-forecast-frame {
+        background: transparent;
+        background-image: image(gtkopacity($selected_fg_color, 0.1));
+
+        label,
+        image { color: mix($selected_fg_color, $accent_color, 50%); }
+      }
+    }
   }
 }
 
@@ -2612,7 +2758,7 @@ headerbar > box.horizontal > buttonbox.linked {
   }
 }
 
-window.background > box.vertical > stack > widget > stack {
+window.background > box.vertical > overlay > stack > widget > stack {
   // "Installed" stack
   > box.vertical > scrolledwindow > viewport.frame > widget > list {
     background-color: $bg_color; // override $base_color
@@ -2625,12 +2771,14 @@ window.background > box.vertical > stack > widget > stack {
   }
 
   // "Updates" stack
-  > scrolledwindow > viewport.frame > widget > box.vertical {
+  > scrolledwindow > viewport.frame > widget > box.vertical.app-list {
     // override $base_color
-    > list { background-color: $bg_color; }
+    background-image: image($bg_color);
+
+    > box.vertical > list { background-color: $bg_color; }
 
     // use asymmetrical separators
-    > separator {
+    separator {
       &:dir(ltr) { border-left: $icon_size * 6 solid transparent; }
       &:dir(rtl) { border-right: $icon_size * 6 solid transparent; }
     }
@@ -2638,7 +2786,7 @@ window.background > box.vertical > stack > widget > stack {
 }
 
 // sidebar-pane styling
-window.background > box.vertical > stack > widget > box.horizontal {
+window.background > box.vertical > overlay > stack > widget > box.horizontal {
   > scrolledwindow.category-sidebar.frame > viewport.frame > list {
     margin-top: -4px; // hide weird header-gap
     background-color: $secondary_dark_color;

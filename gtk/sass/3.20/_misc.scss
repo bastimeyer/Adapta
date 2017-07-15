@@ -145,11 +145,12 @@ list.tweak-group {
 
   // for shell-extensions group
   row.activatable:not(.tweak) {
-    &:hover,
-    &:active { // unset hover/active effects
-      background-image: none;
+    &:hover { // unset hover effects
+      background-image: radial-gradient(circle farthest-corner at center,
+                                        gtkalpha(currentColor, 0) 100%,
+                                        transparent 0%),
+                        image(gtkalpha(currentColor, 0));
       background-color: transparent;
-      animation: none;
     }
   }
 }
@@ -183,31 +184,31 @@ list.tweak-group-startup {
   background-color: $bg_color;
 
   row {
-    &, &.activatable {
+    &.activatable {
       padding: rem(8px);
       background-image: image($bg_color);
       background-repeat: repeat-x;
       background-size: auto;
+      transition-duration: 0s; // child 'grid' already has
       &:hover {
-        > grid { background-image: image(gtkalpha($secondary_fg_color, 0.1)); }
+        > grid {
+          background-image: image(gtkalpha($secondary_fg_color, 0.1));
+          transition: background-image 0.1s $slope_slow;
+        }
       }
-      &:active {
+      &:active { // disable ripples
         transition: none;
         animation: none;
-
-        > grid {
-          transition: none;
-          animation: list_ripple_effect 0.2s $slope_slow forwards;
-        }
       }
 
       > grid { // actual container
         border-radius: 2px;
         padding: rem(8px);
+        transition: background-image 0.1s $slope_slow;
 
         > button { // 'remove' buttons
           color: $secondary_selected_fg_color;
-          background-color: $suggested_color;
+          background-color: $destructive_color;
           &:hover { color: $selected_fg_color; }
           &:active {
             color: $selected_fg_color;
@@ -215,7 +216,7 @@ list.tweak-group-startup {
           }
           &:checked {
             color: $secondary_selected_fg_color;
-            background-color: mix($selected_fg_color, $suggested_color, 20%);
+            background-color: mix($selected_fg_color, $destructive_color, 20%);
           }
           &:disabled {
             @include button(flat-insensitive, $track_color,
@@ -408,13 +409,18 @@ NautilusTrashBar {
   @extend infobar;
 }
 
-.nautilus-window > grid.horizontal {
-  paned > separator {
+.nautilus-window {
+  > grid.horizontal paned > separator {
     // do not use transparentize
     background-image: image($solid_light_borders_color);
     background-size: $separator_narrow;
     background-repeat: repeat-y;
     transition: none;
+  }
+
+  > headerbar.titlebar > box.horizontal > entry { // location-entry
+    padding-top: 0; // = revealed path-bar
+    padding-bottom: 0;
   }
 }
 
@@ -537,6 +543,9 @@ dialog.background.csd > box.dialog-vbox > grid.horizontal {
         margin: rem(-2px) 0;
         font-weight: 700;
       }
+
+      // correct base-line
+      image { margin: rem(1.3px, $sw: 1.0) 0 rem(-1.3px, $sw: 1.0); }
     }
   }
 
@@ -586,6 +595,7 @@ dialog.background.csd > box.dialog-vbox > grid.horizontal {
     > border { border: none; }
 
     treeview.view {
+      background-color: $base_color;
       font-weight: 400; // reset weight
       &:selected {
         &, &:focus {
@@ -1773,11 +1783,10 @@ notebook > stack > grid.vertical > actionbar {
 //  * Baobab *
 //  **********/
 
-window > box.vertical > grid.vertical > stack {
-  stack > spinner { // shrink spinner
-    min-width: rem(24px);
-    min-height: rem(24px);
-    padding: rem(53.2px) rem(79.8px) rem(53.2px);
+window > box.vertical > grid.vertical > stack > grid.horizontal {
+  stack > spinner { // shrink spinner height
+    min-height: $icon_size;
+    padding: 56px 0;
   }
 }
 

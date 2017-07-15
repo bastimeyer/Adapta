@@ -310,54 +310,19 @@ buttonbox {
 //  * Spinner Animation *
 //  *********************/
 
-@keyframes colorful_bar {
-  0% {
-    -gtk-icon-source: url("assets/bar-red.svg");
-    -gtk-icon-transform: scale(0, 1.0);
-  }
-  24.9% {
-    -gtk-icon-source: url("assets/bar-red.svg");
-    -gtk-icon-transform: scale(1.0, 1.0);
-  }
-  25% {
-    -gtk-icon-source: url("assets/bar-yellow.svg");
-    -gtk-icon-transform: scale(1.0, 1.0);
-  }
-  49.9% {
-    -gtk-icon-source: url("assets/bar-yellow.svg");
-    -gtk-icon-transform: scale(0, 1.0);
-  }
-  50% {
-    -gtk-icon-source: url("assets/bar-green.svg");
-    -gtk-icon-transform: scale(0, 1.0);
-  }
-  74.9% {
-    -gtk-icon-source: url("assets/bar-green.svg");
-    -gtk-icon-transform: scale(1.0, 1.0);
-  }
-  75% {
-    -gtk-icon-source: url("assets/bar-blue.svg");
-    -gtk-icon-transform: scale(1.0, 1.0);
-  }
-  99.9% {
-    -gtk-icon-source: url("assets/bar-blue.svg");
-    -gtk-icon-transform: scale(0, 1.0);
-  }
-  100% {
-    -gtk-icon-source: url("assets/bar-red.svg");
-    -gtk-icon-transform: scale(0, 1.0);
-  }
-}
-
 spinner {
   min-height: rem($icon_size);
-  min-width: rem($icon_size);
-  // FIXME: workaround for 3.20.1. Needs vertical padding more than 4px?
+  min-width: $icon_size;
   padding: rem(5.3px) 0 rem(5.3px);
   margin: 0;
   background: none;
   opacity: 0; // non spinning spinner makes no sense
-  -gtk-icon-source: url("assets/bar-red.svg");
+  -gtk-icon-source: linear-gradient(to bottom,
+                                    transparent 50%,
+                                    $solid_red 50%,
+                                    $solid_red calc(50% + 2px),
+                                    transparent calc(50% + 2px),
+                                    transparent 100%);
   &:checked {
     opacity: 1.0;
     animation: colorful_bar 2s linear infinite;
@@ -509,6 +474,23 @@ entry {
   }
 
   .osd & {
+  }
+
+  > window.background:not(.csd) { // 'candidate' pop-down window
+    border-radius: 0;
+    background-color: $base_color;
+
+    // non-CSD decoration
+    decoration { box-shadow: $z-depth-1; }
+
+    frame > border { border: none; }
+
+    treeview.view {
+      &:selected { // fallback to standard hovering
+        background-color: gtkopacity($fg_color, 0.1);
+        color: $fg_color;
+      }
+    }
   }
 }
 
@@ -703,7 +685,9 @@ button {
     &.radio.text-button {
       min-height: $icon_size * 1.5;
       min-width: $icon_size * 1.5;
-      padding: rem(($widget_size - $icon_size * 1.5) / 2);
+      padding: if($ref_weight < 1.0,
+               rem(($widget_size - $icon_size * 1.5 - 2px) / 2),
+               rem(($widget_size - $icon_size * 1.5) / 2));
       border-radius: 9999px;
       -gtk-outline-radius: 9999px;
 
@@ -796,6 +780,7 @@ button {
       padding-right: rem(4px);
     }
   }
+
   // vertical array
   .linked.vertical > &:not(:only-child) { border-radius: 0; }
   .linked.vertical > & {
@@ -807,8 +792,9 @@ button {
   }
 
   // generic switcher image buttons
-  .linked > &.image-button.radio,
-  .linked.vertical > &.image-button.radio {
+  .linked > &.image-button,
+  .linked.vertical > &.image-button {
+    &, &.radio {
       min-width: $icon_size;
       min-height: $icon_size;
       padding: rem(10.7px);
@@ -816,6 +802,7 @@ button {
       -gtk-outline-radius: 0;
 
       image { padding: 0; }
+    }
   }
 
   // inline-toolbar and action-bar buttons
@@ -1656,11 +1643,6 @@ toolbar {
       }
     }
 
-    spinner {
-      min-height: $icon_size;
-      padding: rem(($widget_size - $icon_size) / 2) 0;
-    }
-
     label { padding: 0 1em; }
   }
 
@@ -1850,6 +1832,7 @@ searchbar,
     min-width: $icon_size;
     min-height: $icon_size;
     padding: rem(10.7px);
+    margin: 1px 0; // concern other linked widgets
     border-radius: 100px;
     -gtk-outline-radius: 100px;
   }
@@ -2324,13 +2307,6 @@ headerbar {
     }
   }
 
-  // spinner spacing
-  spinner {
-    min-width: rem(13.3px);
-    min-height: rem(13.3px);
-    margin: rem(-5.3px);
-  }
-
   // spinbutton spacing
   spinbutton button {
     min-width: rem($widget_size - 4px);
@@ -2525,7 +2501,13 @@ headerbar {
     scale,
     spinner { margin: rem(5.3px) 0; }
 
-    switch { margin: rem(5.3px + (($widget_size - 30px) / 2)) 0; }
+    switch {
+      margin: if($ref_weight < 1.0,
+                 rem(5.3px + (($widget_size - 30px) / 2) + 1.3px)
+                 0
+                 rem(5.3px + (($widget_size - 30px) / 2) - 1.3px),
+                 rem(5.3px + (($widget_size - 30px) / 2) - 2px) 0);
+    }
 
     .title { margin-bottom: rem(5.3px - 1.3px); }
 
@@ -3166,7 +3148,7 @@ popover.background {
       color: $secondary_fg_color;
       font-weight: 400;
       font-size: 100%;
-      transition: none;
+      transition-duration: 0s; // better than 'none'
       &:hover {
         background-color: transparent; // remove double-bg
         color: $fg_color;
@@ -3509,12 +3491,6 @@ notebook {
       // weird wdiget gets in our way
       // no need to add extra 50% padding
       > widget > box > image { padding: rem(5.3px, $sw: 1.0); }
-    }
-
-    spinner {
-      min-height: rem($icon_size);
-      min-width: $icon_size;
-      padding: rem(6.7px, $sw: 1.0) 0 rem(6.7px, $sw: 1.0);
     }
   }
 
@@ -5823,13 +5799,6 @@ button.flat.scale { // standalone Speaker/Mic buttons
     &:active,
     &:checked { color: $inverted_accent_label_color; }
     &:disabled { color: gtkopacity($inverted_accent_label_color, 0.4); }
-  }
-
-  spinner {
-    min-height: $icon_size - 4px;
-    min-width: $icon_size - 4px;
-    padding: rem(6.7px) 0 rem(6.7px);
-    margin: 0 rem(-1px);
   }
 
   // axes left border and border radius

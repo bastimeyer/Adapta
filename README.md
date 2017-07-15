@@ -18,7 +18,7 @@ Adapta strongly depends on Material Design resources, especially its **fonts**.
  2. [**Roboto**](https://fonts.google.com/specimen/Roboto)
    - Very famous as the default truetype font in Android (English ver.).
    - Multilingual support is not good.
-   - Weight used in Adapta: 400, 500, 700
+   - Weight used in Adapta: 300, 400, 500, 700
 
 > **Note:**
 >
@@ -141,7 +141,6 @@ Installation from Git Source
  * inkscape                                  >= 0.91
  * libgdk-pixbuf2.0-dev (gdk-pixbuf2-devel)  >= 2.32.2
  * libglib2.0-dev (glib2-devel)              >= 2.48.0
- * librsvg2-dev (librsvg2-devel)             >= 2.40.13
  * libsass0 (libsass)                        >= 3.3
  * libxml2-utils (libxml2)
  * pkg-config (pkgconfig)
@@ -153,12 +152,10 @@ Installation from Git Source
 
  > **Note:**
  >
- >   * In OpenSUSE, add 3 extra dependencies:
+ >   * In OpenSUSE, add an extra dependency:
  >
  >     ```
  >     gdk-pixbuf-devel        >= 2.32.2
- >     gdk-pixbuf-loader-rsvg  >= 2.40.13
- >     librsvg-devel           >= 2.40.13
  >     ```
  >
  >   * Adapta employs **SassC** wrapper of `libsass` to generate CSS stylesheets.
@@ -219,6 +216,10 @@ Installation from Git Source
  --enable-gtk_legacy    enable Gtk+ 3.18 support (type: bool)
  --enable-gtk_next      enable Gtk+ 4.0 support (type: bool)
  ```
+
+ > **Note:**
+ >
+ >   * Development for Gtk+ 3.18.x theming is over.
 
 7. To change the default 5 **Key-Colors**, pass these options:
 
