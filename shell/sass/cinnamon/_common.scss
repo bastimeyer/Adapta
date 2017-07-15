@@ -2009,9 +2009,9 @@ $icon_size: 16px;
 
 .expo-workspaces-name-entry {
   @include fontscaling($ref_size * 0.9);
-  -cinnamon-caption-spacing: 12px;
-  min-height: 1.2em;
-  padding: 4px 8px;
+  -cinnamon-caption-spacing: 0;
+  height: 0;
+  padding: 10px 8px;
   border-radius: 0;
   color: $osd_dim_fg_color;
   background-color: $hidden_fill_color;
